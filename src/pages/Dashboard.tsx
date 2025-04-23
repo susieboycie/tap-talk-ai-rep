@@ -1,7 +1,7 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
-import { PersonaCard } from "@/components/dashboard/persona-card";
 import { OutletOverview } from "@/components/dashboard/outlet-overview";
 import { AIAssistant } from "@/components/ai-assistant";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { MessageSquare } from "lucide-react";
 import { Insights, Partnership, Quality } from "@/components/icons";
 import { useAuth } from "@/contexts/auth-context";
 import { useOutletSales } from "@/hooks/use-outlet-sales";
-import { usePersonaDetails } from "@/hooks/use-persona-details";
+import { usePersonaDetails, type PersonaDetails } from "@/hooks/use-persona-details";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
