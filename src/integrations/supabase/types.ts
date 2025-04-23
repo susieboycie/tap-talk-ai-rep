@@ -121,15 +121,7 @@ export type Database = {
           Strongbow_In_Keg_MTD_Billed?: number | null
           Tuborg_Lager_in_Keg_MTD_Billed?: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "daily_sales_volume_cluster_fkey"
-            columns: ["Cluster"]
-            isOneToOne: false
-            referencedRelation: "cluster_details"
-            referencedColumns: ["name"]
-          },
-        ]
+        Relationships: []
       }
       persona_details: {
         Row: {
