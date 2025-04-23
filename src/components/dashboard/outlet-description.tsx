@@ -3,6 +3,7 @@ import { PersonaDetails, ClusterDetails } from "@/hooks/use-persona-details";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Store } from "lucide-react";
 import { Tables } from "@/integrations/supabase/types";
+import { SalesInsights } from "./sales-insights";
 
 interface OutletDescriptionProps {
   outletName: string | null;
@@ -11,6 +12,7 @@ interface OutletDescriptionProps {
   personaDetails: PersonaDetails | null;
   salesData: Tables<"daily_sales_volume">[] | null;
   isLoading: boolean;
+  salesDataLoading?: boolean;
 }
 
 export function OutletDescription({ 
@@ -19,7 +21,8 @@ export function OutletDescription({
   clusterDetails, 
   personaDetails, 
   salesData,
-  isLoading 
+  isLoading,
+  salesDataLoading = false
 }: OutletDescriptionProps) {
   if (isLoading) {
     return (
@@ -74,9 +77,15 @@ export function OutletDescription({
         <Store className="h-4 w-4 text-gray-400" />
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-gray-300 leading-relaxed">
-          {description}
-        </p>
+        <div className="space-y-6">
+          <p className="text-sm text-gray-300 leading-relaxed">
+            {description}
+          </p>
+          
+          <div className="border-t border-repgpt-700 pt-4 mt-4">
+            <SalesInsights data={salesData} isLoading={salesDataLoading} />
+          </div>
+        </div>
       </CardContent>
     </Card>
   );

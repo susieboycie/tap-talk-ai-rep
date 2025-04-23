@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
@@ -13,7 +14,6 @@ import { useOutletSales } from "@/hooks/use-outlet-sales";
 import { usePersonaDetails, type PersonaDetails } from "@/hooks/use-persona-details";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { SalesInsights } from "@/components/dashboard/sales-insights";
 
 const personas = [
   { id: "entrepreneur", name: "The Entrepreneur" },
@@ -157,6 +157,7 @@ export default function Dashboard() {
           personaDetails={effectivePersonaDetails}
           salesData={salesData}
           isLoading={isPersonaLoading && !manualPersonaDetails}
+          salesDataLoading={isSalesLoading}
         />
       </div>
 
@@ -211,11 +212,8 @@ export default function Dashboard() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5 mb-6">
-        <div className="md:col-span-2 lg:col-span-3">
+        <div className="md:col-span-3 lg:col-span-5">
           <PerformanceChart data={salesData} isLoading={isSalesLoading} />
-        </div>
-        <div className="md:col-span-1 lg:col-span-2">
-          <SalesInsights data={salesData} isLoading={isSalesLoading} />
         </div>
       </div>
 

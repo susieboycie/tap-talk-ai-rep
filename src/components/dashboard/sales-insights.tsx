@@ -62,8 +62,8 @@ export function SalesInsights({ data, isLoading }: SalesInsightsProps) {
   );
 
   const zeroAlcTrend = getPercentageChange(
-    (latestData.Guinness_Draught_0_0_in_Keg_MTD_Billed || 0) + (latestData.Carlsberg_0_0_In_Keg_MTD_Billed || 0),
-    (previousData?.Guinness_Draught_0_0_in_Keg_MTD_Billed || 0) + (previousData?.Carlsberg_0_0_In_Keg_MTD_Billed || 0)
+    (latestData["Guinness_Draught_0.0_in_Keg_MTD_Billed"] || 0) + (latestData["Carlsberg_0.0_In_Keg_MTD_Billed"] || 0),
+    (previousData?.["Guinness_Draught_0.0_in_Keg_MTD_Billed"] || 0) + (previousData?.["Carlsberg_0.0_In_Keg_MTD_Billed"] || 0)
   );
 
   return (
