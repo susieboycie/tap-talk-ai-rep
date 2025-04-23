@@ -1,8 +1,7 @@
-
 import { useState, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
-import { OutletOverview } from "@/components/dashboard/outlet-overview";
+import { OutletDescription } from "@/components/dashboard/outlet-description";
 import { AIAssistant } from "@/components/ai-assistant";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -159,13 +158,14 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Outlet Overview Section */}
+      {/* Outlet Description Section */}
       <div className="mb-6">
-        <OutletOverview 
+        <OutletDescription 
           outletName={selectedOutlet}
           cluster={clusterType}
           clusterDetails={clusterDetails}
           personaDetails={effectivePersonaDetails}
+          salesData={salesData}
           isLoading={isPersonaLoading && !manualPersonaDetails}
         />
       </div>
