@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
@@ -14,20 +15,7 @@ import { Insights, Partnership, Quality } from "@/components/icons";
 import { useAuth } from "@/contexts/auth-context";
 import { useOutletSales } from "@/hooks/use-outlet-sales";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
-
-// Sample outlets for demo
-const mockOutlets = [
-  "The Fox", 
-  "The Hound", 
-  "The Crown", 
-  "The King's Arms", 
-  "The Queen's Head",
-  "The Black Horse",
-  "The White Lion",
-  "The Red Lion",
-  "The Green Dragon"
-];
+import { supabase } from "@/integrations/supabase/client"; // Fixed import path
 
 // Personas data
 const personas = [
@@ -61,7 +49,7 @@ export default function Dashboard() {
       }
 
       // Get unique outlet names
-      const uniqueOutlets = Array.from(new Set(data.map(row => row.Outlet))).filter(Boolean);
+      const uniqueOutlets = Array.from(new Set(data.map(row => row.Outlet))).filter(Boolean) as string[];
       console.log("Fetched unique outlets:", uniqueOutlets);
       return uniqueOutlets;
     }
@@ -93,7 +81,7 @@ export default function Dashboard() {
       return {
         totalVolume: "N/A",
         averageMargin: "N/A",
-        monthlyTrend: "neutral",
+        monthlyTrend: "neutral" as const,
         trendValue: "No data available"
       };
     }
@@ -104,8 +92,8 @@ export default function Dashboard() {
 
     return {
       totalVolume: `${Math.round(totalVolume)} kegs`,
-      averageMargin: "62%", // This could be calculated from actual data if available
-      monthlyTrend: totalVolume > 1000 ? "up" : "down",
+      averageMargin: "62%",
+      monthlyTrend: (totalVolume > 1000 ? "up" : "down") as const,
       trendValue: `${totalVolume > 1000 ? '+' : '-'}${Math.abs(Math.round((totalVolume - 1000) / 1000 * 100))}% from last month`
     };
   };
@@ -221,7 +209,7 @@ export default function Dashboard() {
           title="Monthly Volume"
           value={kpis.totalVolume}
           description="Total volume for current month"
-          trend={kpis.monthlyTrend as "up" | "down" | "neutral"}
+          trend={kpis.monthlyTrend}
           trendValue={kpis.trendValue}
           icon={<BarChart className="h-4 w-4 text-gray-400" />}
         />
