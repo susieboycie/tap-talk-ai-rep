@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
 import { PersonaCard } from "@/components/dashboard/persona-card";
@@ -13,6 +14,7 @@ import { useOutletSales } from "@/hooks/use-outlet-sales";
 import { usePersonaDetails } from "@/hooks/use-persona-details";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { PersonaDetails } from "@/hooks/use-persona-details";
 
 // Personas data
 const personas = [
@@ -28,6 +30,7 @@ export default function Dashboard() {
   const [selectedOutlet, setSelectedOutlet] = useState("");
   const [selectedPersona, setSelectedPersona] = useState("");
   const [assistantPrompt, setAssistantPrompt] = useState<string | null>(null);
+  const [manualPersonaDetails, setManualPersonaDetails] = useState<PersonaDetails | null>(null);
 
   // Query to fetch unique outlet names
   const { data: outletNames } = useQuery({
@@ -53,16 +56,47 @@ export default function Dashboard() {
 
   // Get persona details based on outlet's cluster
   const { 
-    personaDetails, 
+    personaDetails: outletPersonaDetails, 
     clusterType, 
     isLoading: isPersonaLoading 
   } = usePersonaDetails(selectedOutlet);
   
   // When persona data loads from cluster, update the selected persona
   // Only do this if the user hasn't manually selected a persona
-  if (personaDetails && !selectedPersona) {
-    setSelectedPersona(personaDetails.name);
-  }
+  useEffect(() => {
+    if (outletPersonaDetails && !selectedPersona) {
+      setSelectedPersona(outletPersonaDetails.name);
+    }
+  }, [outletPersonaDetails, selectedPersona]);
+
+  // Fetch selected persona details when manually selected
+  useEffect(() => {
+    if (selectedPersona && selectedPersona !== outletPersonaDetails?.name) {
+      const fetchPersonaDetails = async () => {
+        const { data, error } = await supabase
+          .from('persona_details')
+          .select('*')
+          .eq('name', selectedPersona)
+          .limit(1);
+        
+        if (error) {
+          console.error("Error fetching manual persona details:", error);
+          return;
+        }
+        
+        if (data && data.length > 0) {
+          setManualPersonaDetails(data[0] as PersonaDetails);
+        }
+      };
+      
+      fetchPersonaDetails();
+    } else if (outletPersonaDetails) {
+      setManualPersonaDetails(null); // Reset manual selection if we're using outlet's persona
+    }
+  }, [selectedPersona, outletPersonaDetails]);
+
+  // Get the effective persona details (either manually selected or from outlet)
+  const effectivePersonaDetails = manualPersonaDetails || outletPersonaDetails;
 
   const handlePersonaSelect = (personaName: string) => {
     setSelectedPersona(personaName);
@@ -71,8 +105,8 @@ export default function Dashboard() {
   const handleConversationStart = (prompt: string) => {
     let enhancedPrompt = prompt;
     
-    if (personaDetails) {
-      enhancedPrompt = `${prompt}\n\nContext: This outlet "${selectedOutlet}" corresponds to a "${personaDetails.name}" persona. They have these goals: "${personaDetails.goals}" and these pain points: "${personaDetails.pain_points}".`;
+    if (effectivePersonaDetails) {
+      enhancedPrompt = `${prompt}\n\nContext: This outlet "${selectedOutlet}" corresponds to a "${effectivePersonaDetails.name}" persona. They have these goals: "${effectivePersonaDetails.goals}" and these pain points: "${effectivePersonaDetails.pain_points}".`;
     }
     
     setAssistantPrompt(enhancedPrompt);
@@ -130,8 +164,8 @@ export default function Dashboard() {
         <PersonaCard 
           outletName={selectedOutlet} 
           cluster={clusterType}
-          personaDetails={personaDetails}
-          isLoading={isPersonaLoading}
+          personaDetails={effectivePersonaDetails}
+          isLoading={isPersonaLoading && !manualPersonaDetails}
         />
       </div>
 
@@ -210,7 +244,7 @@ export default function Dashboard() {
         isOpen={isAssistantOpen}
         onClose={() => setIsAssistantOpen(false)}
         selectedOutlet={selectedOutlet || null}
-        selectedPersona={selectedPersona || null}
+        selectedPersona={effectivePersonaDetails?.name || null}
         initialMessage={assistantPrompt}
       />
     </DashboardShell>
