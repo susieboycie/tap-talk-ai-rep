@@ -8,10 +8,11 @@ import { Button } from "@/components/ui/button";
 import { MessageSquare } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 import { useOutletSales } from "@/hooks/use-outlet-sales";
-import { usePersonaDetails } from "@/hooks/use-persona-details";
+import { usePersonaDetails, type PersonaDetails } from "@/hooks/use-persona-details";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import { PersonaSelector } from "@/components/dashboard/persona-selector";
 import { ConversationStartersGrid } from "@/components/dashboard/conversation-starters-grid";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Dashboard() {
   const { user } = useAuth();
