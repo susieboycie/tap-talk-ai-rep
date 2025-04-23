@@ -15,7 +15,7 @@ export type Database = {
           id: string | null
           key_occasions: string | null
           location_type: string | null
-          name: string | null
+          name: string
           nsv_percent: string | null
           price_tier: string | null
           product_focus: string | null
@@ -27,7 +27,7 @@ export type Database = {
           id?: string | null
           key_occasions?: string | null
           location_type?: string | null
-          name?: string | null
+          name: string
           nsv_percent?: string | null
           price_tier?: string | null
           product_focus?: string | null
@@ -39,7 +39,7 @@ export type Database = {
           id?: string | null
           key_occasions?: string | null
           location_type?: string | null
-          name?: string | null
+          name?: string
           nsv_percent?: string | null
           price_tier?: string | null
           product_focus?: string | null
@@ -121,7 +121,15 @@ export type Database = {
           Strongbow_In_Keg_MTD_Billed?: number | null
           Tuborg_Lager_in_Keg_MTD_Billed?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "daily_sales_volume_cluster_fkey"
+            columns: ["Cluster"]
+            isOneToOne: false
+            referencedRelation: "cluster_details"
+            referencedColumns: ["name"]
+          },
+        ]
       }
       persona_details: {
         Row: {

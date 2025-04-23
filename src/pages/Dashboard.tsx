@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
@@ -58,6 +57,7 @@ export default function Dashboard() {
   const { 
     personaDetails: outletPersonaDetails, 
     clusterType, 
+    clusterDetails,
     isLoading: isPersonaLoading 
   } = usePersonaDetails(selectedOutlet);
   
@@ -164,6 +164,7 @@ export default function Dashboard() {
         <PersonaCard 
           outletName={selectedOutlet} 
           cluster={clusterType}
+          clusterDetails={clusterDetails}
           personaDetails={effectivePersonaDetails}
           isLoading={isPersonaLoading && !manualPersonaDetails}
         />

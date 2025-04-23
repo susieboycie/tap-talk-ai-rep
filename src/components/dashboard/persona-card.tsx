@@ -1,16 +1,17 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import type { PersonaDetails } from "@/hooks/use-persona-details";
+import type { PersonaDetails, ClusterDetails } from "@/hooks/use-persona-details";
 import { Users } from "lucide-react";
 
 interface PersonaCardProps {
   outletName: string | null;
   cluster: string | null;
+  clusterDetails?: ClusterDetails | null;
   personaDetails: PersonaDetails | null;
   isLoading: boolean;
 }
 
-export function PersonaCard({ outletName, cluster, personaDetails, isLoading }: PersonaCardProps) {
+export function PersonaCard({ outletName, cluster, clusterDetails, personaDetails, isLoading }: PersonaCardProps) {
   if (isLoading) {
     return (
       <Card className="border-repgpt-700 bg-repgpt-800">
@@ -54,11 +55,44 @@ export function PersonaCard({ outletName, cluster, personaDetails, isLoading }: 
         <Users className="h-4 w-4 text-gray-400" />
       </CardHeader>
       <CardContent>
-        <div className="space-y-2">
+        <div className="space-y-4">
+          {/* Cluster Information */}
           <div>
-            <p className="text-xs text-gray-400">Cluster</p>
+            <p className="text-xs text-gray-400 mb-1">Cluster</p>
             <p className="text-sm font-medium text-white">{cluster}</p>
           </div>
+          
+          {/* Cluster Details */}
+          {clusterDetails && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {clusterDetails.consumption_behavior && (
+                <div>
+                  <p className="text-xs text-gray-400">Consumption Behavior</p>
+                  <p className="text-sm text-gray-300">{clusterDetails.consumption_behavior}</p>
+                </div>
+              )}
+              {clusterDetails.key_occasions && (
+                <div>
+                  <p className="text-xs text-gray-400">Key Occasions</p>
+                  <p className="text-sm text-gray-300">{clusterDetails.key_occasions}</p>
+                </div>
+              )}
+              {clusterDetails.venue_description && (
+                <div>
+                  <p className="text-xs text-gray-400">Venue Type</p>
+                  <p className="text-sm text-gray-300">{clusterDetails.venue_description}</p>
+                </div>
+              )}
+              {clusterDetails.product_focus && (
+                <div>
+                  <p className="text-xs text-gray-400">Product Focus</p>
+                  <p className="text-sm text-gray-300">{clusterDetails.product_focus}</p>
+                </div>
+              )}
+            </div>
+          )}
+          
+          {/* Persona Information */}
           <div>
             <p className="text-xs text-gray-400">Persona Type</p>
             <p className="text-sm font-medium text-white">{personaDetails.name}</p>
