@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,6 +38,7 @@ export function AIAssistant({
   useEffect(() => {
     const greeting = "I am RepGPT - your personalised AI driven sales assistant! I can help by providing you with relevant Outlet specific insights, tailored talking points for activation plans, and smart suggestions that help you make every conversation count.";
     
+    // Clear previous messages and set the new greeting
     setMessages([{ role: "assistant", content: greeting }]);
     
     if (initialMessage) {
