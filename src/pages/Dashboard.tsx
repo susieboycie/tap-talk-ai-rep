@@ -13,6 +13,8 @@ import { BarChart, Users, Calendar, MessageSquare, Search } from "lucide-react";
 import { Insights, Partnership, Quality } from "@/components/icons";
 import { useAuth } from "@/contexts/auth-context";
 import { useOutletSales } from "@/hooks/use-outlet-sales";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 
 // Sample outlets for demo
 const mockOutlets = [
@@ -43,9 +45,33 @@ export default function Dashboard() {
   const [assistantPrompt, setAssistantPrompt] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState("");
   
+  // Query to fetch unique outlet names
+  const { data: outletNames } = useQuery({
+    queryKey: ['outlet-names'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('daily_sales_volume')
+        .select('Outlet')
+        .not('Outlet', 'is', null)
+        .order('Outlet')
+        
+      if (error) {
+        console.error("Error fetching outlet names:", error);
+        throw error;
+      }
+
+      // Get unique outlet names
+      const uniqueOutlets = Array.from(new Set(data.map(row => row.Outlet))).filter(Boolean);
+      console.log("Fetched unique outlets:", uniqueOutlets);
+      return uniqueOutlets;
+    }
+  });
+  
   // Filtered outlets based on search
   const filteredOutlets = searchValue 
-    ? mockOutlets.filter(outlet => outlet.toLowerCase().includes(searchValue.toLowerCase()))
+    ? (outletNames || []).filter(outlet => 
+        outlet?.toLowerCase().includes(searchValue.toLowerCase())
+      )
     : [];
 
   const handleOutletSelect = (outlet: string) => {
@@ -58,6 +84,7 @@ export default function Dashboard() {
     setIsAssistantOpen(true);
   };
 
+  // Fetch sales data for selected outlet
   const { data: salesData, isLoading: isSalesLoading } = useOutletSales(selectedOutlet);
 
   // Calculate KPI metrics from sales data

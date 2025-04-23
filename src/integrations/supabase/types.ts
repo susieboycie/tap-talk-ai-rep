@@ -19,8 +19,20 @@ export type Database = {
           Country: string | null
           "Guinness_Draught_0.0_in_Keg_MTD_Billed": number | null
           Guinness_Draught_In_Keg_MTD_Billed: number | null
+          Guinness_Mid_Strength_In_Keg_MTD_Billed: number | null
+          Harp_In_Keg_MTD_Billed: number | null
+          Hop_House_13_Lager_MTD_Billed: number | null
+          Kilkenny_Draught_In_Keg_MTD_Billed: number | null
+          Magners_in_Keg_MTD_Billed: number | null
+          OGB_Citra_IPA_in_Keg_MTD_Billed: number | null
           Outlet: string | null
-          "Outlet ID": number | null
+          prim_key: number | null
+          Rockshore_Apple_Cider_in_Keg_MTD_Billed: number | null
+          Rockshore_in_Keg_MTD_Billed: number | null
+          Smithwicks_In_Keg_MTD_Billed: number | null
+          Smithwicks_Pale_Ale_in_Keg_MTD_Billed: number | null
+          Strongbow_In_Keg_MTD_Billed: number | null
+          Tuborg_Lager_in_Keg_MTD_Billed: number | null
         }
         Insert: {
           Calendar_day?: string | null
@@ -31,8 +43,20 @@ export type Database = {
           Country?: string | null
           "Guinness_Draught_0.0_in_Keg_MTD_Billed"?: number | null
           Guinness_Draught_In_Keg_MTD_Billed?: number | null
+          Guinness_Mid_Strength_In_Keg_MTD_Billed?: number | null
+          Harp_In_Keg_MTD_Billed?: number | null
+          Hop_House_13_Lager_MTD_Billed?: number | null
+          Kilkenny_Draught_In_Keg_MTD_Billed?: number | null
+          Magners_in_Keg_MTD_Billed?: number | null
+          OGB_Citra_IPA_in_Keg_MTD_Billed?: number | null
           Outlet?: string | null
-          "Outlet ID"?: number | null
+          prim_key?: number | null
+          Rockshore_Apple_Cider_in_Keg_MTD_Billed?: number | null
+          Rockshore_in_Keg_MTD_Billed?: number | null
+          Smithwicks_In_Keg_MTD_Billed?: number | null
+          Smithwicks_Pale_Ale_in_Keg_MTD_Billed?: number | null
+          Strongbow_In_Keg_MTD_Billed?: number | null
+          Tuborg_Lager_in_Keg_MTD_Billed?: number | null
         }
         Update: {
           Calendar_day?: string | null
@@ -43,8 +67,20 @@ export type Database = {
           Country?: string | null
           "Guinness_Draught_0.0_in_Keg_MTD_Billed"?: number | null
           Guinness_Draught_In_Keg_MTD_Billed?: number | null
+          Guinness_Mid_Strength_In_Keg_MTD_Billed?: number | null
+          Harp_In_Keg_MTD_Billed?: number | null
+          Hop_House_13_Lager_MTD_Billed?: number | null
+          Kilkenny_Draught_In_Keg_MTD_Billed?: number | null
+          Magners_in_Keg_MTD_Billed?: number | null
+          OGB_Citra_IPA_in_Keg_MTD_Billed?: number | null
           Outlet?: string | null
-          "Outlet ID"?: number | null
+          prim_key?: number | null
+          Rockshore_Apple_Cider_in_Keg_MTD_Billed?: number | null
+          Rockshore_in_Keg_MTD_Billed?: number | null
+          Smithwicks_In_Keg_MTD_Billed?: number | null
+          Smithwicks_Pale_Ale_in_Keg_MTD_Billed?: number | null
+          Strongbow_In_Keg_MTD_Billed?: number | null
+          Tuborg_Lager_in_Keg_MTD_Billed?: number | null
         }
         Relationships: []
       }
