@@ -14,7 +14,12 @@ export const useOutletSales = (outletName: string | null) => {
         .eq('Outlet', outletName)
         .order('Calendar_day', { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching sales data:", error);
+        throw error;
+      }
+      
+      console.log("Fetched sales data:", data);
       return data;
     },
     enabled: !!outletName,

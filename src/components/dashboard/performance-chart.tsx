@@ -15,8 +15,8 @@ export function PerformanceChart({ data, isLoading }: PerformanceChartProps) {
     day: record.Calendar_day,
     guinness: record.Guinness_Draught_In_Keg_MTD_Billed || 0,
     carlsberg: record.Carlsberg_Lager_In_Keg_MTD_Billed || 0,
-    guinness_zero: record.Guinness_Draught_0_0_in_Keg_MTD_Billed || 0,
-    carlsberg_zero: record.Carlsberg_0_0_In_Keg_MTD_Billed || 0,
+    guinness_zero: record["Guinness_Draught_0.0_in_Keg_MTD_Billed"] || 0,
+    carlsberg_zero: record["Carlsberg_0.0_In_Keg_MTD_Billed"] || 0,
   })) || [];
 
   return (

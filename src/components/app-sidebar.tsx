@@ -33,7 +33,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild active>
+                <SidebarMenuButton asChild>
                   <Link to="/" className="flex items-center gap-2">
                     <Home className="h-4 w-4" />
                     <span>Dashboard</span>

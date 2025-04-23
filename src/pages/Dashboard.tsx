@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ConversationStarter } from "@/components/repgpt/conversation-starter";
-import { MessageSquare, BarChart, Users, Calendar, Search } from "lucide-react";
+import { BarChart, Users, Calendar, MessageSquare, Search } from "lucide-react";
 import { Insights, Partnership, Quality } from "@/components/icons";
 import { useAuth } from "@/contexts/auth-context";
 import { useOutletSales } from "@/hooks/use-outlet-sales";
@@ -140,7 +140,7 @@ export default function Dashboard() {
       {/* Conversation Starter Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
         <ConversationStarter
-          icon={<MessageCircle className="h-5 w-5 text-purple-400" />}
+          icon={<MessageSquare className="h-5 w-5 text-purple-400" />}
           title="Activations"
           description="Help you sell and activate"
           examples={[
