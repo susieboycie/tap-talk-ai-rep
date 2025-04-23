@@ -118,8 +118,8 @@ export default function Dashboard() {
           title="Activations"
           description="Help you sell and activate"
           examples={[
-            `Based on recent sales at ${selectedOutlet || "the outlet"}, what are key talking points for the EPL sell-in deck?`,
-            `Help tailor my pitch to ${selectedOutlet || "the client"} based on recent sales & consumer need state`
+            `Key EPL deck points for ${selectedOutlet || "outlet"}`,
+            `Tailor pitch for ${selectedOutlet || "client"}`
           ]}
           color="border-purple-500"
           onClick={handleConversationStart}
@@ -130,8 +130,8 @@ export default function Dashboard() {
           title="Insights"
           description="Insights tailored to your client"
           examples={[
-            "How does Smirnoff compare with Absolut in the Dublin region?",
-            `List the non-Diageo draught in ${selectedOutlet || "the outlet"}'s latest TRAX image`
+            "Smirnoff vs Absolut in Dublin",
+            `Non-Diageo draught in ${selectedOutlet || "outlet"}`
           ]}
           color="border-blue-500"
           onClick={handleConversationStart}
@@ -140,10 +140,10 @@ export default function Dashboard() {
         <ConversationStarter
           icon={<Partnership className="h-5 w-5 text-green-400" />}
           title="Partnership"
-          description="Assisting you to manage contracts & volumes"
+          description="Manage contracts & volumes"
           examples={[
-            `Model out volume for ${selectedOutlet || "the outlet"} on Guinness for the next 12 months`,
-            `Show me ${selectedOutlet || "the outlet"}'s order history before I go in and convert HLs to kegs`
+            `Guinness volume for ${selectedOutlet || "outlet"}`,
+            `${selectedOutlet || "Outlet"} order history`
           ]}
           color="border-green-500"
           onClick={handleConversationStart}
@@ -152,10 +152,10 @@ export default function Dashboard() {
         <ConversationStarter
           icon={<Quality className="h-5 w-5 text-amber-400" />}
           title="Quality"
-          description="Help clients ensure highest quality"
+          description="Ensure highest quality"
           examples={[
-            "What are the install requirements for Guinness 0.0?",
-            `How many Diageo taps are currently in use at ${selectedOutlet || "the outlet"}?`
+            "Guinness 0.0 install requirements",
+            `Diageo taps at ${selectedOutlet || "outlet"}`
           ]}
           color="border-amber-500"
           onClick={handleConversationStart}
