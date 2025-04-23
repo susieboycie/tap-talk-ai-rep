@@ -1,8 +1,8 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, TrendingDown } from "lucide-react";
+import { TrendingUp, TrendingDown, CloudDrizzle, Thermometer } from "lucide-react";
 import { Tables } from "@/integrations/supabase/types";
 import { formatDistanceToNow } from "date-fns";
+import { useOutletWeather } from "@/hooks/use-outlet-weather";
 
 interface SalesInsightsProps {
   data: Tables<"daily_sales_volume">[] | null;
@@ -43,6 +43,11 @@ export function SalesInsights({ data, isLoading }: SalesInsightsProps) {
   const sortedData = [...data].sort((a, b) => 
     new Date(a.Calendar_day).getTime() - new Date(b.Calendar_day).getTime()
   );
+
+  const latestDate = sortedData[sortedData.length - 1]?.Calendar_day;
+  const latestOutlet = sortedData[sortedData.length - 1]?.Outlet;
+
+  const { data: weatherData } = useOutletWeather(latestOutlet, latestDate);
 
   // Get last 14 days of data
   const last14Days = sortedData.slice(-14);
@@ -91,8 +96,8 @@ export function SalesInsights({ data, isLoading }: SalesInsightsProps) {
     previousWeekVolumes.zeroAlc
   );
 
-  const latestDate = new Date(sortedData[sortedData.length - 1]?.Calendar_day || new Date());
-  const timeAgo = formatDistanceToNow(latestDate, { addSuffix: true });
+  const latestDateObj = new Date(sortedData[sortedData.length - 1]?.Calendar_day || new Date());
+  const timeAgo = formatDistanceToNow(latestDateObj, { addSuffix: true });
 
   return (
     <Card className="border-repgpt-700 bg-repgpt-800">
@@ -100,6 +105,15 @@ export function SalesInsights({ data, isLoading }: SalesInsightsProps) {
         <CardTitle className="text-sm font-medium text-white">7-Day Sales Trends</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        {weatherData && (
+          <div className="flex items-center gap-2 text-sm text-gray-300 mb-4">
+            <CloudDrizzle className="h-4 w-4" />
+            <span>{weatherData.description}</span>
+            <Thermometer className="h-4 w-4 ml-2" />
+            <span>{weatherData.temperature_max}°C</span>
+          </div>
+        )}
+        
         <div className="space-y-2">
           {guinnessTrend !== 0 && (
             <div className="flex items-center justify-between">

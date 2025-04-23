@@ -123,6 +123,39 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_weather: {
+        Row: {
+          created_at: string
+          date: string
+          description: string | null
+          id: string
+          outlet_name: string | null
+          precipitation: number | null
+          temperature_max: number | null
+          temperature_min: number | null
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          description?: string | null
+          id?: string
+          outlet_name?: string | null
+          precipitation?: number | null
+          temperature_max?: number | null
+          temperature_min?: number | null
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          description?: string | null
+          id?: string
+          outlet_name?: string | null
+          precipitation?: number | null
+          temperature_max?: number | null
+          temperature_min?: number | null
+        }
+        Relationships: []
+      }
       persona_details: {
         Row: {
           diageo_value: string | null
