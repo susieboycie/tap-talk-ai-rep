@@ -5,6 +5,7 @@ import { PerformanceChart } from "@/components/dashboard/performance-chart";
 import { KPICard } from "@/components/dashboard/kpi-card";
 import { CustomerTable } from "@/components/dashboard/customer-table";
 import { UpcomingTasks } from "@/components/dashboard/upcoming-tasks";
+import { PersonaCard } from "@/components/dashboard/persona-card";
 import { AIAssistant } from "@/components/ai-assistant";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,8 +15,9 @@ import { BarChart, Users, Calendar, MessageSquare, Search } from "lucide-react";
 import { Insights, Partnership, Quality } from "@/components/icons";
 import { useAuth } from "@/contexts/auth-context";
 import { useOutletSales } from "@/hooks/use-outlet-sales";
+import { usePersonaDetails } from "@/hooks/use-persona-details";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client"; // Fixed import path
+import { supabase } from "@/integrations/supabase/client";
 
 // Personas data
 const personas = [
@@ -41,7 +43,7 @@ export default function Dashboard() {
         .from('daily_sales_volume')
         .select('Outlet')
         .not('Outlet', 'is', null)
-        .order('Outlet')
+        .order('Outlet');
         
       if (error) {
         console.error("Error fetching outlet names:", error);
@@ -49,9 +51,9 @@ export default function Dashboard() {
       }
 
       // Get unique outlet names
-      const uniqueOutlets = Array.from(new Set(data.map(row => row.Outlet))).filter(Boolean) as string[];
+      const uniqueOutlets = Array.from(new Set(data.map(row => row.Outlet))) as string[];
       console.log("Fetched unique outlets:", uniqueOutlets);
-      return uniqueOutlets;
+      return uniqueOutlets.filter(Boolean);
     }
   });
   
@@ -65,10 +67,37 @@ export default function Dashboard() {
   const handleOutletSelect = (outlet: string) => {
     setSelectedOutlet(outlet);
     setSearchValue(outlet);
+    // Reset manually selected persona when outlet changes
+    setSelectedPersona("");
   };
 
+  // Get persona details based on outlet's cluster
+  const { 
+    personaDetails, 
+    clusterType, 
+    isLoading: isPersonaLoading 
+  } = usePersonaDetails(selectedOutlet);
+  
+  // When persona data loads from cluster, update the selected persona
+  // Only do this if the user hasn't manually selected a persona
+  if (personaDetails && !selectedPersona) {
+    setSelectedPersona(personaDetails.name);
+  }
+
+  const handlePersonaSelect = (personaName: string) => {
+    setSelectedPersona(personaName);
+  };
+
+  // Update this to include persona details
   const handleConversationStart = (prompt: string) => {
-    setAssistantPrompt(prompt);
+    // Include persona context in prompt if available
+    let enhancedPrompt = prompt;
+    
+    if (personaDetails) {
+      enhancedPrompt = `${prompt}\n\nContext: This outlet "${selectedOutlet}" corresponds to a "${personaDetails.name}" persona. They have these goals: "${personaDetails.goals}" and these pain points: "${personaDetails.pain_points}".`;
+    }
+    
+    setAssistantPrompt(enhancedPrompt);
     setIsAssistantOpen(true);
   };
 
@@ -137,7 +166,7 @@ export default function Dashboard() {
           </div>
         </div>
         <div>
-          <Select onValueChange={setSelectedPersona}>
+          <Select value={selectedPersona} onValueChange={handlePersonaSelect}>
             <SelectTrigger className="border-repgpt-600 bg-repgpt-700 text-white">
               <SelectValue placeholder="Select Persona" />
             </SelectTrigger>
@@ -150,6 +179,16 @@ export default function Dashboard() {
             </SelectContent>
           </Select>
         </div>
+      </div>
+
+      {/* Outlet Persona Card - New Addition */}
+      <div className="mb-6">
+        <PersonaCard 
+          outletName={selectedOutlet} 
+          cluster={clusterType}
+          personaDetails={personaDetails}
+          isLoading={isPersonaLoading}
+        />
       </div>
 
       {/* Conversation Starter Grid */}

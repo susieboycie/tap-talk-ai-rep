@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { MessageSquare, Send } from "lucide-react";
+import { usePersonaDetails } from "@/hooks/use-persona-details";
 
 interface Message {
   role: "user" | "assistant";
@@ -27,6 +28,14 @@ export function AIAssistant({
 }: AIAssistantProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  
+  // Get persona details if outlet is selected but no persona is manually chosen
+  const { personaDetails } = usePersonaDetails(
+    selectedOutlet && !selectedPersona ? selectedOutlet : null
+  );
+
+  // The actual persona to use (either manually selected or derived from outlet)
+  const effectivePersona = selectedPersona || (personaDetails?.name || null);
 
   // Initialize with context-aware greeting when the outlet or persona changes
   useEffect(() => {
@@ -35,8 +44,13 @@ export function AIAssistant({
     if (selectedOutlet) {
       greeting = `Hello! I'm your RepGPT AI assistant for ${selectedOutlet}. How can I help you today?`;
       
-      if (selectedPersona) {
-        greeting += ` I see you're working with a ${selectedPersona.toLowerCase()} style outlet.`;
+      if (effectivePersona) {
+        greeting += ` I see you're working with a ${effectivePersona.toLowerCase()} style outlet.`;
+        
+        // Add persona-specific advice if we have details
+        if (personaDetails) {
+          greeting += ` They focus on: ${personaDetails.goals}. Keep in mind their challenges: ${personaDetails.pain_points}.`;
+        }
       }
     }
     
@@ -48,7 +62,7 @@ export function AIAssistant({
         handleUserMessage(initialMessage);
       }, 500);
     }
-  }, [selectedOutlet, selectedPersona, initialMessage]);
+  }, [selectedOutlet, effectivePersona, initialMessage, personaDetails]);
 
   const handleUserMessage = (message: string) => {
     // Add user message
@@ -71,12 +85,25 @@ export function AIAssistant({
         }
         
         // Persona-specific adjustments
-        if (selectedPersona === "The Entrepreneur") {
+        if (effectivePersona === "The Entrepreneur") {
           response += " Since they're entrepreneurial, emphasizing innovation and growth opportunities would resonate well.";
-        } else if (selectedPersona === "The Loyalist") {
-          response += " As a loyal partner, highlighting relationship value and consistency in your approach would be effective.";
+          
+          if (personaDetails?.pain_points) {
+            response += ` Be mindful that they struggle with: ${personaDetails.pain_points}.`;
+          }
+        } else if (effectivePersona === "The Deal Maker") {
+          response += " For this deal-focused outlet, highlighting ROI and competitive advantage would be effective.";
+          
+          if (personaDetails?.goals) {
+            response += ` Their key goals include: ${personaDetails.goals}.`;
+          }
+        } else if (effectivePersona === "The Pragmatist") {
+          response += " As a pragmatic partner, focus on reliability and consistent performance in your approach.";
+        } else if (effectivePersona === "The Support Seeker") {
+          response += " This outlet values guidance and support, so offer clear, step-by-step advice.";
         }
       } else {
+        // Generic responses when no outlet is selected
         if (message.toLowerCase().includes("volume scenarios")) {
           response = "I've pulled up the volume scenarios. Would you like to see the impact of a 10% increase in keg volume or explore different discount options?";
         } else if (message.toLowerCase().includes("tap")) {
@@ -113,6 +140,7 @@ export function AIAssistant({
           <CardTitle className="text-white flex items-center">
             <MessageSquare className="mr-2 h-5 w-5" />
             RepGPT Assistant {selectedOutlet && `| ${selectedOutlet}`}
+            {effectivePersona && ` | ${effectivePersona}`}
           </CardTitle>
           <Button variant="ghost" size="sm" onClick={onClose} className="text-white hover:bg-repgpt-600">
             ×

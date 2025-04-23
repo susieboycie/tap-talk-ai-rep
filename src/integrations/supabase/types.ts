@@ -9,6 +9,45 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      cluster_details: {
+        Row: {
+          consumption_behavior: string | null
+          id: string | null
+          key_occasions: string | null
+          location_type: string | null
+          name: string | null
+          nsv_percent: string | null
+          price_tier: string | null
+          product_focus: string | null
+          universe_percent: string | null
+          venue_description: string | null
+        }
+        Insert: {
+          consumption_behavior?: string | null
+          id?: string | null
+          key_occasions?: string | null
+          location_type?: string | null
+          name?: string | null
+          nsv_percent?: string | null
+          price_tier?: string | null
+          product_focus?: string | null
+          universe_percent?: string | null
+          venue_description?: string | null
+        }
+        Update: {
+          consumption_behavior?: string | null
+          id?: string | null
+          key_occasions?: string | null
+          location_type?: string | null
+          name?: string | null
+          nsv_percent?: string | null
+          price_tier?: string | null
+          product_focus?: string | null
+          universe_percent?: string | null
+          venue_description?: string | null
+        }
+        Relationships: []
+      }
       daily_sales_volume: {
         Row: {
           Calendar_day: string | null
@@ -81,6 +120,30 @@ export type Database = {
           Smithwicks_Pale_Ale_in_Keg_MTD_Billed?: number | null
           Strongbow_In_Keg_MTD_Billed?: number | null
           Tuborg_Lager_in_Keg_MTD_Billed?: number | null
+        }
+        Relationships: []
+      }
+      persona_details: {
+        Row: {
+          diageo_value: string | null
+          goals: string | null
+          id: string | null
+          name: string | null
+          pain_points: string | null
+        }
+        Insert: {
+          diageo_value?: string | null
+          goals?: string | null
+          id?: string | null
+          name?: string | null
+          pain_points?: string | null
+        }
+        Update: {
+          diageo_value?: string | null
+          goals?: string | null
+          id?: string | null
+          name?: string | null
+          pain_points?: string | null
         }
         Relationships: []
       }
