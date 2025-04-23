@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
 import { PersonaCard } from "@/components/dashboard/persona-card";
+import { OutletOverview } from "@/components/dashboard/outlet-overview";
 import { AIAssistant } from "@/components/ai-assistant";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -13,7 +14,6 @@ import { useOutletSales } from "@/hooks/use-outlet-sales";
 import { usePersonaDetails } from "@/hooks/use-persona-details";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import type { PersonaDetails } from "@/hooks/use-persona-details";
 
 // Personas data
 const personas = [
@@ -159,10 +159,10 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Outlet Persona Card */}
+      {/* Outlet Overview Section */}
       <div className="mb-6">
-        <PersonaCard 
-          outletName={selectedOutlet} 
+        <OutletOverview 
+          outletName={selectedOutlet}
           cluster={clusterType}
           clusterDetails={clusterDetails}
           personaDetails={effectivePersonaDetails}
