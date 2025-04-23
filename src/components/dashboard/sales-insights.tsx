@@ -60,7 +60,10 @@ export function SalesInsights({ data, isLoading }: SalesInsightsProps) {
       guinness: weekData.reduce((sum, day) => sum + (day[beverages.guinness] || 0), 0),
       carlsberg: weekData.reduce((sum, day) => sum + (day[beverages.carlsberg] || 0), 0),
       zeroAlc: weekData.reduce((sum, day) => 
-        sum + beverages.zeroAlc.reduce((total, field) => total + (day[field as keyof typeof day] || 0), 0), 
+        sum + beverages.zeroAlc.reduce((total, field) => 
+          // Fix by ensuring both values are numbers using Number() conversion
+          total + Number(day[field as keyof typeof day] || 0), 
+        0), 
       0)
     };
   };
