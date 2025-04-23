@@ -1,10 +1,7 @@
-
 import { useState } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
 import { KPICard } from "@/components/dashboard/kpi-card";
-import { CustomerTable } from "@/components/dashboard/customer-table";
-import { UpcomingTasks } from "@/components/dashboard/upcoming-tasks";
 import { PersonaCard } from "@/components/dashboard/persona-card";
 import { AIAssistant } from "@/components/ai-assistant";
 import { Button } from "@/components/ui/button";
@@ -88,7 +85,6 @@ export default function Dashboard() {
     setSelectedPersona(personaName);
   };
 
-  // Update this to include persona details
   const handleConversationStart = (prompt: string) => {
     // Include persona context in prompt if available
     let enhancedPrompt = prompt;
@@ -283,14 +279,6 @@ export default function Dashboard() {
         <div className="md:col-span-2 lg:col-span-3">
           <PerformanceChart data={salesData} isLoading={isSalesLoading} />
         </div>
-        <div className="md:col-span-1 lg:col-span-2">
-          <UpcomingTasks />
-        </div>
-      </div>
-
-      {/* Customer list */}
-      <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-1">
-        <CustomerTable />
       </div>
 
       {/* Floating AI Assistant Button */}
