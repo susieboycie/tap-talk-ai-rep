@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
-import { KPICard } from "@/components/dashboard/kpi-card";
 import { PersonaCard } from "@/components/dashboard/persona-card";
 import { AIAssistant } from "@/components/ai-assistant";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ConversationStarter } from "@/components/repgpt/conversation-starter";
-import { BarChart, Users, Calendar, MessageSquare, Search } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import { Insights, Partnership, Quality } from "@/components/icons";
 import { useAuth } from "@/contexts/auth-context";
 import { useOutletSales } from "@/hooks/use-outlet-sales";
@@ -22,7 +20,7 @@ const personas = [
   { id: "deal-maker", name: "The Deal Maker" },
   { id: "pragmatist", name: "The Pragmatist" },
   { id: "support-seeker", name: "The Support Seeker" }
-];
+] as const;
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -30,8 +28,7 @@ export default function Dashboard() {
   const [selectedOutlet, setSelectedOutlet] = useState("");
   const [selectedPersona, setSelectedPersona] = useState("");
   const [assistantPrompt, setAssistantPrompt] = useState<string | null>(null);
-  const [searchValue, setSearchValue] = useState("");
-  
+
   // Query to fetch unique outlet names
   const { data: outletNames } = useQuery({
     queryKey: ['outlet-names'],
@@ -53,20 +50,6 @@ export default function Dashboard() {
       return uniqueOutlets.filter(Boolean);
     }
   });
-  
-  // Filtered outlets based on search
-  const filteredOutlets = searchValue 
-    ? (outletNames || []).filter(outlet => 
-        outlet?.toLowerCase().includes(searchValue.toLowerCase())
-      )
-    : [];
-
-  const handleOutletSelect = (outlet: string) => {
-    setSelectedOutlet(outlet);
-    setSearchValue(outlet);
-    // Reset manually selected persona when outlet changes
-    setSelectedPersona("");
-  };
 
   // Get persona details based on outlet's cluster
   const { 
@@ -86,7 +69,6 @@ export default function Dashboard() {
   };
 
   const handleConversationStart = (prompt: string) => {
-    // Include persona context in prompt if available
     let enhancedPrompt = prompt;
     
     if (personaDetails) {
@@ -99,31 +81,6 @@ export default function Dashboard() {
 
   // Fetch sales data for selected outlet
   const { data: salesData, isLoading: isSalesLoading } = useOutletSales(selectedOutlet);
-
-  // Calculate KPI metrics from sales data
-  const calculateKPIs = () => {
-    if (!salesData || salesData.length === 0) {
-      return {
-        totalVolume: "N/A",
-        averageMargin: "N/A",
-        monthlyTrend: "neutral" as const,
-        trendValue: "No data available"
-      };
-    }
-
-    const totalVolume = salesData.reduce((sum, record) => 
-      sum + (record.Guinness_Draught_In_Keg_MTD_Billed || 0) + 
-      (record.Carlsberg_Lager_In_Keg_MTD_Billed || 0), 0);
-
-    return {
-      totalVolume: `${Math.round(totalVolume)} kegs`,
-      averageMargin: "62%",
-      monthlyTrend: (totalVolume > 1000 ? "up" : "down") as const,
-      trendValue: `${totalVolume > 1000 ? '+' : '-'}${Math.abs(Math.round((totalVolume - 1000) / 1000 * 100))}% from last month`
-    };
-  };
-
-  const kpis = calculateKPIs();
 
   return (
     <DashboardShell>
@@ -139,27 +96,18 @@ export default function Dashboard() {
       {/* Outlet Search + Persona Selection */}
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4 mb-6">
         <div className="md:col-span-2 lg:col-span-3">
-          <div className="relative">
-            <Input
-              placeholder="Enter Outlet Name (e.g. 'The Fox')"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              className="w-full border-repgpt-600 bg-repgpt-700 text-white"
-            />
-            {filteredOutlets.length > 0 && searchValue && (
-              <div className="absolute z-10 w-full mt-1 bg-repgpt-700 border border-repgpt-600 rounded-md shadow-lg max-h-60 overflow-auto">
-                {filteredOutlets.map((outlet) => (
-                  <div 
-                    key={outlet} 
-                    className="px-4 py-2 cursor-pointer hover:bg-repgpt-600 text-white"
-                    onClick={() => handleOutletSelect(outlet)}
-                  >
-                    {outlet}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <Select value={selectedOutlet} onValueChange={setSelectedOutlet}>
+            <SelectTrigger className="border-repgpt-600 bg-repgpt-700 text-white">
+              <SelectValue placeholder="Select an outlet" />
+            </SelectTrigger>
+            <SelectContent className="border-repgpt-600 bg-repgpt-700 text-white">
+              {outletNames?.map((outlet) => (
+                <SelectItem key={outlet} value={outlet}>
+                  {outlet}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div>
           <Select value={selectedPersona} onValueChange={handlePersonaSelect}>
@@ -177,7 +125,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Outlet Persona Card - New Addition */}
+      {/* Outlet Persona Card */}
       <div className="mb-6">
         <PersonaCard 
           outletName={selectedOutlet} 
@@ -238,43 +186,7 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Performance metrics */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
-        <KPICard
-          title="Monthly Volume"
-          value={kpis.totalVolume}
-          description="Total volume for current month"
-          trend={kpis.monthlyTrend}
-          trendValue={kpis.trendValue}
-          icon={<BarChart className="h-4 w-4 text-gray-400" />}
-        />
-        <KPICard
-          title="Active Products"
-          value={salesData ? `${salesData.length}` : "N/A"}
-          description="Products with sales this month"
-          trend="neutral"
-          trendValue="Updated with latest data"
-          icon={<Users className="h-4 w-4 text-gray-400" />}
-        />
-        <KPICard
-          title="Average Margin"
-          value={kpis.averageMargin}
-          description="Across all products"
-          trend="up"
-          trendValue="+3.2% from last month"
-          icon={<BarChart className="h-4 w-4 text-gray-400" />}
-        />
-        <KPICard
-          title="Upcoming Meetings"
-          value="8"
-          description="Scheduled for next 7 days"
-          trend="down"
-          trendValue="-2 from last week"
-          icon={<Calendar className="h-4 w-4 text-gray-400" />}
-        />
-      </div>
-
-      {/* Recent account activity */}
+      {/* Performance Chart */}
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5 mb-6">
         <div className="md:col-span-2 lg:col-span-3">
           <PerformanceChart data={salesData} isLoading={isSalesLoading} />
