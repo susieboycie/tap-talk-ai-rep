@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
@@ -17,10 +16,9 @@ import { useAuth } from "@/contexts/auth-context";
 // Mock personas data
 const personas = [
   { id: "entrepreneur", name: "The Entrepreneur" },
-  { id: "loyalist", name: "The Loyalist" },
-  { id: "traditionalist", name: "The Traditionalist" },
-  { id: "innovator", name: "The Innovator" },
-  { id: "value-seeker", name: "The Value-Seeker" }
+  { id: "deal-maker", name: "The Deal Maker" },
+  { id: "pragmatist", name: "The Pragmatist" },
+  { id: "support-seeker", name: "The Support Seeker" }
 ];
 
 // Sample outlets for demo
