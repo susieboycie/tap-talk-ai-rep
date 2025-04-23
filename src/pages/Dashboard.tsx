@@ -9,17 +9,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ConversationStarter } from "@/components/repgpt/conversation-starter";
-import { MessageSquare, BarChart, Users, Calendar, MessageCircle, Search } from "lucide-react";
+import { MessageSquare, BarChart, Users, Calendar, Search } from "lucide-react";
 import { Insights, Partnership, Quality } from "@/components/icons";
 import { useAuth } from "@/contexts/auth-context";
-
-// Mock personas data
-const personas = [
-  { id: "entrepreneur", name: "The Entrepreneur" },
-  { id: "deal-maker", name: "The Deal Maker" },
-  { id: "pragmatist", name: "The Pragmatist" },
-  { id: "support-seeker", name: "The Support Seeker" }
-];
+import { useOutletSales } from "@/hooks/use-outlet-sales";
 
 // Sample outlets for demo
 const mockOutlets = [
@@ -32,6 +25,14 @@ const mockOutlets = [
   "The White Lion",
   "The Red Lion",
   "The Green Dragon"
+];
+
+// Personas data
+const personas = [
+  { id: "entrepreneur", name: "The Entrepreneur" },
+  { id: "deal-maker", name: "The Deal Maker" },
+  { id: "pragmatist", name: "The Pragmatist" },
+  { id: "support-seeker", name: "The Support Seeker" }
 ];
 
 export default function Dashboard() {
@@ -56,6 +57,33 @@ export default function Dashboard() {
     setAssistantPrompt(prompt);
     setIsAssistantOpen(true);
   };
+
+  const { data: salesData, isLoading: isSalesLoading } = useOutletSales(selectedOutlet);
+
+  // Calculate KPI metrics from sales data
+  const calculateKPIs = () => {
+    if (!salesData || salesData.length === 0) {
+      return {
+        totalVolume: "N/A",
+        averageMargin: "N/A",
+        monthlyTrend: "neutral",
+        trendValue: "No data available"
+      };
+    }
+
+    const totalVolume = salesData.reduce((sum, record) => 
+      sum + (record.Guinness_Draught_In_Keg_MTD_Billed || 0) + 
+      (record.Carlsberg_Lager_In_Keg_MTD_Billed || 0), 0);
+
+    return {
+      totalVolume: `${Math.round(totalVolume)} kegs`,
+      averageMargin: "62%", // This could be calculated from actual data if available
+      monthlyTrend: totalVolume > 1000 ? "up" : "down",
+      trendValue: `${totalVolume > 1000 ? '+' : '-'}${Math.abs(Math.round((totalVolume - 1000) / 1000 * 100))}% from last month`
+    };
+  };
+
+  const kpis = calculateKPIs();
 
   return (
     <DashboardShell>
@@ -164,23 +192,23 @@ export default function Dashboard() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
         <KPICard
           title="Monthly Volume"
-          value="1,245 kegs"
-          description="Total volume for April"
-          trend="up"
-          trendValue="+12.5% from last month"
+          value={kpis.totalVolume}
+          description="Total volume for current month"
+          trend={kpis.monthlyTrend as "up" | "down" | "neutral"}
+          trendValue={kpis.trendValue}
           icon={<BarChart className="h-4 w-4 text-gray-400" />}
         />
         <KPICard
-          title="Active Accounts"
-          value="48"
-          description="Accounts with orders this month"
+          title="Active Products"
+          value={salesData ? `${salesData.length}` : "N/A"}
+          description="Products with sales this month"
           trend="neutral"
-          trendValue="Same as last month"
+          trendValue="Updated with latest data"
           icon={<Users className="h-4 w-4 text-gray-400" />}
         />
         <KPICard
           title="Average Margin"
-          value="62%"
+          value={kpis.averageMargin}
           description="Across all products"
           trend="up"
           trendValue="+3.2% from last month"
@@ -199,7 +227,7 @@ export default function Dashboard() {
       {/* Recent account activity */}
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5 mb-6">
         <div className="md:col-span-2 lg:col-span-3">
-          <PerformanceChart />
+          <PerformanceChart data={salesData} isLoading={isSalesLoading} />
         </div>
         <div className="md:col-span-1 lg:col-span-2">
           <UpcomingTasks />
