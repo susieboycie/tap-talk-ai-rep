@@ -1,5 +1,6 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, TrendingDown, CloudDrizzle, Thermometer } from "lucide-react";
+import { TrendingUp, TrendingDown, CloudRain, Sun, Thermometer } from "lucide-react";
 import { Tables } from "@/integrations/supabase/types";
 import { formatDistanceToNow } from "date-fns";
 import { useOutletWeather } from "@/hooks/use-outlet-weather";
@@ -47,7 +48,7 @@ export function SalesInsights({ data, isLoading }: SalesInsightsProps) {
   const latestDate = sortedData[sortedData.length - 1]?.Calendar_day;
   const latestOutlet = sortedData[sortedData.length - 1]?.Outlet;
 
-  const { data: weatherData } = useOutletWeather(latestOutlet, latestDate);
+  const { data: weatherData, isLoading: isWeatherLoading } = useOutletWeather(latestOutlet, latestDate);
 
   // Get last 14 days of data
   const last14Days = sortedData.slice(-14);
@@ -66,7 +67,6 @@ export function SalesInsights({ data, isLoading }: SalesInsightsProps) {
       carlsberg: weekData.reduce((sum, day) => sum + (day[beverages.carlsberg] || 0), 0),
       zeroAlc: weekData.reduce((sum, day) => 
         sum + beverages.zeroAlc.reduce((total, field) => 
-          // Fix by ensuring both values are numbers using Number() conversion
           total + Number(day[field as keyof typeof day] || 0), 
         0), 
       0)
@@ -105,14 +105,26 @@ export function SalesInsights({ data, isLoading }: SalesInsightsProps) {
         <CardTitle className="text-sm font-medium text-white">7-Day Sales Trends</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {weatherData && (
-          <div className="flex items-center gap-2 text-sm text-gray-300 mb-4">
-            <CloudDrizzle className="h-4 w-4" />
-            <span>{weatherData.description}</span>
-            <Thermometer className="h-4 w-4 ml-2" />
-            <span>{weatherData.temperature_max}°C</span>
+        {/* Weather section - modified to be more visible and show loading state */}
+        {isWeatherLoading ? (
+          <div className="flex items-center gap-2 p-2 rounded-md bg-repgpt-700/30">
+            <div className="animate-pulse flex items-center gap-2 text-sm text-gray-300">
+              <div className="h-4 w-4 bg-repgpt-700 rounded-full"></div>
+              <div className="h-4 w-24 bg-repgpt-700 rounded"></div>
+            </div>
           </div>
-        )}
+        ) : weatherData ? (
+          <div className="flex items-center gap-2 p-2 bg-repgpt-700/30 rounded-md">
+            {weatherData.description.includes("rain") || weatherData.description.includes("drizzle") ? (
+              <CloudRain className="h-4 w-4 text-blue-300" />
+            ) : (
+              <Sun className="h-4 w-4 text-yellow-300" />
+            )}
+            <span className="text-sm font-medium text-gray-200 capitalize">{weatherData.description}</span>
+            <Thermometer className="h-4 w-4 ml-2 text-red-300" />
+            <span className="text-sm font-medium text-gray-200">{weatherData.temperature_max}°C</span>
+          </div>
+        ) : null}
         
         <div className="space-y-2">
           {guinnessTrend !== 0 && (

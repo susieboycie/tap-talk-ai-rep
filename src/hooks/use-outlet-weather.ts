@@ -9,38 +9,51 @@ export const useOutletWeather = (outletName: string | null, date: string | null)
     queryFn: async () => {
       if (!outletName || !date) return null;
       
+      console.log(`Fetching weather data for ${outletName} on ${date}`);
+      
       // First try to get cached weather data
       const { data: existingData, error: fetchError } = await supabase
         .from('daily_weather')
         .select('*')
         .eq('outlet_name', outletName)
         .eq('date', date)
-        .single();
+        .maybeSingle();
 
-      if (fetchError && fetchError.code !== 'PGRST116') {
+      if (fetchError) {
         console.error("Error fetching weather data:", fetchError);
         throw fetchError;
       }
 
       if (existingData) {
+        console.log("Found cached weather data:", existingData);
         return existingData;
       }
 
+      console.log("No cached weather data found, fetching from API...");
+      
       // If no cached data, fetch new weather data
-      const { data: weatherData, error } = await supabase.functions.invoke('fetch-weather', {
-        body: {
-          outlet: outletName,
-          date: format(new Date(date), 'yyyy-MM-dd')
+      try {
+        const { data: weatherData, error } = await supabase.functions.invoke('fetch-weather', {
+          body: {
+            outlet: outletName,
+            date: format(new Date(date), 'yyyy-MM-dd')
+          }
+        });
+
+        if (error) {
+          console.error("Error fetching new weather data:", error);
+          throw error;
         }
-      });
 
-      if (error) {
-        console.error("Error fetching new weather data:", error);
-        throw error;
+        console.log("Successfully fetched new weather data:", weatherData);
+        return weatherData;
+      } catch (error) {
+        console.error("Exception while fetching weather:", error);
+        // Return null instead of throwing to prevent UI from breaking
+        return null;
       }
-
-      return weatherData;
     },
-    enabled: !!outletName && !!date
+    enabled: !!outletName && !!date,
+    retry: 1
   });
 };
