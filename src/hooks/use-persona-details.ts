@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -19,14 +18,14 @@ export type ClusterDetails = {
   product_focus: string | null;
   location_type: string | null;
   price_tier: string | null;
+  nsv_percent: string | null;
+  universe_percent: string | null;
 }
 
 export const usePersonaDetails = (outletName: string | null) => {
-  // Store the cluster type once we've fetched it
   const [clusterType, setClusterType] = useState<string | null>(null);
   const [clusterDetails, setClusterDetails] = useState<ClusterDetails | null>(null);
 
-  // First get the cluster information for the outlet
   const clusterQuery = useQuery({
     queryKey: ['outlet-cluster', outletName],
     queryFn: async () => {
@@ -51,7 +50,6 @@ export const usePersonaDetails = (outletName: string | null) => {
     enabled: !!outletName,
   });
 
-  // Fetch cluster details when we have a cluster name
   const clusterDetailsQuery = useQuery({
     queryKey: ['cluster-details', clusterType],
     queryFn: async () => {
@@ -69,20 +67,18 @@ export const usePersonaDetails = (outletName: string | null) => {
       }
       
       const details = data.length > 0 ? data[0] as ClusterDetails : null;
+      console.log("Cluster details:", details);
       setClusterDetails(details);
       return details;
     },
     enabled: !!clusterType,
   });
 
-  // Then fetch the persona details based on the cluster
   const personaQuery = useQuery({
     queryKey: ['persona-details', clusterType],
     queryFn: async () => {
       if (!clusterType) return null;
       
-      // In a real app, you'd map cluster to persona type
-      // For now, we'll just fetch based on cluster name or a default
       const personaName = mapClusterToPersona(clusterType);
       
       const { data, error } = await supabase
@@ -110,8 +106,6 @@ export const usePersonaDetails = (outletName: string | null) => {
   };
 };
 
-// Helper function to map cluster types to persona types
-// This is a simplified mapping - in a real app you'd have more sophisticated logic
 const mapClusterToPersona = (clusterType: string): string => {
   const clusterMapping: Record<string, string> = {
     'Neighbourhood Pub': 'The Pragmatist',

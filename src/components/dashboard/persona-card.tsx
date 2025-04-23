@@ -64,7 +64,7 @@ export function PersonaCard({ outletName, cluster, clusterDetails, personaDetail
           
           {/* Cluster Details */}
           {clusterDetails && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3">
               {clusterDetails.consumption_behavior && (
                 <div>
                   <p className="text-xs text-gray-400">Consumption Behavior</p>
@@ -79,7 +79,7 @@ export function PersonaCard({ outletName, cluster, clusterDetails, personaDetail
               )}
               {clusterDetails.venue_description && (
                 <div>
-                  <p className="text-xs text-gray-400">Venue Type</p>
+                  <p className="text-xs text-gray-400">Venue Description</p>
                   <p className="text-sm text-gray-300">{clusterDetails.venue_description}</p>
                 </div>
               )}
@@ -87,6 +87,30 @@ export function PersonaCard({ outletName, cluster, clusterDetails, personaDetail
                 <div>
                   <p className="text-xs text-gray-400">Product Focus</p>
                   <p className="text-sm text-gray-300">{clusterDetails.product_focus}</p>
+                </div>
+              )}
+              {clusterDetails.location_type && (
+                <div>
+                  <p className="text-xs text-gray-400">Location Type</p>
+                  <p className="text-sm text-gray-300">{clusterDetails.location_type}</p>
+                </div>
+              )}
+              {clusterDetails.price_tier && (
+                <div>
+                  <p className="text-xs text-gray-400">Price Tier</p>
+                  <p className="text-sm text-gray-300">{clusterDetails.price_tier}</p>
+                </div>
+              )}
+              {clusterDetails.nsv_percent && (
+                <div>
+                  <p className="text-xs text-gray-400">NSV %</p>
+                  <p className="text-sm text-gray-300">{clusterDetails.nsv_percent}</p>
+                </div>
+              )}
+              {clusterDetails.universe_percent && (
+                <div>
+                  <p className="text-xs text-gray-400">Universe %</p>
+                  <p className="text-sm text-gray-300">{clusterDetails.universe_percent}</p>
                 </div>
               )}
             </div>
