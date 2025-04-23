@@ -7,31 +7,162 @@ import { CustomerTable } from "@/components/dashboard/customer-table";
 import { UpcomingTasks } from "@/components/dashboard/upcoming-tasks";
 import { AIAssistant } from "@/components/ai-assistant";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, BarChart, Users, Calendar } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ConversationStarter } from "@/components/repgpt/conversation-starter";
+import { MessageSquare, BarChart, Users, Calendar, MessageCircle, Search } from "lucide-react";
+import { Insights, Partnership, Quality } from "@/components/icons";
 import { useAuth } from "@/contexts/auth-context";
+
+// Mock personas data
+const personas = [
+  { id: "entrepreneur", name: "The Entrepreneur" },
+  { id: "loyalist", name: "The Loyalist" },
+  { id: "traditionalist", name: "The Traditionalist" },
+  { id: "innovator", name: "The Innovator" },
+  { id: "value-seeker", name: "The Value-Seeker" }
+];
+
+// Sample outlets for demo
+const mockOutlets = [
+  "The Fox", 
+  "The Hound", 
+  "The Crown", 
+  "The King's Arms", 
+  "The Queen's Head",
+  "The Black Horse",
+  "The White Lion",
+  "The Red Lion",
+  "The Green Dragon"
+];
 
 export default function Dashboard() {
   const { user } = useAuth();
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
+  const [selectedOutlet, setSelectedOutlet] = useState("");
+  const [selectedPersona, setSelectedPersona] = useState("");
+  const [assistantPrompt, setAssistantPrompt] = useState<string | null>(null);
+  const [searchValue, setSearchValue] = useState("");
+  
+  // Filtered outlets based on search
+  const filteredOutlets = searchValue 
+    ? mockOutlets.filter(outlet => outlet.toLowerCase().includes(searchValue.toLowerCase()))
+    : [];
+
+  const handleOutletSelect = (outlet: string) => {
+    setSelectedOutlet(outlet);
+    setSearchValue(outlet);
+  };
+
+  const handleConversationStart = (prompt: string) => {
+    setAssistantPrompt(prompt);
+    setIsAssistantOpen(true);
+  };
 
   return (
     <DashboardShell>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-white">Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-white">RepGPT</h1>
           <p className="text-gray-400">
-            Welcome back, {user?.name}. Here's your sales overview.
+            Your AI sales assistant, {user?.name}
           </p>
         </div>
-        <Button 
-          className="bg-repgpt-400 hover:bg-repgpt-500 text-white"
-          onClick={() => setIsAssistantOpen(true)}
-        >
-          <MessageSquare className="mr-2 h-4 w-4" />
-          Ask RepGPT
-        </Button>
       </div>
 
+      {/* Outlet Search + Persona Selection */}
+      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4 mb-6">
+        <div className="md:col-span-2 lg:col-span-3">
+          <div className="relative">
+            <Input
+              placeholder="Enter Outlet Name (e.g. 'The Fox')"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              className="w-full border-repgpt-600 bg-repgpt-700 text-white"
+            />
+            {filteredOutlets.length > 0 && searchValue && (
+              <div className="absolute z-10 w-full mt-1 bg-repgpt-700 border border-repgpt-600 rounded-md shadow-lg max-h-60 overflow-auto">
+                {filteredOutlets.map((outlet) => (
+                  <div 
+                    key={outlet} 
+                    className="px-4 py-2 cursor-pointer hover:bg-repgpt-600 text-white"
+                    onClick={() => handleOutletSelect(outlet)}
+                  >
+                    {outlet}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+        <div>
+          <Select onValueChange={setSelectedPersona}>
+            <SelectTrigger className="border-repgpt-600 bg-repgpt-700 text-white">
+              <SelectValue placeholder="Select Persona" />
+            </SelectTrigger>
+            <SelectContent className="border-repgpt-600 bg-repgpt-700 text-white">
+              {personas.map((persona) => (
+                <SelectItem key={persona.id} value={persona.name}>
+                  {persona.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Conversation Starter Grid */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
+        <ConversationStarter
+          icon={<MessageCircle className="h-5 w-5 text-purple-400" />}
+          title="Activations"
+          description="Help you sell and activate"
+          examples={[
+            `Based on recent sales at ${selectedOutlet || "the outlet"}, what are key talking points for the EPL sell-in deck?`,
+            `Help tailor my pitch to ${selectedOutlet || "the client"} based on recent sales & consumer need state`
+          ]}
+          color="border-purple-500"
+          onClick={handleConversationStart}
+        />
+        
+        <ConversationStarter
+          icon={<Insights className="h-5 w-5 text-blue-400" />}
+          title="Insights"
+          description="Insights tailored to your client"
+          examples={[
+            "How does Smirnoff compare with Absolut in the Dublin region?",
+            `List the non-Diageo draught in ${selectedOutlet || "the outlet"}'s latest TRAX image`
+          ]}
+          color="border-blue-500"
+          onClick={handleConversationStart}
+        />
+        
+        <ConversationStarter
+          icon={<Partnership className="h-5 w-5 text-green-400" />}
+          title="Partnership"
+          description="Assisting you to manage contracts & volumes"
+          examples={[
+            `Model out volume for ${selectedOutlet || "the outlet"} on Guinness for the next 12 months`,
+            `Show me ${selectedOutlet || "the outlet"}'s order history before I go in and convert HLs to kegs`
+          ]}
+          color="border-green-500"
+          onClick={handleConversationStart}
+        />
+        
+        <ConversationStarter
+          icon={<Quality className="h-5 w-5 text-amber-400" />}
+          title="Quality"
+          description="Help clients ensure highest quality"
+          examples={[
+            "What are the install requirements for Guinness 0.0?",
+            `How many Diageo taps are currently in use at ${selectedOutlet || "the outlet"}?`
+          ]}
+          color="border-amber-500"
+          onClick={handleConversationStart}
+        />
+      </div>
+
+      {/* Performance metrics */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
         <KPICard
           title="Monthly Volume"
@@ -67,18 +198,40 @@ export default function Dashboard() {
         />
       </div>
 
+      {/* Recent account activity */}
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5 mb-6">
-        <PerformanceChart />
-        <UpcomingTasks />
+        <div className="md:col-span-2 lg:col-span-3">
+          <PerformanceChart />
+        </div>
+        <div className="md:col-span-1 lg:col-span-2">
+          <UpcomingTasks />
+        </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-3">
+      {/* Customer list */}
+      <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-1">
         <CustomerTable />
       </div>
 
+      {/* Floating AI Assistant Button */}
+      <Button 
+        className="fixed bottom-4 right-4 z-40 bg-repgpt-400 hover:bg-repgpt-500 text-white shadow-lg"
+        onClick={() => {
+          setAssistantPrompt(null);
+          setIsAssistantOpen(true);
+        }}
+      >
+        <MessageSquare className="mr-2 h-4 w-4" />
+        Ask RepGPT
+      </Button>
+
+      {/* AI Assistant Modal */}
       <AIAssistant
         isOpen={isAssistantOpen}
         onClose={() => setIsAssistantOpen(false)}
+        selectedOutlet={selectedOutlet || null}
+        selectedPersona={selectedPersona || null}
+        initialMessage={assistantPrompt}
       />
     </DashboardShell>
   );
