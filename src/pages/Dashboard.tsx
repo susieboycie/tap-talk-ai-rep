@@ -13,8 +13,8 @@ import { useOutletSales } from "@/hooks/use-outlet-sales";
 import { usePersonaDetails, type PersonaDetails } from "@/hooks/use-persona-details";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { SalesInsights } from "@/components/dashboard/sales-insights";
 
-// Personas data
 const personas = [
   { id: "entrepreneur", name: "The Entrepreneur" },
   { id: "deal-maker", name: "The Deal Maker" },
@@ -30,7 +30,6 @@ export default function Dashboard() {
   const [assistantPrompt, setAssistantPrompt] = useState<string | null>(null);
   const [manualPersonaDetails, setManualPersonaDetails] = useState<PersonaDetails | null>(null);
 
-  // Query to fetch unique outlet names
   const { data: outletNames } = useQuery({
     queryKey: ['outlet-names'],
     queryFn: async () => {
@@ -45,14 +44,12 @@ export default function Dashboard() {
         throw error;
       }
 
-      // Get unique outlet names
       const uniqueOutlets = Array.from(new Set(data.map(row => row.Outlet))) as string[];
       console.log("Fetched unique outlets:", uniqueOutlets);
       return uniqueOutlets.filter(Boolean);
     }
   });
 
-  // Get persona details based on outlet's cluster
   const { 
     personaDetails: outletPersonaDetails, 
     clusterType, 
@@ -60,15 +57,12 @@ export default function Dashboard() {
     isLoading: isPersonaLoading 
   } = usePersonaDetails(selectedOutlet);
   
-  // When persona data loads from cluster, update the selected persona
-  // Only do this if the user hasn't manually selected a persona
   useEffect(() => {
     if (outletPersonaDetails && !selectedPersona) {
       setSelectedPersona(outletPersonaDetails.name);
     }
   }, [outletPersonaDetails, selectedPersona]);
 
-  // Fetch selected persona details when manually selected
   useEffect(() => {
     if (selectedPersona && selectedPersona !== outletPersonaDetails?.name) {
       const fetchPersonaDetails = async () => {
@@ -90,11 +84,10 @@ export default function Dashboard() {
       
       fetchPersonaDetails();
     } else if (outletPersonaDetails) {
-      setManualPersonaDetails(null); // Reset manual selection if we're using outlet's persona
+      setManualPersonaDetails(null);
     }
   }, [selectedPersona, outletPersonaDetails]);
 
-  // Get the effective persona details (either manually selected or from outlet)
   const effectivePersonaDetails = manualPersonaDetails || outletPersonaDetails;
 
   const handlePersonaSelect = (personaName: string) => {
@@ -112,7 +105,6 @@ export default function Dashboard() {
     setIsAssistantOpen(true);
   };
 
-  // Fetch sales data for selected outlet
   const { data: salesData, isLoading: isSalesLoading } = useOutletSales(selectedOutlet);
 
   return (
@@ -126,7 +118,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Outlet Search + Persona Selection */}
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4 mb-6">
         <div className="md:col-span-2 lg:col-span-3">
           <Select value={selectedOutlet} onValueChange={setSelectedOutlet}>
@@ -158,7 +149,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Outlet Description Section */}
       <div className="mb-6">
         <OutletDescription 
           outletName={selectedOutlet}
@@ -170,7 +160,6 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Conversation Starter Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
         <ConversationStarter
           icon={<MessageSquare className="h-5 w-5 text-purple-400" />}
@@ -221,14 +210,15 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Performance Chart */}
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5 mb-6">
         <div className="md:col-span-2 lg:col-span-3">
           <PerformanceChart data={salesData} isLoading={isSalesLoading} />
         </div>
+        <div className="md:col-span-1 lg:col-span-2">
+          <SalesInsights data={salesData} isLoading={isSalesLoading} />
+        </div>
       </div>
 
-      {/* Floating AI Assistant Button */}
       <Button 
         className="fixed bottom-4 right-4 z-40 bg-repgpt-400 hover:bg-repgpt-500 text-white shadow-lg"
         onClick={() => {
@@ -240,7 +230,6 @@ export default function Dashboard() {
         Ask RepGPT
       </Button>
 
-      {/* AI Assistant Modal */}
       <AIAssistant
         isOpen={isAssistantOpen}
         onClose={() => setIsAssistantOpen(false)}
