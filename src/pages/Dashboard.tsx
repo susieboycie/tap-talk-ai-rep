@@ -5,22 +5,13 @@ import { PerformanceChart } from "@/components/dashboard/performance-chart";
 import { OutletDescription } from "@/components/dashboard/outlet-description";
 import { AIAssistant } from "@/components/ai-assistant";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ConversationStarter } from "@/components/repgpt/conversation-starter";
 import { MessageSquare } from "lucide-react";
-import { Insights, Partnership, Quality } from "@/components/icons";
 import { useAuth } from "@/contexts/auth-context";
 import { useOutletSales } from "@/hooks/use-outlet-sales";
-import { usePersonaDetails, type PersonaDetails } from "@/hooks/use-persona-details";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-
-const personas = [
-  { id: "entrepreneur", name: "The Entrepreneur" },
-  { id: "deal-maker", name: "The Deal Maker" },
-  { id: "pragmatist", name: "The Pragmatist" },
-  { id: "support-seeker", name: "The Support Seeker" }
-] as const;
+import { usePersonaDetails } from "@/hooks/use-persona-details";
+import { OutletSelector } from "@/components/dashboard/outlet-selector";
+import { PersonaSelector } from "@/components/dashboard/persona-selector";
+import { ConversationStartersGrid } from "@/components/dashboard/conversation-starters-grid";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -30,26 +21,6 @@ export default function Dashboard() {
   const [assistantPrompt, setAssistantPrompt] = useState<string | null>(null);
   const [manualPersonaDetails, setManualPersonaDetails] = useState<PersonaDetails | null>(null);
 
-  const { data: outletNames } = useQuery({
-    queryKey: ['outlet-names'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('daily_sales_volume')
-        .select('Outlet')
-        .not('Outlet', 'is', null)
-        .order('Outlet');
-        
-      if (error) {
-        console.error("Error fetching outlet names:", error);
-        throw error;
-      }
-
-      const uniqueOutlets = Array.from(new Set(data.map(row => row.Outlet))) as string[];
-      console.log("Fetched unique outlets:", uniqueOutlets);
-      return uniqueOutlets.filter(Boolean);
-    }
-  });
-
   const { 
     personaDetails: outletPersonaDetails, 
     clusterType, 
@@ -57,6 +28,8 @@ export default function Dashboard() {
     isLoading: isPersonaLoading 
   } = usePersonaDetails(selectedOutlet);
   
+  const { data: salesData, isLoading: isSalesLoading } = useOutletSales(selectedOutlet);
+
   useEffect(() => {
     if (outletPersonaDetails && !selectedPersona) {
       setSelectedPersona(outletPersonaDetails.name);
@@ -90,10 +63,6 @@ export default function Dashboard() {
 
   const effectivePersonaDetails = manualPersonaDetails || outletPersonaDetails;
 
-  const handlePersonaSelect = (personaName: string) => {
-    setSelectedPersona(personaName);
-  };
-
   const handleConversationStart = (prompt: string) => {
     let enhancedPrompt = prompt;
     
@@ -104,8 +73,6 @@ export default function Dashboard() {
     setAssistantPrompt(enhancedPrompt);
     setIsAssistantOpen(true);
   };
-
-  const { data: salesData, isLoading: isSalesLoading } = useOutletSales(selectedOutlet);
 
   return (
     <DashboardShell>
@@ -120,32 +87,16 @@ export default function Dashboard() {
 
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4 mb-6">
         <div className="md:col-span-2 lg:col-span-3">
-          <Select value={selectedOutlet} onValueChange={setSelectedOutlet}>
-            <SelectTrigger className="border-repgpt-600 bg-repgpt-700 text-white">
-              <SelectValue placeholder="Select an outlet" />
-            </SelectTrigger>
-            <SelectContent className="border-repgpt-600 bg-repgpt-700 text-white">
-              {outletNames?.map((outlet) => (
-                <SelectItem key={outlet} value={outlet}>
-                  {outlet}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <OutletSelector 
+            selectedOutlet={selectedOutlet}
+            onOutletChange={setSelectedOutlet}
+          />
         </div>
         <div>
-          <Select value={selectedPersona} onValueChange={handlePersonaSelect}>
-            <SelectTrigger className="border-repgpt-600 bg-repgpt-700 text-white">
-              <SelectValue placeholder="Select Persona" />
-            </SelectTrigger>
-            <SelectContent className="border-repgpt-600 bg-repgpt-700 text-white">
-              {personas.map((persona) => (
-                <SelectItem key={persona.id} value={persona.name}>
-                  {persona.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <PersonaSelector
+            selectedPersona={selectedPersona}
+            onPersonaChange={setSelectedPersona}
+          />
         </div>
       </div>
 
@@ -161,55 +112,10 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
-        <ConversationStarter
-          icon={<MessageSquare className="h-5 w-5 text-purple-400" />}
-          title="Activations"
-          description="Help you sell and activate"
-          examples={[
-            `Key EPL deck points for ${selectedOutlet || "outlet"}`,
-            `Tailor pitch for ${selectedOutlet || "client"}`
-          ]}
-          color="border-purple-500"
-          onClick={handleConversationStart}
-        />
-        
-        <ConversationStarter
-          icon={<Insights className="h-5 w-5 text-blue-400" />}
-          title="Insights"
-          description="Insights tailored to your client"
-          examples={[
-            "Smirnoff vs Absolut in Dublin",
-            `Non-Diageo draught in ${selectedOutlet || "outlet"}`
-          ]}
-          color="border-blue-500"
-          onClick={handleConversationStart}
-        />
-        
-        <ConversationStarter
-          icon={<Partnership className="h-5 w-5 text-green-400" />}
-          title="Partnership"
-          description="Manage contracts & volumes"
-          examples={[
-            `Guinness volume for ${selectedOutlet || "outlet"}`,
-            `${selectedOutlet || "Outlet"} order history`
-          ]}
-          color="border-green-500"
-          onClick={handleConversationStart}
-        />
-        
-        <ConversationStarter
-          icon={<Quality className="h-5 w-5 text-amber-400" />}
-          title="Quality"
-          description="Ensure highest quality"
-          examples={[
-            "Guinness 0.0 install requirements",
-            `Diageo taps at ${selectedOutlet || "outlet"}`
-          ]}
-          color="border-amber-500"
-          onClick={handleConversationStart}
-        />
-      </div>
+      <ConversationStartersGrid 
+        selectedOutlet={selectedOutlet}
+        onConversationStart={handleConversationStart}
+      />
 
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5 mb-6">
         <div className="md:col-span-3 lg:col-span-5">
