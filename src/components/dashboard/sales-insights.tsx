@@ -2,6 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { Tables } from "@/integrations/supabase/types";
+import { formatDistanceToNow } from "date-fns";
 
 interface SalesInsightsProps {
   data: Tables<"daily_sales_volume">[] | null;
@@ -38,38 +39,62 @@ export function SalesInsights({ data, isLoading }: SalesInsightsProps) {
     );
   }
 
-  // Calculate insights
+  // Sort data by date
   const sortedData = [...data].sort((a, b) => 
     new Date(a.Calendar_day).getTime() - new Date(b.Calendar_day).getTime()
   );
 
-  const latestData = sortedData[sortedData.length - 1];
-  const previousData = sortedData[sortedData.length - 2];
+  // Get last 14 days of data
+  const last14Days = sortedData.slice(-14);
+  const lastWeekData = last14Days.slice(-7);
+  const previousWeekData = last14Days.slice(0, 7);
+
+  const calculateAverageVolume = (weekData: typeof data) => {
+    const beverages = {
+      guinness: 'Guinness_Draught_In_Keg_MTD_Billed',
+      carlsberg: 'Carlsberg_Lager_In_Keg_MTD_Billed',
+      zeroAlc: ['Guinness_Draught_0.0_in_Keg_MTD_Billed', 'Carlsberg_0.0_In_Keg_MTD_Billed']
+    };
+
+    return {
+      guinness: weekData.reduce((sum, day) => sum + (day[beverages.guinness] || 0), 0),
+      carlsberg: weekData.reduce((sum, day) => sum + (day[beverages.carlsberg] || 0), 0),
+      zeroAlc: weekData.reduce((sum, day) => 
+        sum + beverages.zeroAlc.reduce((total, field) => total + (day[field as keyof typeof day] || 0), 0), 
+      0)
+    };
+  };
 
   const getPercentageChange = (current: number, previous: number) => {
     if (previous === 0) return 0;
     return ((current - previous) / previous) * 100;
   };
 
+  const lastWeekVolumes = calculateAverageVolume(lastWeekData);
+  const previousWeekVolumes = calculateAverageVolume(previousWeekData);
+
   const guinnessTrend = getPercentageChange(
-    latestData.Guinness_Draught_In_Keg_MTD_Billed || 0,
-    previousData?.Guinness_Draught_In_Keg_MTD_Billed || 0
+    lastWeekVolumes.guinness,
+    previousWeekVolumes.guinness
   );
 
   const carlsbergTrend = getPercentageChange(
-    latestData.Carlsberg_Lager_In_Keg_MTD_Billed || 0,
-    previousData?.Carlsberg_Lager_In_Keg_MTD_Billed || 0
+    lastWeekVolumes.carlsberg,
+    previousWeekVolumes.carlsberg
   );
 
   const zeroAlcTrend = getPercentageChange(
-    (latestData["Guinness_Draught_0.0_in_Keg_MTD_Billed"] || 0) + (latestData["Carlsberg_0.0_In_Keg_MTD_Billed"] || 0),
-    (previousData?.["Guinness_Draught_0.0_in_Keg_MTD_Billed"] || 0) + (previousData?.["Carlsberg_0.0_In_Keg_MTD_Billed"] || 0)
+    lastWeekVolumes.zeroAlc,
+    previousWeekVolumes.zeroAlc
   );
+
+  const latestDate = new Date(sortedData[sortedData.length - 1]?.Calendar_day || new Date());
+  const timeAgo = formatDistanceToNow(latestDate, { addSuffix: true });
 
   return (
     <Card className="border-repgpt-700 bg-repgpt-800">
       <CardHeader>
-        <CardTitle className="text-sm font-medium text-white">Sales Insights</CardTitle>
+        <CardTitle className="text-sm font-medium text-white">7-Day Sales Trends</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
@@ -123,7 +148,7 @@ export function SalesInsights({ data, isLoading }: SalesInsightsProps) {
         </div>
 
         <p className="text-xs text-gray-400 mt-4">
-          Showing trends based on the most recent data compared to previous period.
+          Comparing last 7 days vs previous 7 days. Last updated {timeAgo}.
         </p>
       </CardContent>
     </Card>
