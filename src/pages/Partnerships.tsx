@@ -3,6 +3,7 @@ import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import { DirectTradeChart } from "@/components/partnerships/direct-trade-chart";
 import { DirectTradeTable } from "@/components/partnerships/direct-trade-table";
+import { DirectTradeInsights } from "@/components/partnerships/direct-trade-insights";
 import { useDirectTrade } from "@/hooks/use-direct-trade";
 import { useState } from "react";
 
@@ -29,6 +30,8 @@ export default function Partnerships() {
         <div className="space-y-6">
           {directTradeData && directTradeData.length > 0 && (
             <>
+              <DirectTradeInsights data={directTradeData} />
+              
               <div>
                 <h2 className="text-xl font-semibold text-white mb-4">Direct Trade Analysis</h2>
                 <DirectTradeChart data={directTradeData} />

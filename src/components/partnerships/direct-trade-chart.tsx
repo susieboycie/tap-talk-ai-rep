@@ -8,7 +8,6 @@ interface DirectTradeChartProps {
 }
 
 export function DirectTradeChart({ data }: DirectTradeChartProps) {
-  // Transform data for the chart
   const chartData = data.reduce((acc: any[], item) => {
     const existingItem = acc.find((i) => i.product === item["PRDHA L5 Individual Variant"]);
     if (existingItem) {
@@ -28,7 +27,7 @@ export function DirectTradeChart({ data }: DirectTradeChartProps) {
         <CardTitle className="text-lg font-semibold text-white">Product Volume Distribution</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px]">
+        <div className="h-[400px]"> {/* Increased height for better visibility */}
           <ChartContainer
             config={{
               volume: {
@@ -37,13 +36,16 @@ export function DirectTradeChart({ data }: DirectTradeChartProps) {
             }}
           >
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData}>
+              <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 120 }}>
                 <XAxis 
                   dataKey="product"
                   stroke="#888888"
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
+                  angle={-45}
+                  textAnchor="end"
+                  interval={0}
                 />
                 <YAxis
                   stroke="#888888"
