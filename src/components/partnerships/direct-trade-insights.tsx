@@ -1,6 +1,4 @@
 
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 
 interface DirectTradeInsightsProps {
@@ -49,14 +47,16 @@ export function DirectTradeInsights({ directTradeData }: DirectTradeInsightsProp
       new Date(item["Fiscal year/period"]).toISOString().substring(0, 7) === months[months.length - 2]
     );
     
-    const recentVolume = recentMonthsData.reduce((sum, item) => sum + (item["Volume HL"] || 0), 0);
-    const previousVolume = previousMonthsData.reduce((sum, item) => sum + (item["Volume HL"] || 0), 0);
+    const recentVolume = recentMonthsData.reduce((sum, item) => sum + (Number(item["Volume HL"]) || 0), 0);
+    const previousVolume = previousMonthsData.reduce((sum, item) => sum + (Number(item["Volume HL"]) || 0), 0);
     
     if (previousVolume > 0) {
       if (recentVolume > previousVolume) {
+        // Fix: Convert to numbers explicitly before arithmetic operations
         const percentChange = ((recentVolume / previousVolume) - 1) * 100;
         trendMessage = ` Volume is trending upward with a ${percentChange.toFixed(1)}% increase from the previous period.`;
       } else if (recentVolume < previousVolume) {
+        // Fix: Convert to numbers explicitly before arithmetic operations
         const percentChange = ((1 - (recentVolume / previousVolume)) * 100);
         trendMessage = ` Volume is trending downward with a ${percentChange.toFixed(1)}% decrease from the previous period.`;
       } else {
