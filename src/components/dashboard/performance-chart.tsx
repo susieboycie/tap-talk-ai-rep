@@ -1,11 +1,9 @@
-
 import { useState } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tables } from "@/integrations/supabase/types";
 import { Slider } from "@/components/ui/slider";
 import { format } from "date-fns";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type SalesData = Tables<"daily_sales_volume">;
 
@@ -65,14 +63,14 @@ export function PerformanceChart({ data, isLoading }: PerformanceChartProps) {
   };
 
   return (
-    <Card className="col-span-3 border-repgpt-700 bg-repgpt-800">
+    <Card className="col-span-3 border-blue-700 bg-blue-900/30">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-white">Sales Performance</CardTitle>
-        <div className="text-sm text-gray-300">{dateRangeText()}</div>
+        <div className="text-sm text-blue-300">{dateRangeText()}</div>
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="h-[300px] flex items-center justify-center text-white">
+          <div className="h-[300px] flex items-center justify-center text-blue-300">
             Loading sales data...
           </div>
         ) : (
@@ -84,8 +82,8 @@ export function PerformanceChart({ data, isLoading }: PerformanceChartProps) {
                   onClick={() => handleBeverageToggle(id)}
                   className={`px-3 py-1 rounded-full text-sm transition-colors ${
                     selectedBeverages.includes(id)
-                      ? 'bg-repgpt-400 text-white'
-                      : 'bg-repgpt-700 text-gray-400'
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-blue-800 text-blue-300'
                   }`}
                 >
                   {config.name}
@@ -104,13 +102,13 @@ export function PerformanceChart({ data, isLoading }: PerformanceChartProps) {
                     bottom: 5,
                   }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-                  <XAxis dataKey="day" stroke="#999" />
-                  <YAxis stroke="#999" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1E3A8A" />
+                  <XAxis dataKey="day" stroke="#60A5FA" />
+                  <YAxis stroke="#60A5FA" />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: "#1A1F2C", border: "1px solid #333", borderRadius: "8px" }}
-                    itemStyle={{ color: "#fff" }}
-                    labelStyle={{ color: "#fff" }}
+                    contentStyle={{ backgroundColor: "#1E3A8A", border: "1px solid #2563EB", borderRadius: "8px" }}
+                    itemStyle={{ color: "#BFDBFE" }}
+                    labelStyle={{ color: "#FFFFFF" }}
                   />
                   <Legend />
                   {selectedBeverages.map(beverageId => {
@@ -131,7 +129,7 @@ export function PerformanceChart({ data, isLoading }: PerformanceChartProps) {
             </div>
             
             <div className="mt-6 px-2">
-              <div className="flex justify-between mb-2 text-xs text-gray-400">
+              <div className="flex justify-between mb-2 text-xs text-blue-400">
                 <span>Last {dateRange[0]} days</span>
                 <span>All time</span>
               </div>
@@ -141,7 +139,7 @@ export function PerformanceChart({ data, isLoading }: PerformanceChartProps) {
                 max={processedData.length || 100}
                 step={1}
                 onValueChange={setDateRange}
-                className="text-repgpt-400 [&>.bg-primary]:bg-repgpt-400"
+                className="text-blue-500 [&>.bg-primary]:bg-blue-500"
               />
             </div>
           </>
