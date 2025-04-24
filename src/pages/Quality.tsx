@@ -1,10 +1,9 @@
-
 import { useState } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import { QualityKPICard } from "@/components/quality/quality-kpi-card";
 import { useQualityMetrics } from "@/hooks/use-quality-metrics";
-import { PhoneCall, CalendarDays, ShieldCheck, Beer, Wine, Cocktail } from "lucide-react";
+import { PhoneCall, CalendarDays, ShieldCheck, Beer, Wine, Martini } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 export default function Quality() {
@@ -87,7 +86,7 @@ export default function Quality() {
                 subtitle="Successful Sell In"
                 value={metrics.smirnoffIce.actual}
                 target={metrics.smirnoffIce.target}
-                icon={Cocktail}
+                icon={Martini}
                 status={getProductRAGStatus(metrics.smirnoffIce.actual, metrics.smirnoffIce.target)}
               />
               <QualityKPICard
