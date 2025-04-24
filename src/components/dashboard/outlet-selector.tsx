@@ -31,10 +31,10 @@ export function OutletSelector({ selectedOutlet, onOutletChange }: OutletSelecto
 
   return (
     <Select value={selectedOutlet} onValueChange={onOutletChange}>
-      <SelectTrigger className="border-repgpt-600 bg-repgpt-700 text-white">
+      <SelectTrigger className="border-blue-600 bg-blue-700 text-white">
         <SelectValue placeholder="Select an outlet" />
       </SelectTrigger>
-      <SelectContent className="border-repgpt-600 bg-repgpt-700 text-white">
+      <SelectContent className="border-blue-600 bg-blue-700 text-white">
         {outletNames?.map((outlet) => (
           <SelectItem key={outlet} value={outlet}>
             {outlet}
