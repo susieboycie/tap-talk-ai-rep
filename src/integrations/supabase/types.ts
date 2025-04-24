@@ -156,6 +156,27 @@ export type Database = {
         }
         Relationships: []
       }
+      direct_on_trade: {
+        Row: {
+          "Fiscal year/period": string | null
+          Outlet: string | null
+          "PRDHA L5 Individual Variant": string | null
+          "Volume HL": number | null
+        }
+        Insert: {
+          "Fiscal year/period"?: string | null
+          Outlet?: string | null
+          "PRDHA L5 Individual Variant"?: string | null
+          "Volume HL"?: number | null
+        }
+        Update: {
+          "Fiscal year/period"?: string | null
+          Outlet?: string | null
+          "PRDHA L5 Individual Variant"?: string | null
+          "Volume HL"?: number | null
+        }
+        Relationships: []
+      }
       persona_details: {
         Row: {
           diageo_value: string | null

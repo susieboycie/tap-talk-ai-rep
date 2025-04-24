@@ -2,10 +2,14 @@
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import { SalesKPITable } from "@/components/partnerships/sales-kpi-table";
+import { DirectTradeChart } from "@/components/partnerships/direct-trade-chart";
+import { DirectTradeTable } from "@/components/partnerships/direct-trade-table";
+import { useDirectTrade } from "@/hooks/use-direct-trade";
 import { useState } from "react";
 
 export default function Partnerships() {
   const [selectedOutlet, setSelectedOutlet] = useState("");
+  const { data: directTradeData, isLoading: isLoadingDirectTrade } = useDirectTrade(selectedOutlet);
 
   return (
     <DashboardShell>
@@ -29,6 +33,28 @@ export default function Partnerships() {
             <h2 className="text-xl font-semibold text-white mb-4">Sales Performance</h2>
             <SalesKPITable selectedOutlet={selectedOutlet} />
           </div>
+
+          {directTradeData && directTradeData.length > 0 && (
+            <>
+              <div>
+                <h2 className="text-xl font-semibold text-white mb-4">Direct Trade Analysis</h2>
+                <DirectTradeChart data={directTradeData} />
+              </div>
+              
+              <div>
+                <h2 className="text-xl font-semibold text-white mb-4">Direct Trade Details</h2>
+                <DirectTradeTable data={directTradeData} />
+              </div>
+            </>
+          )}
+          
+          {isLoadingDirectTrade && (
+            <div className="text-gray-400">Loading direct trade data...</div>
+          )}
+          
+          {!isLoadingDirectTrade && (!directTradeData || directTradeData.length === 0) && (
+            <div className="text-gray-400">No direct trade data available for this outlet.</div>
+          )}
         </div>
       )}
     </DashboardShell>
