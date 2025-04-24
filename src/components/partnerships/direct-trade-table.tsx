@@ -35,9 +35,9 @@ export function DirectTradeTable({ data }: DirectTradeTableProps) {
               <SelectValue placeholder="Filter by Product" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Products</SelectItem>
+              <SelectItem value="all-products">All Products</SelectItem>
               {uniqueProducts.map(product => (
-                <SelectItem key={product} value={product}>{product}</SelectItem>
+                <SelectItem key={product} value={product || "unknown"}>{product || "Unknown Product"}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -48,9 +48,9 @@ export function DirectTradeTable({ data }: DirectTradeTableProps) {
               <SelectValue placeholder="Filter by Year" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Years</SelectItem>
+              <SelectItem value="all-years">All Years</SelectItem>
               {uniqueYears.map(year => (
-                <SelectItem key={year} value={year}>{year}</SelectItem>
+                <SelectItem key={year} value={year || "unknown"}>{year || "Unknown Year"}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -70,7 +70,7 @@ export function DirectTradeTable({ data }: DirectTradeTableProps) {
               key={index}
               className="border-b border-repgpt-700"
             >
-              <TableCell className="text-gray-300">{row["PRDHA L5 Individual Variant"]}</TableCell>
+              <TableCell className="text-gray-300">{row["PRDHA L5 Individual Variant"] || "Unknown Product"}</TableCell>
               <TableCell className="text-gray-300">
                 {row["Fiscal year/period"] ? format(new Date(row["Fiscal year/period"]), 'MMM yyyy') : 'N/A'}
               </TableCell>

@@ -52,12 +52,16 @@ export function DirectTradeInsights({ directTradeData }: DirectTradeInsightsProp
     const recentVolume = recentMonthsData.reduce((sum, item) => sum + (item["Volume HL"] || 0), 0);
     const previousVolume = previousMonthsData.reduce((sum, item) => sum + (item["Volume HL"] || 0), 0);
     
-    if (recentVolume > previousVolume) {
-      trendMessage = ` Volume is trending upward with a ${((recentVolume/previousVolume - 1) * 100).toFixed(1)}% increase from the previous period.`;
-    } else if (recentVolume < previousVolume) {
-      trendMessage = ` Volume is trending downward with a ${((1 - recentVolume/previousVolume) * 100).toFixed(1)}% decrease from the previous period.`;
-    } else {
-      trendMessage = " Volume is stable compared to the previous period.";
+    if (previousVolume > 0) {
+      if (recentVolume > previousVolume) {
+        const percentChange = ((recentVolume / previousVolume) - 1) * 100;
+        trendMessage = ` Volume is trending upward with a ${percentChange.toFixed(1)}% increase from the previous period.`;
+      } else if (recentVolume < previousVolume) {
+        const percentChange = ((1 - (recentVolume / previousVolume)) * 100);
+        trendMessage = ` Volume is trending downward with a ${percentChange.toFixed(1)}% decrease from the previous period.`;
+      } else {
+        trendMessage = " Volume is stable compared to the previous period.";
+      }
     }
   }
 
