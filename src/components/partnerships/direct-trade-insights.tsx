@@ -52,12 +52,12 @@ export function DirectTradeInsights({ directTradeData }: DirectTradeInsightsProp
     
     if (previousVolume > 0) {
       if (recentVolume > previousVolume) {
-        // Convert to numbers explicitly and calculate the percentage change
+        // Convert to numbers explicitly before the arithmetic operation
         const percentChange = ((Number(recentVolume) / Number(previousVolume)) - 1) * 100;
         trendMessage = ` Volume is trending upward with a ${percentChange.toFixed(1)}% increase from the previous period.`;
       } else if (recentVolume < previousVolume) {
-        // Convert to numbers explicitly and calculate the percentage change
-        const percentChange = ((1 - (Number(recentVolume) / Number(previousVolume))) * 100);
+        // Convert to numbers explicitly before the arithmetic operation
+        const percentChange = (1 - (Number(recentVolume) / Number(previousVolume))) * 100;
         trendMessage = ` Volume is trending downward with a ${percentChange.toFixed(1)}% decrease from the previous period.`;
       } else {
         trendMessage = " Volume is stable compared to the previous period.";
