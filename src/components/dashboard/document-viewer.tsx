@@ -1,40 +1,15 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-// Function to get PDF files from public directory
-const getPdfFiles = async () => {
-  try {
-    // This assumes your PDFs are in the public directory
-    const response = await fetch('/api/pdfs');
-    const files = await response.json();
-    return files.map((file: string) => ({
-      id: file.replace('.pdf', ''),
-      label: file.replace('.pdf', '').split('-').join(' '),
-      path: `/${file}`
-    }));
-  } catch (error) {
-    console.error('Error fetching PDF files:', error);
-    return [];
-  }
-};
+// Directly reference PDFs from public directory
+const documents = [
+  { id: "test", label: "Test Document", path: "/Test.pdf" }
+];
 
 export function DocumentViewer() {
-  const [documents, setDocuments] = useState<Array<{ id: string; label: string; path: string }>>([]);
-  const [selectedDoc, setSelectedDoc] = useState<string>('');
-
-  useEffect(() => {
-    const loadDocuments = async () => {
-      const pdfFiles = await getPdfFiles();
-      setDocuments(pdfFiles);
-      if (pdfFiles.length > 0) {
-        setSelectedDoc(pdfFiles[0].path);
-      }
-    };
-
-    loadDocuments();
-  }, []);
+  const [selectedDoc, setSelectedDoc] = useState(documents[0].path);
 
   return (
     <Card className="w-full bg-repgpt-700 border-repgpt-600">
