@@ -3,10 +3,12 @@ import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
 import { OutletDescription } from "@/components/dashboard/outlet-description";
 import { AIAssistant } from "@/components/ai-assistant";
+import { QualityKPICard } from "@/components/quality/quality-kpi-card";
 import { Button } from "@/components/ui/button";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, PhoneCall, CalendarDays, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 import { useOutletSales } from "@/hooks/use-outlet-sales";
+import { useQualityMetrics } from "@/hooks/use-quality-metrics";
 import { usePersonaDetails, type PersonaDetails } from "@/hooks/use-persona-details";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import { PersonaSelector } from "@/components/dashboard/persona-selector";
@@ -29,6 +31,7 @@ export default function Dashboard() {
     isLoading: isPersonaLoading 
   } = usePersonaDetails(selectedOutlet);
   
+  const { metrics, getRAGStatus } = useQualityMetrics(selectedOutlet);
   const { data: salesData, isLoading: isSalesLoading } = useOutletSales(selectedOutlet);
 
   useEffect(() => {
@@ -101,6 +104,29 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {selectedOutlet && (
+        <div className="grid gap-4 md:grid-cols-3 mb-6">
+          <QualityKPICard
+            title="Call Compliance"
+            value={`${metrics.callCompliance}%`}
+            icon={ShieldCheck}
+            status={getRAGStatus(metrics.callCompliance, "callCompliance")}
+          />
+          <QualityKPICard
+            title="Calls per Day"
+            value={metrics.callsPerDay.toFixed(1)}
+            icon={PhoneCall}
+            status={getRAGStatus(metrics.callsPerDay, "callsPerDay")}
+          />
+          <QualityKPICard
+            title="Days In Trade"
+            value={metrics.daysInTrade}
+            icon={CalendarDays}
+            status={getRAGStatus(metrics.daysInTrade, "daysInTrade")}
+          />
+        </div>
+      )}
+
       <div className="mb-6">
         <OutletDescription 
           outletName={selectedOutlet}
@@ -112,6 +138,14 @@ export default function Dashboard() {
           salesDataLoading={isSalesLoading}
         />
       </div>
+
+      {selectedOutlet && (
+        <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5 mb-6">
+          <div className="md:col-span-3 lg:col-span-5">
+            <PerformanceChart data={salesData} isLoading={isSalesLoading} />
+          </div>
+        </div>
+      )}
 
       <ConversationStartersGrid 
         selectedOutlet={selectedOutlet}
