@@ -20,10 +20,10 @@ export function DirectTradeInsights({ directTradeData }: DirectTradeInsightsProp
   }
 
   // Calculate insights
-  const totalVolume = directTradeData.reduce((sum, item) => sum + (item["Volume HL"] || 0), 0);
+  const totalVolume = directTradeData.reduce((sum, item) => sum + (Number(item["Volume HL"]) || 0), 0);
   const productCounts = directTradeData.reduce((acc: { [key: string]: number }, item) => {
     const product = item["PRDHA L5 Individual Variant"] || "Unknown";
-    acc[product] = (acc[product] || 0) + (item["Volume HL"] || 0);
+    acc[product] = (acc[product] || 0) + (Number(item["Volume HL"]) || 0);
     return acc;
   }, {});
 
@@ -52,12 +52,12 @@ export function DirectTradeInsights({ directTradeData }: DirectTradeInsightsProp
     
     if (previousVolume > 0) {
       if (recentVolume > previousVolume) {
-        // Fix: Convert to numbers explicitly before arithmetic operations
-        const percentChange = ((recentVolume / previousVolume) - 1) * 100;
+        // Convert to numbers explicitly and calculate the percentage change
+        const percentChange = ((Number(recentVolume) / Number(previousVolume)) - 1) * 100;
         trendMessage = ` Volume is trending upward with a ${percentChange.toFixed(1)}% increase from the previous period.`;
       } else if (recentVolume < previousVolume) {
-        // Fix: Convert to numbers explicitly before arithmetic operations
-        const percentChange = ((1 - (recentVolume / previousVolume)) * 100);
+        // Convert to numbers explicitly and calculate the percentage change
+        const percentChange = ((1 - (Number(recentVolume) / Number(previousVolume))) * 100);
         trendMessage = ` Volume is trending downward with a ${percentChange.toFixed(1)}% decrease from the previous period.`;
       } else {
         trendMessage = " Volume is stable compared to the previous period.";
