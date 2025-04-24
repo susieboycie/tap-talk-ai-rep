@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useOutlet } from "@/contexts/outlet-context";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { DocumentViewer } from "@/components/dashboard/document-viewer";
 import { ConversationStartersGrid } from "@/components/dashboard/conversation-starters-grid";
@@ -6,9 +6,10 @@ import { AIAssistant } from "@/components/ai-assistant";
 import { Button } from "@/components/ui/button";
 import { MessageSquare } from "lucide-react";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
+import { useState } from "react";
 
 export default function Activations() {
-  const [selectedOutlet, setSelectedOutlet] = useState("");
+  const { selectedOutlet } = useOutlet();
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
   const [assistantPrompt, setAssistantPrompt] = useState<string | null>(null);
 
@@ -25,10 +26,7 @@ export default function Activations() {
           <p className="text-gray-400">View and manage activation materials and documents</p>
         </div>
         <div className="w-[240px]">
-          <OutletSelector 
-            selectedOutlet={selectedOutlet}
-            onOutletChange={setSelectedOutlet}
-          />
+          <OutletSelector />
         </div>
       </div>
       

@@ -1,13 +1,12 @@
-
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
 import { SalesInsights } from "@/components/dashboard/sales-insights";
 import { useOutletSales } from "@/hooks/use-outlet-sales";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
-import { useState } from "react";
+import { useOutlet } from "@/contexts/outlet-context";
 
 export default function Insights() {
-  const [selectedOutlet, setSelectedOutlet] = useState("");
+  const { selectedOutlet } = useOutlet();
   const { data: salesData, isLoading: isSalesLoading } = useOutletSales(selectedOutlet);
   
   return (
@@ -18,10 +17,7 @@ export default function Insights() {
           <p className="text-gray-400">View sales performance and insights</p>
         </div>
         <div className="w-[240px]">
-          <OutletSelector
-            selectedOutlet={selectedOutlet}
-            onOutletChange={setSelectedOutlet}
-          />
+          <OutletSelector />
         </div>
       </div>
 

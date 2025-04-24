@@ -1,14 +1,13 @@
-
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import { DirectTradeChart } from "@/components/partnerships/direct-trade-chart";
 import { DirectTradeTable } from "@/components/partnerships/direct-trade-table";
 import { DirectTradeInsights } from "@/components/partnerships/direct-trade-insights";
 import { useDirectTrade } from "@/hooks/use-direct-trade";
-import { useState } from "react";
+import { useOutlet } from "@/contexts/outlet-context";
 
 export default function Partnerships() {
-  const [selectedOutlet, setSelectedOutlet] = useState("");
+  const { selectedOutlet } = useOutlet();
   const { data: directTradeData, isLoading: isLoadingDirectTrade } = useDirectTrade(selectedOutlet);
 
   return (
@@ -19,10 +18,7 @@ export default function Partnerships() {
           <p className="text-gray-400">Manage trade partnerships and relationships</p>
         </div>
         <div className="w-[240px]">
-          <OutletSelector 
-            selectedOutlet={selectedOutlet}
-            onOutletChange={setSelectedOutlet}
-          />
+          <OutletSelector />
         </div>
       </div>
 

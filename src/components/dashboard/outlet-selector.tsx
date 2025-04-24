@@ -2,13 +2,11 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useOutlet } from "@/contexts/outlet-context";
 
-interface OutletSelectorProps {
-  selectedOutlet: string;
-  onOutletChange: (value: string) => void;
-}
-
-export function OutletSelector({ selectedOutlet, onOutletChange }: OutletSelectorProps) {
+export function OutletSelector() {
+  const { selectedOutlet, setSelectedOutlet } = useOutlet();
+  
   const { data: outletNames } = useQuery({
     queryKey: ['outlet-names'],
     queryFn: async () => {
@@ -24,13 +22,12 @@ export function OutletSelector({ selectedOutlet, onOutletChange }: OutletSelecto
       }
 
       const uniqueOutlets = Array.from(new Set(data.map(row => row.Outlet))) as string[];
-      console.log("Fetched unique outlets:", uniqueOutlets);
       return uniqueOutlets.filter(Boolean);
     }
   });
 
   return (
-    <Select value={selectedOutlet} onValueChange={onOutletChange}>
+    <Select value={selectedOutlet} onValueChange={setSelectedOutlet}>
       <SelectTrigger className="border-blue-600 bg-blue-700 text-white">
         <SelectValue placeholder="Select an outlet" />
       </SelectTrigger>
