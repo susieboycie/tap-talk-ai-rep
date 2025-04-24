@@ -17,13 +17,12 @@ export default function Partnerships() {
           <h1 className="text-3xl font-bold tracking-tight text-white">Partnerships</h1>
           <p className="text-gray-400">Manage trade partnerships and relationships</p>
         </div>
-      </div>
-
-      <div className="mb-6">
-        <OutletSelector 
-          selectedOutlet={selectedOutlet}
-          onOutletChange={setSelectedOutlet}
-        />
+        <div className="w-[240px]">
+          <OutletSelector 
+            selectedOutlet={selectedOutlet}
+            onOutletChange={setSelectedOutlet}
+          />
+        </div>
       </div>
 
       {selectedOutlet && (
