@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import {
   Sidebar,
@@ -11,7 +12,7 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { BarChart, Home, FileText, BarChart3, Users, Shield, FileBarChart } from "lucide-react";
+import { BarChart, Home, FileText, BarChart3, Users, Shield } from "lucide-react";
 
 export function AppSidebar() {
   return (
@@ -67,14 +68,6 @@ export function AppSidebar() {
                   <Link to="/quality" className="flex items-center gap-2">
                     <Shield className="h-4 w-4" />
                     <span>Quality</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link to="/trade-terms" className="flex items-center gap-2">
-                    <FileBarChart className="h-4 w-4" />
-                    <span>Trade Terms</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
