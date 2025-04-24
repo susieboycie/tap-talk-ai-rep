@@ -7,6 +7,24 @@ export interface QualityMetrics {
   daysInTrade: number;
   cpdTarget: number;
   ditTarget: number;
+  // New KPIs
+  guinness: {
+    target: number;
+    actual: number;
+  };
+  rockshoreDistribution: {
+    target: number;
+    actual: number;
+  };
+  rockshoreActivations: number;
+  smirnoffIce: {
+    target: number;
+    actual: number;
+  };
+  casamigos: {
+    target: number;
+    actual: number;
+  };
 }
 
 export function useQualityMetrics(outlet: string) {
@@ -15,18 +33,27 @@ export function useQualityMetrics(outlet: string) {
     callsPerDay: 0,
     daysInTrade: 0,
     cpdTarget: 7.5,
-    ditTarget: 30
+    ditTarget: 30,
+    guinness: { target: 423, actual: 373 },
+    rockshoreDistribution: { target: 546, actual: 509 },
+    rockshoreActivations: 199,
+    smirnoffIce: { target: 115, actual: 4 },
+    casamigos: { target: 82, actual: 26 }
   });
 
   useEffect(() => {
-    // Simulated data based on the outlet
     if (outlet === "The Fox") {
       setMetrics({
         callCompliance: 63,
         callsPerDay: 7.3,
         daysInTrade: 26,
         cpdTarget: 7.5,
-        ditTarget: 29.3
+        ditTarget: 29.3,
+        guinness: { target: 423, actual: 373 },
+        rockshoreDistribution: { target: 546, actual: 509 },
+        rockshoreActivations: 199,
+        smirnoffIce: { target: 115, actual: 4 },
+        casamigos: { target: 82, actual: 26 }
       });
     } else if (outlet === "The Horse & Hound") {
       setMetrics({
@@ -34,7 +61,12 @@ export function useQualityMetrics(outlet: string) {
         callsPerDay: 6.5,
         daysInTrade: 25,
         cpdTarget: 8.3,
-        ditTarget: 34.0
+        ditTarget: 34.0,
+        guinness: { target: 437, actual: 405 },
+        rockshoreDistribution: { target: 642, actual: 522 },
+        rockshoreActivations: 139,
+        smirnoffIce: { target: 129, actual: 43 },
+        casamigos: { target: 71, actual: 41 }
       });
     }
   }, [outlet]);
@@ -52,8 +84,14 @@ export function useQualityMetrics(outlet: string) {
     }
   };
 
+  const getProductRAGStatus = (actual: number, target: number): "red" | "amber" | "green" => {
+    const percentage = (actual / target) * 100;
+    return percentage >= 90 ? "green" : percentage >= 70 ? "amber" : "red";
+  };
+
   return {
     metrics,
     getRAGStatus,
+    getProductRAGStatus,
   };
 }
