@@ -29,7 +29,13 @@ export function DirectTradeChart({ data }: DirectTradeChartProps) {
       </CardHeader>
       <CardContent>
         <div className="h-[300px]">
-          <ChartContainer>
+          <ChartContainer
+            config={{
+              volume: {
+                color: "#9b87f5"
+              }
+            }}
+          >
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData}>
                 <XAxis 
