@@ -1,16 +1,40 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const documents = [
-  { id: "activation-deck-1", label: "Activation Deck 1", path: "/activation-deck-1.pdf" },
-  { id: "activation-deck-2", label: "Activation Deck 2", path: "/activation-deck-2.pdf" },
-  { id: "activation-deck-3", label: "Activation Deck 3", path: "/activation-deck-3.pdf" }
-];
+// Function to get PDF files from public directory
+const getPdfFiles = async () => {
+  try {
+    // This assumes your PDFs are in the public directory
+    const response = await fetch('/api/pdfs');
+    const files = await response.json();
+    return files.map((file: string) => ({
+      id: file.replace('.pdf', ''),
+      label: file.replace('.pdf', '').split('-').join(' '),
+      path: `/${file}`
+    }));
+  } catch (error) {
+    console.error('Error fetching PDF files:', error);
+    return [];
+  }
+};
 
 export function DocumentViewer() {
-  const [selectedDoc, setSelectedDoc] = useState(documents[0].path);
+  const [documents, setDocuments] = useState<Array<{ id: string; label: string; path: string }>>([]);
+  const [selectedDoc, setSelectedDoc] = useState<string>('');
+
+  useEffect(() => {
+    const loadDocuments = async () => {
+      const pdfFiles = await getPdfFiles();
+      setDocuments(pdfFiles);
+      if (pdfFiles.length > 0) {
+        setSelectedDoc(pdfFiles[0].path);
+      }
+    };
+
+    loadDocuments();
+  }, []);
 
   return (
     <Card className="w-full bg-repgpt-700 border-repgpt-600">
@@ -37,11 +61,13 @@ export function DocumentViewer() {
         </Select>
 
         <div className="w-full h-[600px] rounded-lg overflow-hidden border border-repgpt-600 bg-repgpt-800">
-          <iframe
-            src={selectedDoc}
-            className="w-full h-full"
-            title="Document Viewer"
-          />
+          {selectedDoc && (
+            <iframe
+              src={selectedDoc}
+              className="w-full h-full"
+              title="Document Viewer"
+            />
+          )}
         </div>
       </CardContent>
     </Card>
