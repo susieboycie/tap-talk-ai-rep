@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import {
   Sidebar,
@@ -35,7 +34,7 @@ export function AppSidebar() {
                 <SidebarMenuButton asChild>
                   <Link to="/" className="flex items-center gap-2">
                     <Home className="h-4 w-4" />
-                    <span>Overview</span>
+                    <span>RepGPT Home</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
