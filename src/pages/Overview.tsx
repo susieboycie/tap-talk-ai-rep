@@ -1,8 +1,6 @@
-
 import { useState, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
-import { OutletDescription } from "@/components/dashboard/outlet-description";
 import { AIAssistant } from "@/components/ai-assistant";
 import { Button } from "@/components/ui/button";
 import { MessageSquare } from "lucide-react";
@@ -83,9 +81,9 @@ export default function Overview() {
     <DashboardShell>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-white">Overview</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-white">RepGPT Home</h1>
           <p className="text-gray-400">
-            Your AI sales assistant, {user?.name}
+            I am RepGPT - your personalised AI driven sales assistant! I can help by providing you with relevant Outlet specific insights, tailored talking points for activation plans, and smart suggestions that help you make every conversation count.
           </p>
         </div>
       </div>
