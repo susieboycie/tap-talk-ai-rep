@@ -1,7 +1,6 @@
 
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
-import { SalesKPITable } from "@/components/partnerships/sales-kpi-table";
 import { DirectTradeChart } from "@/components/partnerships/direct-trade-chart";
 import { DirectTradeTable } from "@/components/partnerships/direct-trade-table";
 import { useDirectTrade } from "@/hooks/use-direct-trade";
@@ -29,11 +28,6 @@ export default function Partnerships() {
 
       {selectedOutlet && (
         <div className="space-y-6">
-          <div>
-            <h2 className="text-xl font-semibold text-white mb-4">Sales Performance</h2>
-            <SalesKPITable selectedOutlet={selectedOutlet} />
-          </div>
-
           {directTradeData && directTradeData.length > 0 && (
             <>
               <div>
