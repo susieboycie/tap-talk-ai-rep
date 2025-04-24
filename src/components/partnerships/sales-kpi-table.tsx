@@ -33,7 +33,7 @@ export function SalesKPITable({ selectedOutlet }: SalesKPITableProps) {
               { name: 'Carlsberg Lager In Keg', value: row.Carlsberg_Lager_In_Keg_MTD_Billed },
               { name: 'Guinness Draught In Keg', value: row.Guinness_Draught_In_Keg_MTD_Billed },
               { name: 'Smithwick\'s In Keg', value: row.Smithwicks_In_Keg_MTD_Billed },
-              { name: 'Guinness Draught 0.0 In Keg', value: row.Guinness_Draught_0_0_in_Keg_MTD_Billed },
+              { name: 'Guinness Draught 0.0 In Keg', value: row["Guinness_Draught_0.0_in_Keg_MTD_Billed"] },
               { name: 'Rockshore In Keg', value: row.Rockshore_in_Keg_MTD_Billed },
               { name: 'Rockshore Apple Cider In Keg', value: row.Rockshore_Apple_Cider_in_Keg_MTD_Billed }
             ];
