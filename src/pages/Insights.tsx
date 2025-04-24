@@ -1,3 +1,4 @@
+
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
 import { SalesInsights } from "@/components/dashboard/sales-insights";

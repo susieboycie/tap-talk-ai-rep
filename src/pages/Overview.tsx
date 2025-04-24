@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
@@ -14,11 +15,12 @@ import { ConversationStartersGrid } from "@/components/dashboard/conversation-st
 import { supabase } from "@/integrations/supabase/client";
 import { useQualityMetrics } from "@/hooks/use-quality-metrics";
 import { OutletOverview } from "@/components/dashboard/outlet-overview";
+import { useOutlet } from "@/contexts/outlet-context";
 
 export default function Overview() {
   const { user } = useAuth();
+  const { selectedOutlet, setSelectedOutlet } = useOutlet();
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
-  const [selectedOutlet, setSelectedOutlet] = useState("");
   const [selectedPersona, setSelectedPersona] = useState("");
   const [assistantPrompt, setAssistantPrompt] = useState<string | null>(null);
   const [manualPersonaDetails, setManualPersonaDetails] = useState<PersonaDetails | null>(null);
@@ -90,10 +92,7 @@ export default function Overview() {
 
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4 mb-6">
         <div className="md:col-span-2 lg:col-span-3">
-          <OutletSelector 
-            selectedOutlet={selectedOutlet}
-            onOutletChange={setSelectedOutlet}
-          />
+          <OutletSelector />
         </div>
         <div>
           <PersonaSelector

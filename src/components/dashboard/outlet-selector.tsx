@@ -4,8 +4,25 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useOutlet } from "@/contexts/outlet-context";
 
-export function OutletSelector() {
-  const { selectedOutlet, setSelectedOutlet } = useOutlet();
+interface OutletSelectorProps {
+  selectedOutlet?: string;
+  onOutletChange?: (outlet: string) => void;
+}
+
+export function OutletSelector({ selectedOutlet: propSelectedOutlet, onOutletChange }: OutletSelectorProps = {}) {
+  const { selectedOutlet: contextSelectedOutlet, setSelectedOutlet } = useOutlet();
+  
+  // Use either the prop value or the context value
+  const selectedOutlet = propSelectedOutlet !== undefined ? propSelectedOutlet : contextSelectedOutlet;
+  
+  // Handle change using either the provided handler or the context setter
+  const handleOutletChange = (value: string) => {
+    if (onOutletChange) {
+      onOutletChange(value);
+    } else {
+      setSelectedOutlet(value);
+    }
+  };
   
   const { data: outletNames } = useQuery({
     queryKey: ['outlet-names'],
@@ -27,7 +44,7 @@ export function OutletSelector() {
   });
 
   return (
-    <Select value={selectedOutlet} onValueChange={setSelectedOutlet}>
+    <Select value={selectedOutlet} onValueChange={handleOutletChange}>
       <SelectTrigger className="border-blue-600 bg-blue-700 text-white">
         <SelectValue placeholder="Select an outlet" />
       </SelectTrigger>

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
@@ -5,9 +6,10 @@ import { QualityKPICard } from "@/components/quality/quality-kpi-card";
 import { useQualityMetrics } from "@/hooks/use-quality-metrics";
 import { PhoneCall, CalendarDays, ShieldCheck, Beer, Wine, Martini } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { useOutlet } from "@/contexts/outlet-context";
 
 export default function Quality() {
-  const [selectedOutlet, setSelectedOutlet] = useState<string>("");
+  const { selectedOutlet, setSelectedOutlet } = useOutlet();
   const { metrics, getRAGStatus, getProductRAGStatus } = useQualityMetrics(selectedOutlet);
 
   const getCallComplianceStatus = () => {
@@ -31,10 +33,7 @@ export default function Quality() {
           <p className="text-gray-400">Monitor call quality metrics and compliance in last 8 weeks rolling</p>
         </div>
         <div className="w-[240px]">
-          <OutletSelector 
-            selectedOutlet={selectedOutlet} 
-            onOutletChange={setSelectedOutlet} 
-          />
+          <OutletSelector />
         </div>
       </div>
 
