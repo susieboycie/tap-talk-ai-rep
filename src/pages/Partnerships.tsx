@@ -30,7 +30,7 @@ export default function Partnerships() {
         <div className="space-y-6">
           {directTradeData && directTradeData.length > 0 && (
             <>
-              <DirectTradeInsights data={directTradeData} />
+              <DirectTradeInsights directTradeData={directTradeData} />
               
               <div>
                 <h2 className="text-xl font-semibold text-white mb-4">Direct Trade Analysis</h2>
