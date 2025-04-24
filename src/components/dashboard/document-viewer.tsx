@@ -4,9 +4,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const documents = [
-  { id: "persona-overview", label: "Persona Overview", path: "/persona-overview.pdf" },
-  { id: "cluster-insights", label: "Cluster Insights", path: "/cluster-insights.pdf" },
-  { id: "sales-playbook", label: "Sales Playbook", path: "/sales-playbook.pdf" }
+  { id: "activation-deck-1", label: "Activation Deck 1", path: "/activation-deck-1.pdf" },
+  { id: "activation-deck-2", label: "Activation Deck 2", path: "/activation-deck-2.pdf" },
+  { id: "activation-deck-3", label: "Activation Deck 3", path: "/activation-deck-3.pdf" }
 ];
 
 export function DocumentViewer() {
