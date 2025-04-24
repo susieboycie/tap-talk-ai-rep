@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { DocumentViewer } from "@/components/dashboard/document-viewer";
@@ -25,13 +24,12 @@ export default function Activations() {
           <h1 className="text-3xl font-bold tracking-tight text-white">Activations</h1>
           <p className="text-gray-400">View and manage activation materials and documents</p>
         </div>
-      </div>
-
-      <div className="mb-6">
-        <OutletSelector 
-          selectedOutlet={selectedOutlet}
-          onOutletChange={setSelectedOutlet}
-        />
+        <div className="w-[240px]">
+          <OutletSelector 
+            selectedOutlet={selectedOutlet}
+            onOutletChange={setSelectedOutlet}
+          />
+        </div>
       </div>
       
       <div className="mb-6">

@@ -17,18 +17,17 @@ export default function Quality() {
           <h1 className="text-3xl font-bold tracking-tight text-white">Quality</h1>
           <p className="text-gray-400">Monitor call quality metrics and compliance in last 8 weeks rolling</p>
         </div>
-      </div>
-
-      <div className="mb-6">
-        <OutletSelector 
-          selectedOutlet={selectedOutlet} 
-          onOutletChange={setSelectedOutlet} 
-        />
+        <div className="w-[240px]">
+          <OutletSelector 
+            selectedOutlet={selectedOutlet} 
+            onOutletChange={setSelectedOutlet} 
+          />
+        </div>
       </div>
 
       {selectedOutlet && (
         <div className="space-y-6">
-          <Card className="p-6 border-repgpt-700 bg-repgpt-800">
+          <Card className="p-6 border-orange-600 bg-orange-900/30">
             <div className="grid gap-4 md:grid-cols-3">
               <QualityKPICard
                 title="Call Compliance"
@@ -56,7 +55,7 @@ export default function Quality() {
             </div>
           </Card>
 
-          <Card className="p-6 border-repgpt-700 bg-repgpt-800">
+          <Card className="p-6 border-orange-600 bg-orange-900/30">
             <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
               <QualityKPICard
                 title="Guinness 0.0"
