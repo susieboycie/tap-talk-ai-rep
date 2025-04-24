@@ -19,7 +19,7 @@ export function DirectTradeInsights({ directTradeData }: DirectTradeInsightsProp
     );
   }
 
-  // Calculate insights
+  // Calculate insights with explicit Number() conversion
   const totalVolume = directTradeData.reduce((sum, item) => sum + (Number(item["Volume HL"]) || 0), 0);
   const productCounts = directTradeData.reduce((acc: { [key: string]: number }, item) => {
     const product = item["PRDHA L5 Individual Variant"] || "Unknown";
@@ -28,7 +28,7 @@ export function DirectTradeInsights({ directTradeData }: DirectTradeInsightsProp
   }, {});
 
   // Find the top product
-  const topProductEntries = Object.entries(productCounts).sort(([, a], [, b]) => b - a);
+  const topProductEntries = Object.entries(productCounts).sort(([, a], [, b]) => Number(b) - Number(a));
   const topProduct = topProductEntries.length > 0 ? topProductEntries[0] : ["No product", 0];
   
   // Calculate trends
