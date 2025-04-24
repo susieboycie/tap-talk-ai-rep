@@ -12,7 +12,7 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Home, Users, Calendar, FileText, BarChart } from "lucide-react";
+import { BarChart, Home, FileText, Insights, Partnership, Quality } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function AppSidebar() {
@@ -42,33 +42,33 @@ export function AppSidebar() {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/customers" className="flex items-center gap-2">
-                    <Users className="h-4 w-4" />
-                    <span>Customers</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link to="/scenarios" className="flex items-center gap-2">
-                    <BarChart className="h-4 w-4" />
-                    <span>Scenario Planning</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link to="/trade-terms" className="flex items-center gap-2">
+                  <Link to="/activations" className="flex items-center gap-2">
                     <FileText className="h-4 w-4" />
-                    <span>Trade Terms</span>
+                    <span>Activations</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/tasks" className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    <span>Notes & Tasks</span>
+                  <Link to="/insights" className="flex items-center gap-2">
+                    <Insights className="h-4 w-4" />
+                    <span>Insights</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/partnerships" className="flex items-center gap-2">
+                    <Partnership className="h-4 w-4" />
+                    <span>Partnerships</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/quality" className="flex items-center gap-2">
+                    <Quality className="h-4 w-4" />
+                    <span>Quality</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

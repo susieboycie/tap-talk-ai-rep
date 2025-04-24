@@ -10,11 +10,10 @@ import { ProtectedRoute } from "@/components/protected-route";
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import Customers from "./pages/Customers";
-import CustomerProfile from "./pages/CustomerProfile";
-import ScenarioPlanning from "./pages/ScenarioPlanning";
-import TradeTerms from "./pages/TradeTerms";
-import Tasks from "./pages/Tasks";
+import Activations from "./pages/Activations";
+import Insights from "./pages/Insights";
+import Partnerships from "./pages/Partnerships";
+import Quality from "./pages/Quality";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,11 +31,10 @@ const App = () => (
             <Route element={<ProtectedRoute />}>
               <Route element={<AppLayout />}>
                 <Route path="/" element={<Dashboard />} />
-                <Route path="/customers" element={<Customers />} />
-                <Route path="/customers/:id" element={<CustomerProfile />} />
-                <Route path="/scenarios" element={<ScenarioPlanning />} />
-                <Route path="/trade-terms" element={<TradeTerms />} />
-                <Route path="/tasks" element={<Tasks />} />
+                <Route path="/activations" element={<Activations />} />
+                <Route path="/insights" element={<Insights />} />
+                <Route path="/partnerships" element={<Partnerships />} />
+                <Route path="/quality" element={<Quality />} />
               </Route>
             </Route>
             

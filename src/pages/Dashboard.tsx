@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
@@ -114,20 +113,10 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="mb-6">
-        <DocumentViewer />
-      </div>
-
       <ConversationStartersGrid 
         selectedOutlet={selectedOutlet}
         onConversationStart={handleConversationStart}
       />
-
-      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5 mb-6">
-        <div className="md:col-span-3 lg:col-span-5">
-          <PerformanceChart data={salesData} isLoading={isSalesLoading} />
-        </div>
-      </div>
 
       <Button 
         className="fixed bottom-4 right-4 z-40 bg-repgpt-400 hover:bg-repgpt-500 text-white shadow-lg"
