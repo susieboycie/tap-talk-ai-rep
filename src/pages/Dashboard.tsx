@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
@@ -14,6 +13,7 @@ import { PersonaSelector } from "@/components/dashboard/persona-selector";
 import { ConversationStartersGrid } from "@/components/dashboard/conversation-starters-grid";
 import { supabase } from "@/integrations/supabase/client";
 import { useQualityMetrics } from "@/hooks/use-quality-metrics";
+import { OutletOverview } from "@/components/dashboard/outlet-overview";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -104,7 +104,7 @@ export default function Dashboard() {
       </div>
 
       <div className="mb-6">
-        <OutletDescription 
+        <OutletOverview 
           outletName={selectedOutlet}
           cluster={clusterType}
           clusterDetails={clusterDetails}

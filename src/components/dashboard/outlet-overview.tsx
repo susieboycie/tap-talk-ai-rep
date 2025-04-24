@@ -1,17 +1,28 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ClusterDetails, PersonaDetails } from "@/hooks/use-persona-details";
-import { Store } from "lucide-react";
+import { Store, TrendingUp, TrendingDown } from "lucide-react";
+import { Tables } from "@/integrations/supabase/types";
 
 interface OutletOverviewProps {
   outletName: string | null;
   cluster: string | null;
   clusterDetails?: ClusterDetails | null;
   personaDetails: PersonaDetails | null;
+  salesData: Tables<"daily_sales_volume">[] | null;
   isLoading: boolean;
+  salesDataLoading?: boolean;
 }
 
-export function OutletOverview({ outletName, cluster, clusterDetails, personaDetails, isLoading }: OutletOverviewProps) {
+export function OutletOverview({ 
+  outletName, 
+  cluster, 
+  clusterDetails, 
+  personaDetails, 
+  salesData,
+  isLoading,
+  salesDataLoading = false
+}: OutletOverviewProps) {
   if (isLoading) {
     return (
       <Card className="border-repgpt-700 bg-repgpt-800">
@@ -45,86 +56,103 @@ export function OutletOverview({ outletName, cluster, clusterDetails, personaDet
     );
   }
 
+  // Calculate 7-day sales trends for Guinness and Carlsberg
+  const last14Days = salesData ? [...salesData].slice(-14) : [];
+  const lastWeek = last14Days.slice(-7);
+  const previousWeek = last14Days.slice(0, 7);
+
+  const calculateWeeklyVolume = (data: typeof salesData, field: keyof Tables<"daily_sales_volume">) => {
+    if (!data) return 0;
+    return data.reduce((sum, day) => sum + (Number(day[field]) || 0), 0);
+  };
+
+  const getPercentChange = (current: number, previous: number) => {
+    if (previous === 0) return 0;
+    return ((current - previous) / previous) * 100;
+  };
+
+  const guinnessLastWeek = calculateWeeklyVolume(lastWeek, "Guinness_Draught_In_Keg_MTD_Billed");
+  const guinnessPreviousWeek = calculateWeeklyVolume(previousWeek, "Guinness_Draught_In_Keg_MTD_Billed");
+  const guinnessTrend = getPercentChange(guinnessLastWeek, guinnessPreviousWeek);
+
+  const carlsbergLastWeek = calculateWeeklyVolume(lastWeek, "Carlsberg_Lager_In_Keg_MTD_Billed");
+  const carlsbergPreviousWeek = calculateWeeklyVolume(previousWeek, "Carlsberg_Lager_In_Keg_MTD_Billed");
+  const carlsbergTrend = getPercentChange(carlsbergLastWeek, carlsbergPreviousWeek);
+
   return (
     <Card className="border-repgpt-700 bg-repgpt-800">
-      <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="text-lg font-medium text-white">{outletName}</CardTitle>
-            <p className="text-sm text-gray-400 mt-1">{cluster}</p>
-          </div>
-          <Store className="h-5 w-5 text-gray-400" />
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <div>
+          <CardTitle className="text-lg font-medium text-white">{outletName}</CardTitle>
+          <p className="text-sm text-gray-400 mt-1">{cluster}</p>
         </div>
+        <Store className="h-5 w-5 text-gray-400" />
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {/* Cluster Information */}
-          {clusterDetails && (
-            <>
-              {clusterDetails.consumption_behavior && (
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-400">Consumption Behavior</p>
-                  <p className="text-sm text-gray-300">{clusterDetails.consumption_behavior}</p>
-                </div>
+        <div className="space-y-6">
+          <div className="space-y-4">
+            <h3 className="text-sm font-medium text-white">Outlet Profile</h3>
+            <ul className="list-disc list-inside space-y-2 text-sm text-gray-300">
+              {clusterDetails?.venue_description && (
+                <li>{clusterDetails.venue_description}</li>
               )}
-              {clusterDetails.key_occasions && (
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-400">Key Occasions</p>
-                  <p className="text-sm text-gray-300">{clusterDetails.key_occasions}</p>
-                </div>
+              {clusterDetails?.consumption_behavior && (
+                <li>Consumption Pattern: {clusterDetails.consumption_behavior}</li>
               )}
-              {clusterDetails.venue_description && (
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-400">Venue Description</p>
-                  <p className="text-sm text-gray-300">{clusterDetails.venue_description}</p>
-                </div>
+              {clusterDetails?.key_occasions && (
+                <li>Key Occasions: {clusterDetails.key_occasions}</li>
               )}
-              {clusterDetails.product_focus && (
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-400">Product Focus</p>
-                  <p className="text-sm text-gray-300">{clusterDetails.product_focus}</p>
-                </div>
+              {clusterDetails?.product_focus && (
+                <li>Product Focus: {clusterDetails.product_focus}</li>
               )}
-              {clusterDetails.location_type && (
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-400">Location Type</p>
-                  <p className="text-sm text-gray-300">{clusterDetails.location_type}</p>
-                </div>
+              {clusterDetails?.price_tier && (
+                <li>Price Tier: {clusterDetails.price_tier}</li>
               )}
-              {clusterDetails.price_tier && (
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-400">Price Tier</p>
-                  <p className="text-sm text-gray-300">{clusterDetails.price_tier}</p>
-                </div>
-              )}
-              {clusterDetails.nsv_percent && (
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-400">NSV %</p>
-                  <p className="text-sm text-gray-300">{clusterDetails.nsv_percent}</p>
-                </div>
-              )}
-              {clusterDetails.universe_percent && (
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-400">Universe %</p>
-                  <p className="text-sm text-gray-300">{clusterDetails.universe_percent}</p>
-                </div>
-              )}
-            </>
+            </ul>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="text-sm font-medium text-white">Persona Insights</h3>
+            <ul className="list-disc list-inside space-y-2 text-sm text-gray-300">
+              <li>Persona Type: {personaDetails.name}</li>
+              <li>Key Goals: {personaDetails.goals}</li>
+              <li>Pain Points: {personaDetails.pain_points}</li>
+            </ul>
+          </div>
+
+          {!salesDataLoading && salesData && salesData.length > 0 && (
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium text-white">7-Day Sales Performance</h3>
+              <ul className="list-disc list-inside space-y-2 text-sm text-gray-300">
+                <li className="flex items-center justify-between">
+                  <span>Guinness Draught</span>
+                  <div className="flex items-center gap-1">
+                    {guinnessTrend > 0 ? (
+                      <TrendingUp className="h-4 w-4 text-green-500" />
+                    ) : (
+                      <TrendingDown className="h-4 w-4 text-red-500" />
+                    )}
+                    <span className={guinnessTrend > 0 ? "text-green-500" : "text-red-500"}>
+                      {Math.abs(guinnessTrend).toFixed(1)}%
+                    </span>
+                  </div>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span>Carlsberg Lager</span>
+                  <div className="flex items-center gap-1">
+                    {carlsbergTrend > 0 ? (
+                      <TrendingUp className="h-4 w-4 text-green-500" />
+                    ) : (
+                      <TrendingDown className="h-4 w-4 text-red-500" />
+                    )}
+                    <span className={carlsbergTrend > 0 ? "text-green-500" : "text-red-500"}>
+                      {Math.abs(carlsbergTrend).toFixed(1)}%
+                    </span>
+                  </div>
+                </li>
+              </ul>
+            </div>
           )}
-          
-          {/* Persona Information */}
-          <div className="space-y-1">
-            <p className="text-xs text-gray-400">Persona Type</p>
-            <p className="text-sm font-medium text-white">{personaDetails.name}</p>
-          </div>
-          <div className="space-y-1">
-            <p className="text-xs text-gray-400">Key Goals</p>
-            <p className="text-sm text-gray-300">{personaDetails.goals}</p>
-          </div>
-          <div className="space-y-1">
-            <p className="text-xs text-gray-400">Pain Points</p>
-            <p className="text-sm text-gray-300">{personaDetails.pain_points}</p>
-          </div>
         </div>
       </CardContent>
     </Card>
