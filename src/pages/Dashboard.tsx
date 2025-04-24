@@ -3,17 +3,14 @@ import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
 import { OutletDescription } from "@/components/dashboard/outlet-description";
 import { AIAssistant } from "@/components/ai-assistant";
-import { QualityKPICard } from "@/components/quality/quality-kpi-card";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, PhoneCall, CalendarDays, ShieldCheck } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 import { useOutletSales } from "@/hooks/use-outlet-sales";
-import { useQualityMetrics } from "@/hooks/use-quality-metrics";
 import { usePersonaDetails, type PersonaDetails } from "@/hooks/use-persona-details";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import { PersonaSelector } from "@/components/dashboard/persona-selector";
 import { ConversationStartersGrid } from "@/components/dashboard/conversation-starters-grid";
-import { DocumentViewer } from "@/components/dashboard/document-viewer";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function Dashboard() {
@@ -103,34 +100,6 @@ export default function Dashboard() {
           />
         </div>
       </div>
-
-      {selectedOutlet && (
-        <div className="grid gap-4 md:grid-cols-3 mb-6">
-          <QualityKPICard
-            title="Call Compliance"
-            subtitle="In last 8 weeks rolling"
-            value={`${metrics.callCompliance}%`}
-            icon={ShieldCheck}
-            status={getRAGStatus(metrics.callCompliance, "callCompliance")}
-          />
-          <QualityKPICard
-            title="Calls per Day"
-            subtitle="Physical calls in last 8 weeks rolling"
-            value={metrics.callsPerDay.toFixed(1)}
-            target={metrics.cpdTarget}
-            icon={PhoneCall}
-            status={getRAGStatus(metrics.callsPerDay, "callsPerDay")}
-          />
-          <QualityKPICard
-            title="Days In Trade"
-            subtitle="With at least 1 physical call logged"
-            value={metrics.daysInTrade}
-            target={metrics.ditTarget}
-            icon={CalendarDays}
-            status={getRAGStatus(metrics.daysInTrade, "daysInTrade")}
-          />
-        </div>
-      )}
 
       <div className="mb-6">
         <OutletDescription 
