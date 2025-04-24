@@ -12,6 +12,7 @@ import { usePersonaDetails, type PersonaDetails } from "@/hooks/use-persona-deta
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import { PersonaSelector } from "@/components/dashboard/persona-selector";
 import { ConversationStartersGrid } from "@/components/dashboard/conversation-starters-grid";
+import { DocumentViewer } from "@/components/dashboard/document-viewer";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function Dashboard() {
@@ -111,6 +112,10 @@ export default function Dashboard() {
           isLoading={isPersonaLoading && !manualPersonaDetails}
           salesDataLoading={isSalesLoading}
         />
+      </div>
+
+      <div className="mb-6">
+        <DocumentViewer />
       </div>
 
       <ConversationStartersGrid 
