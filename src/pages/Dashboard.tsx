@@ -108,19 +108,24 @@ export default function Dashboard() {
         <div className="grid gap-4 md:grid-cols-3 mb-6">
           <QualityKPICard
             title="Call Compliance"
+            subtitle="In last 8 weeks rolling"
             value={`${metrics.callCompliance}%`}
             icon={ShieldCheck}
             status={getRAGStatus(metrics.callCompliance, "callCompliance")}
           />
           <QualityKPICard
             title="Calls per Day"
+            subtitle="Physical calls in last 8 weeks rolling"
             value={metrics.callsPerDay.toFixed(1)}
+            target={metrics.cpdTarget}
             icon={PhoneCall}
             status={getRAGStatus(metrics.callsPerDay, "callsPerDay")}
           />
           <QualityKPICard
             title="Days In Trade"
+            subtitle="With at least 1 physical call logged"
             value={metrics.daysInTrade}
+            target={metrics.ditTarget}
             icon={CalendarDays}
             status={getRAGStatus(metrics.daysInTrade, "daysInTrade")}
           />
