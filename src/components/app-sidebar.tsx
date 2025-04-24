@@ -12,7 +12,7 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { BarChart, Home, FileText, Insights, Partnership, Quality } from "lucide-react";
+import { BarChart, Home, FileText, BarChart3, Users, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function AppSidebar() {
@@ -51,7 +51,7 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <Link to="/insights" className="flex items-center gap-2">
-                    <Insights className="h-4 w-4" />
+                    <BarChart3 className="h-4 w-4" />
                     <span>Insights</span>
                   </Link>
                 </SidebarMenuButton>
@@ -59,7 +59,7 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <Link to="/partnerships" className="flex items-center gap-2">
-                    <Partnership className="h-4 w-4" />
+                    <Users className="h-4 w-4" />
                     <span>Partnerships</span>
                   </Link>
                 </SidebarMenuButton>
@@ -67,7 +67,7 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <Link to="/quality" className="flex items-center gap-2">
-                    <Quality className="h-4 w-4" />
+                    <Shield className="h-4 w-4" />
                     <span>Quality</span>
                   </Link>
                 </SidebarMenuButton>
