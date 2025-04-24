@@ -8,7 +8,7 @@ import { AppLayout } from "@/components/layout/app-layout";
 import { ProtectedRoute } from "@/components/protected-route";
 
 import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
+import Overview from "./pages/Overview";
 import Activations from "./pages/Activations";
 import Insights from "./pages/Insights";
 import Partnerships from "./pages/Partnerships";
@@ -30,7 +30,7 @@ const App = () => (
             
             <Route element={<ProtectedRoute />}>
               <Route element={<AppLayout />}>
-                <Route path="/" element={<Dashboard />} />
+                <Route path="/" element={<Overview />} />
                 <Route path="/activations" element={<Activations />} />
                 <Route path="/insights" element={<Insights />} />
                 <Route path="/partnerships" element={<Partnerships />} />

@@ -15,7 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQualityMetrics } from "@/hooks/use-quality-metrics";
 import { OutletOverview } from "@/components/dashboard/outlet-overview";
 
-export default function Dashboard() {
+export default function Overview() {
   const { user } = useAuth();
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
   const [selectedOutlet, setSelectedOutlet] = useState("");
@@ -81,7 +81,7 @@ export default function Dashboard() {
     <DashboardShell>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-white">RepGPT</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-white">Overview</h1>
           <p className="text-gray-400">
             Your AI sales assistant, {user?.name}
           </p>

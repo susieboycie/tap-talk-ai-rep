@@ -1,8 +1,8 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ClusterDetails, PersonaDetails } from "@/hooks/use-persona-details";
 import { Store, TrendingUp, TrendingDown } from "lucide-react";
 import { Tables } from "@/integrations/supabase/types";
+import { useQualityMetrics } from "@/hooks/use-quality-metrics";
 
 interface OutletOverviewProps {
   outletName: string | null;
@@ -23,6 +23,8 @@ export function OutletOverview({
   isLoading,
   salesDataLoading = false
 }: OutletOverviewProps) {
+  const { metrics, getRAGStatus } = useQualityMetrics(outletName || "");
+
   if (isLoading) {
     return (
       <Card className="border-repgpt-700 bg-repgpt-800">
@@ -153,6 +155,22 @@ export function OutletOverview({
               </ul>
             </div>
           )}
+
+          <div className="space-y-4">
+            <h3 className="text-sm font-medium text-white">Quality Overview</h3>
+            <ul className="list-disc list-inside space-y-2 text-sm text-gray-300">
+              <li>Call Compliance: {metrics.callCompliance}% ({getRAGStatus(metrics.callCompliance, "callCompliance") === "green" ? "Good" : getRAGStatus(metrics.callCompliance, "callCompliance") === "amber" ? "Needs Attention" : "At Risk"})</li>
+              <li>Calls per Day: {metrics.callsPerDay.toFixed(1)} vs target {metrics.cpdTarget}</li>
+              <li>Days in Trade: {metrics.daysInTrade} days vs target {metrics.ditTarget}</li>
+              <li>Product Distribution: 
+                <ul className="ml-4 mt-1">
+                  <li>Guinness: {Math.round((metrics.guinness.actual / metrics.guinness.target) * 100)}% of target</li>
+                  <li>Rockshore: {Math.round((metrics.rockshoreDistribution.actual / metrics.rockshoreDistribution.target) * 100)}% of target</li>
+                  <li>Smirnoff Ice: {Math.round((metrics.smirnoffIce.actual / metrics.smirnoffIce.target) * 100)}% of target</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
         </div>
       </CardContent>
     </Card>
