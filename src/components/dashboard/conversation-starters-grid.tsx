@@ -20,7 +20,7 @@ export function ConversationStartersGrid({ selectedOutlet, onConversationStart }
   const isQualityPage = currentPath === "/quality";
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
+    <div className={`grid gap-4 ${isActivationsPage ? 'grid-cols-1' : 'md:grid-cols-2 lg:grid-cols-4'} mb-6`}>
       {(!isInsightsPage && !isPartnershipsPage && !isQualityPage) && (
         <ConversationStarter
           icon={<MessageSquare className="h-5 w-5 text-purple-400" />}
