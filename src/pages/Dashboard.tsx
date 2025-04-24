@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
@@ -12,6 +13,7 @@ import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import { PersonaSelector } from "@/components/dashboard/persona-selector";
 import { ConversationStartersGrid } from "@/components/dashboard/conversation-starters-grid";
 import { supabase } from "@/integrations/supabase/client";
+import { useQualityMetrics } from "@/hooks/use-quality-metrics";
 
 export default function Dashboard() {
   const { user } = useAuth();
