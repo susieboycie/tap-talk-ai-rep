@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Input } from "@/components/ui/input";
 import { MessageSquare, Send } from "lucide-react";
 import { usePersonaDetails } from "@/hooks/use-persona-details";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Message {
   role: "user" | "assistant";
@@ -28,6 +29,7 @@ export function AIAssistant({
 }: AIAssistantProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   
   const { personaDetails } = usePersonaDetails(
     selectedOutlet && !selectedPersona ? selectedOutlet : null
@@ -38,7 +40,6 @@ export function AIAssistant({
   useEffect(() => {
     const greeting = "I am RepGPT - your personalised AI driven sales assistant! I can help by providing you with relevant Outlet specific insights, tailored talking points for activation plans, and smart suggestions that help you make every conversation count.";
     
-    // Clear previous messages and set the new greeting
     setMessages([{ role: "assistant", content: greeting }]);
     
     if (initialMessage) {
@@ -48,65 +49,44 @@ export function AIAssistant({
     }
   }, [selectedOutlet, effectivePersona, initialMessage, personaDetails]);
 
-  const handleUserMessage = (message: string) => {
-    setMessages((prev) => [...prev, { role: "user", content: message }]);
-    
-    setTimeout(() => {
-      let response = "I'm processing your request...";
-      
-      if (selectedOutlet) {
-        if (message.toLowerCase().includes("volume") || message.toLowerCase().includes("contract")) {
-          response = `Based on ${selectedOutlet}'s data, I can help with volume forecasting. Would you like to see their current contract status or simulate new volume targets?`;
-        } else if (message.toLowerCase().includes("tap") || message.toLowerCase().includes("draught")) {
-          response = `${selectedOutlet} currently has 8 taps, with 3 Diageo products installed. Would you like to see detailed tap usage stats or opportunities for new installations?`;
-        } else if (message.toLowerCase().includes("pitch") || message.toLowerCase().includes("sell")) {
-          response = `For ${selectedOutlet}, I recommend focusing on seasonal promotions based on their recent sales trends. Their top 3 sellers are Guinness, Smirnoff, and Captain Morgan.`;
-        } else {
-          response = `I understand you're asking about ${message} for ${selectedOutlet}. How can I provide more specific assistance?`;
+  const handleUserMessage = async (message: string) => {
+    if (!message.trim()) return;
+
+    setMessages(prev => [...prev, { role: "user", content: message }]);
+    setIsLoading(true);
+
+    try {
+      const outletContext = selectedOutlet ? 
+        `Current outlet: ${selectedOutlet}. ${personaDetails?.goals ? `Their goals: ${personaDetails.goals}.` : ''} ${personaDetails?.pain_points ? `Their pain points: ${personaDetails.pain_points}.` : ''}` : 
+        null;
+
+      const personaContext = effectivePersona ? 
+        `The outlet corresponds to a "${effectivePersona}" persona type.` : 
+        null;
+
+      const { data, error } = await supabase.functions.invoke('chat-with-repgpt', {
+        body: {
+          message,
+          outletContext,
+          personaContext
         }
-        
-        if (effectivePersona === "The Entrepreneur") {
-          response += " Since they're entrepreneurial, emphasizing innovation and growth opportunities would resonate well.";
-          
-          if (personaDetails?.pain_points) {
-            response += ` Be mindful that they struggle with: ${personaDetails.pain_points}.`;
-          }
-        } else if (effectivePersona === "The Deal Maker") {
-          response += " For this deal-focused outlet, highlighting ROI and competitive advantage would be effective.";
-          
-          if (personaDetails?.goals) {
-            response += ` Their key goals include: ${personaDetails.goals}.`;
-          }
-        } else if (effectivePersona === "The Pragmatist") {
-          response += " As a pragmatic partner, focus on reliability and consistent performance in your approach.";
-        } else if (effectivePersona === "The Support Seeker") {
-          response += " This outlet values guidance and support, so offer clear, step-by-step advice.";
-        }
-      } else {
-        if (message.toLowerCase().includes("volume scenarios")) {
-          response = "I've pulled up the volume scenarios. Would you like to see the impact of a 10% increase in keg volume or explore different discount options?";
-        } else if (message.toLowerCase().includes("tap")) {
-          response = "The current tap utilization across your accounts is at 80%. There are several venues with taps available for new products. Would you like to see specific recommendations?";
-        } else if (message.toLowerCase().includes("trade terms")) {
-          response = "I've found several active trade terms agreements ending in the next 45 days. Would you like me to prepare renewal options?";
-        } else {
-          response = `I understand you're asking about ${message}. How can I assist further with this?`;
-        }
+      });
+
+      if (error) throw error;
+
+      if (data?.reply) {
+        setMessages(prev => [...prev, { role: "assistant", content: data.reply }]);
       }
-
-      response += "\n\nWould you also like to know about:";
-      response += "\n- Recent sales trends";
-      response += "\n- Competing products in this outlet";
-      response += "\n- Upcoming promotional opportunities";
-
-      setMessages((prev) => [...prev, { role: "assistant", content: response }]);
-    }, 1000);
-  };
-
-  const handleSend = () => {
-    if (!input.trim()) return;
-    handleUserMessage(input);
-    setInput("");
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setMessages(prev => [...prev, { 
+        role: "assistant", 
+        content: "I apologize, but I encountered an error processing your request. Please try again." 
+      }]);
+    } finally {
+      setIsLoading(false);
+      setInput("");
+    }
   };
 
   if (!isOpen) return null;
@@ -144,6 +124,13 @@ export function AIAssistant({
                 </div>
               </div>
             ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="bg-repgpt-700 text-white rounded-lg px-4 py-2">
+                  Thinking...
+                </div>
+              </div>
+            )}
           </div>
         </CardContent>
         <CardFooter className="border-t border-repgpt-700 p-4">
@@ -152,10 +139,16 @@ export function AIAssistant({
               placeholder="Ask RepGPT..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && handleSend()}
+              onKeyPress={(e) => e.key === "Enter" && handleUserMessage(input)}
               className="flex-1 border-repgpt-600 bg-repgpt-700 text-white"
+              disabled={isLoading}
             />
-            <Button size="icon" onClick={handleSend} className="bg-repgpt-400 hover:bg-repgpt-500">
+            <Button 
+              size="icon" 
+              onClick={() => handleUserMessage(input)}
+              className="bg-repgpt-400 hover:bg-repgpt-500"
+              disabled={isLoading}
+            >
               <Send className="h-4 w-4" />
             </Button>
           </div>
