@@ -18,8 +18,8 @@ export interface TradeTermItem {
 export function useTradeTerms(outletName: string | null) {
   return useQuery({
     queryKey: ['trade-terms', outletName],
-    queryFn: async (): Promise<TradeTermItem[]> => {
-      if (!outletName) return [];
+    queryFn: async () => {
+      if (!outletName) return [] as TradeTermItem[];
 
       // First get the Ship To from the outlet_data table
       const { data: outletData, error: outletError } = await supabase
@@ -35,7 +35,7 @@ export function useTradeTerms(outletName: string | null) {
 
       if (!outletData || !outletData["Ship To"]) {
         console.log("No Ship To found for outlet:", outletName);
-        return [];
+        return [] as TradeTermItem[];
       }
 
       const shipTo = outletData["Ship To"];
@@ -52,7 +52,7 @@ export function useTradeTerms(outletName: string | null) {
       }
 
       if (!data || data.length === 0) {
-        return [];
+        return [] as TradeTermItem[];
       }
 
       // Process and transform the data
@@ -100,7 +100,7 @@ export function useTradeTerms(outletName: string | null) {
           rebate: `${rebatePercentage}%`,
           shipTo
         };
-      });
+      }) as TradeTermItem[];
     },
     enabled: !!outletName,
   });
