@@ -29,9 +29,9 @@ export function OutletSelector({ selectedOutlet: propSelectedOutlet, onOutletCha
     queryFn: async () => {
       const { data, error } = await supabase
         .from('outlet_data')
-        .select('Outlet Name')
-        .not('Outlet Name', 'is', null)
-        .order('Outlet Name');
+        .select('"Outlet Name"')
+        .not('"Outlet Name"', 'is', null)
+        .order('"Outlet Name"');
         
       if (error) {
         console.error("Error fetching outlet names:", error);
