@@ -16,7 +16,7 @@ export interface TradeTermItem {
 }
 
 export function useTradeTerms(outletName: string | null) {
-  return useQuery({
+  return useQuery<TradeTermItem[], Error>({
     queryKey: ['trade-terms', outletName],
     queryFn: async () => {
       if (!outletName) return [] as TradeTermItem[];
@@ -56,7 +56,7 @@ export function useTradeTerms(outletName: string | null) {
       }
 
       // Process and transform the data
-      return data.map((item, index) => {
+      const result: TradeTermItem[] = data.map((item, index) => {
         // Parse dates from the fiscal year/period
         const fiscalDate = new Date(item["Fiscal year/period"] || "");
         const startDate = new Date(fiscalDate);
@@ -100,7 +100,9 @@ export function useTradeTerms(outletName: string | null) {
           rebate: `${rebatePercentage}%`,
           shipTo
         };
-      }) as TradeTermItem[];
+      });
+      
+      return result;
     },
     enabled: !!outletName,
   });
