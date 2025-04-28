@@ -1,16 +1,17 @@
-
 import { useState } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import { QualityKPICard } from "@/components/quality/quality-kpi-card";
 import { useQualityMetrics } from "@/hooks/use-quality-metrics";
-import { PhoneCall, CalendarDays, ShieldCheck, Beer, Wine, Martini } from "lucide-react";
+import { PhoneCall, CalendarDays, ShieldCheck, Beer, Wine, Martini, AlertCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useOutlet } from "@/contexts/outlet-context";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function Quality() {
   const { selectedOutlet, setSelectedOutlet } = useOutlet();
-  const { metrics, getRAGStatus, getProductRAGStatus } = useQualityMetrics(selectedOutlet);
+  const { metrics, getRAGStatus, getProductRAGStatus, isLoading, error } = useQualityMetrics(selectedOutlet);
 
   const getCallComplianceStatus = () => {
     if (metrics.callCompliance >= 80) return "strong";
@@ -19,11 +20,50 @@ export default function Quality() {
   };
 
   const getDistributionStatus = (actual: number, target: number) => {
+    if (target === 0) return "no target set";
     const percentage = (actual / target) * 100;
     if (percentage >= 90) return "performing well";
     if (percentage >= 70) return "needs improvement";
     return "significantly below target";
   };
+
+  const renderLoadingState = () => (
+    <div className="space-y-6">
+      <Card className="p-6 border-orange-600 bg-orange-900/30">
+        <div className="grid gap-4 md:grid-cols-3">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="space-y-2">
+              <Skeleton className="h-4 w-1/2 bg-orange-800/50" />
+              <Skeleton className="h-8 w-24 bg-orange-800/50" />
+              <Skeleton className="h-4 w-3/4 bg-orange-800/50" />
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <Card className="p-6 border-orange-600 bg-orange-900/30">
+        <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="space-y-2">
+              <Skeleton className="h-4 w-1/2 bg-orange-800/50" />
+              <Skeleton className="h-8 w-24 bg-orange-800/50" />
+              <Skeleton className="h-4 w-3/4 bg-orange-800/50" />
+            </div>
+          ))}
+        </div>
+      </Card>
+    </div>
+  );
+
+  const renderErrorState = () => (
+    <Alert variant="destructive">
+      <AlertCircle className="h-4 w-4" />
+      <AlertTitle>Error</AlertTitle>
+      <AlertDescription>
+        Failed to load quality metrics data. Please try again later.
+      </AlertDescription>
+    </Alert>
+  );
 
   return (
     <DashboardShell>
@@ -37,7 +77,17 @@ export default function Quality() {
         </div>
       </div>
 
-      {selectedOutlet && (
+      {!selectedOutlet && (
+        <div className="text-center py-8">
+          <p className="text-gray-400">Please select an outlet to view quality metrics.</p>
+        </div>
+      )}
+
+      {selectedOutlet && isLoading && renderLoadingState()}
+
+      {selectedOutlet && error && renderErrorState()}
+
+      {selectedOutlet && !isLoading && !error && (
         <>
           <Card className="p-6 mb-6 border-orange-600 bg-orange-900/30">
             <h2 className="text-xl font-semibold text-white mb-4">Quality Overview</h2>
@@ -49,9 +99,9 @@ export default function Quality() {
               </p>
               <p>
                 Product distribution shows: 
-                Guinness is {getDistributionStatus(metrics.guinness.actual, metrics.guinness.target)} at {Math.round((metrics.guinness.actual / metrics.guinness.target) * 100)}% of target, 
-                Rockshore distribution is {getDistributionStatus(metrics.rockshoreDistribution.actual, metrics.rockshoreDistribution.target)} at {Math.round((metrics.rockshoreDistribution.actual / metrics.rockshoreDistribution.target) * 100)}% of target, 
-                and Smirnoff Ice is {getDistributionStatus(metrics.smirnoffIce.actual, metrics.smirnoffIce.target)} at {Math.round((metrics.smirnoffIce.actual / metrics.smirnoffIce.target) * 100)}% of target.
+                Guinness is {getDistributionStatus(metrics.guinness.actual, metrics.guinness.target)} at {metrics.guinness.target > 0 ? Math.round((metrics.guinness.actual / metrics.guinness.target) * 100) : 0}% of target, 
+                Rockshore distribution is {getDistributionStatus(metrics.rockshoreDistribution.actual, metrics.rockshoreDistribution.target)} at {metrics.rockshoreDistribution.target > 0 ? Math.round((metrics.rockshoreDistribution.actual / metrics.rockshoreDistribution.target) * 100) : 0}% of target, 
+                and Smirnoff Ice is {getDistributionStatus(metrics.smirnoffIce.actual, metrics.smirnoffIce.target)} at {metrics.smirnoffIce.target > 0 ? Math.round((metrics.smirnoffIce.actual / metrics.smirnoffIce.target) * 100) : 0}% of target.
               </p>
             </div>
           </Card>
