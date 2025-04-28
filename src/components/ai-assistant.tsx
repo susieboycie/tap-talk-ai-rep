@@ -1,11 +1,12 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { MessageSquare, Send } from "lucide-react";
 import { usePersonaDetails } from "@/hooks/use-persona-details";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 interface Message {
   role: "user" | "assistant";
@@ -30,6 +31,7 @@ export function AIAssistant({
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const { personaDetails } = usePersonaDetails(
     selectedOutlet && !selectedPersona ? selectedOutlet : null
@@ -49,10 +51,19 @@ export function AIAssistant({
     }
   }, [selectedOutlet, effectivePersona, initialMessage, personaDetails]);
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   const handleUserMessage = async (message: string) => {
     if (!message.trim()) return;
 
     setMessages(prev => [...prev, { role: "user", content: message }]);
+    setInput("");
     setIsLoading(true);
 
     try {
@@ -72,20 +83,29 @@ export function AIAssistant({
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error calling RepGPT function:', error);
+        throw new Error(`Error calling RepGPT: ${error.message}`);
+      }
 
       if (data?.reply) {
         setMessages(prev => [...prev, { role: "assistant", content: data.reply }]);
+      } else {
+        throw new Error('No reply received from RepGPT');
       }
     } catch (error) {
       console.error('Error sending message:', error);
+      toast({
+        title: "Communication Error",
+        description: "There was a problem connecting to RepGPT. Please try again later.",
+        variant: "destructive"
+      });
       setMessages(prev => [...prev, { 
         role: "assistant", 
-        content: "I apologize, but I encountered an error processing your request. Please try again." 
+        content: "I apologize, but I'm having trouble connecting to my knowledge base at the moment. Please try again in a few moments." 
       }]);
     } finally {
       setIsLoading(false);
-      setInput("");
     }
   };
 
@@ -131,6 +151,7 @@ export function AIAssistant({
                 </div>
               </div>
             )}
+            <div ref={messagesEndRef} />
           </div>
         </CardContent>
         <CardFooter className="border-t border-repgpt-700 p-4">
@@ -139,7 +160,7 @@ export function AIAssistant({
               placeholder="Ask RepGPT..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && handleUserMessage(input)}
+              onKeyPress={(e) => e.key === "Enter" && !isLoading && handleUserMessage(input)}
               className="flex-1 border-repgpt-600 bg-repgpt-700 text-white"
               disabled={isLoading}
             />
@@ -147,7 +168,7 @@ export function AIAssistant({
               size="icon" 
               onClick={() => handleUserMessage(input)}
               className="bg-repgpt-400 hover:bg-repgpt-500"
-              disabled={isLoading}
+              disabled={isLoading || !input.trim()}
             >
               <Send className="h-4 w-4" />
             </Button>
