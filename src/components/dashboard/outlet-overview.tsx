@@ -1,8 +1,10 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ClusterDetails, PersonaDetails } from "@/hooks/use-persona-details";
 import { Store, TrendingUp, TrendingDown } from "lucide-react";
 import { Tables } from "@/integrations/supabase/types";
 import { useQualityMetrics } from "@/hooks/use-quality-metrics";
+import { useOutletData } from "@/hooks/use-outlet-data";
 
 interface OutletOverviewProps {
   outletName: string | null;
@@ -24,6 +26,7 @@ export function OutletOverview({
   salesDataLoading = false
 }: OutletOverviewProps) {
   const { metrics, getRAGStatus } = useQualityMetrics(outletName || "");
+  const { data: outletData } = useOutletData(outletName);
 
   if (isLoading) {
     return (
@@ -86,7 +89,10 @@ export function OutletOverview({
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <div>
           <CardTitle className="text-lg font-medium text-white">{outletName}</CardTitle>
-          <p className="text-sm text-gray-400 mt-1">{cluster}</p>
+          <p className="text-sm text-gray-400 mt-1">
+            {cluster} {outletData?.["City"] && `| ${outletData["City"]}`} 
+            {outletData?.["Global Outlet Segment"] && `| ${outletData["Global Outlet Segment"]}`}
+          </p>
         </div>
         <Store className="h-5 w-5 text-gray-400" />
       </CardHeader>
@@ -106,6 +112,12 @@ export function OutletOverview({
               )}
               {clusterDetails?.product_focus && (
                 <li>Product Focus: {clusterDetails.product_focus}</li>
+              )}
+              {outletData?.["Global Outlet Channel"] && (
+                <li>Channel: {outletData["Global Outlet Channel"]}</li>
+              )}
+              {outletData?.["Global Outlet Segment"] && (
+                <li>Segment: {outletData["Global Outlet Segment"]}</li>
               )}
               {clusterDetails?.price_tier && (
                 <li>Price Tier: {clusterDetails.price_tier}</li>

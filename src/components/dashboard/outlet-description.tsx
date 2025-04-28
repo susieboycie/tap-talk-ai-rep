@@ -7,6 +7,7 @@ import { SalesInsights } from "./sales-insights";
 import { useQualityMetrics } from "@/hooks/use-quality-metrics";
 import { QualityKPICard } from "../quality/quality-kpi-card";
 import { PhoneCall, CalendarDays, ShieldCheck } from "lucide-react";
+import { useOutletData } from "@/hooks/use-outlet-data";
 
 interface OutletDescriptionProps {
   outletName: string | null;
@@ -28,6 +29,7 @@ export function OutletDescription({
   salesDataLoading = false
 }: OutletDescriptionProps) {
   const { metrics, getRAGStatus } = useQualityMetrics(outletName || "");
+  const { data: outletData } = useOutletData(outletName);
 
   if (isLoading) {
     return (
@@ -66,9 +68,11 @@ export function OutletDescription({
   const totalGuinnessSales = salesData?.reduce((total, record) => 
     total + (record.Guinness_Draught_In_Keg_MTD_Billed || 0), 0) || 0;
 
-  // Enhanced natural language description with quality metrics
-  const description = `${outletName} is a ${clusterDetails.venue_description?.toLowerCase() || cluster?.toLowerCase()} 
-    operating as a ${personaDetails.name}. This venue typically focuses on ${clusterDetails.product_focus?.toLowerCase() || 'various products'} 
+  // Enhanced natural language description with quality metrics and outlet data
+  const description = `${outletName} is a ${clusterDetails.venue_description?.toLowerCase() || cluster?.toLowerCase() || 'venue'} 
+    ${outletData?.["City"] ? `in ${outletData["City"]}` : ''} 
+    operating as a ${personaDetails.name}. 
+    ${outletData?.["Global Outlet Segment"] ? `This ${outletData["Global Outlet Segment"].toLowerCase()} venue` : 'This venue'} typically focuses on ${clusterDetails.product_focus?.toLowerCase() || 'various products'} 
     and serves customers during ${clusterDetails.key_occasions?.toLowerCase() || 'various occasions'}. 
     ${clusterDetails.consumption_behavior ? `The typical consumption pattern shows ${clusterDetails.consumption_behavior.toLowerCase()}.` : ''} 
     ${totalGuinnessSales > 0 ? `The outlet has recorded ${totalGuinnessSales.toFixed(2)} units in Guinness sales.` : ''}

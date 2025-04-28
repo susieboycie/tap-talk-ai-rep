@@ -1,118 +1,97 @@
-import { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 
-export type PersonaDetails = {
-  id: string;
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useOutletData, type OutletData } from "./use-outlet-data";
+
+export interface PersonaDetails {
   name: string;
   goals: string;
   pain_points: string;
-  diageo_value: string;
+  diageo_value?: string | null;
+  id?: string | null;
 }
 
-export type ClusterDetails = {
+export interface ClusterDetails {
   name: string;
+  venue_description: string | null;
   consumption_behavior: string | null;
   key_occasions: string | null;
-  venue_description: string | null;
   product_focus: string | null;
-  location_type: string | null;
   price_tier: string | null;
-  nsv_percent: string | null;
+  location_type: string | null;
   universe_percent: string | null;
+  nsv_percent: string | null;
+  id: string | null;
 }
 
-export const usePersonaDetails = (outletName: string | null) => {
-  const [clusterType, setClusterType] = useState<string | null>(null);
-  const [clusterDetails, setClusterDetails] = useState<ClusterDetails | null>(null);
-
-  const clusterQuery = useQuery({
-    queryKey: ['outlet-cluster', outletName],
+export function usePersonaDetails(outletName: string | null) {
+  // First, fetch the outlet data to get the cluster number
+  const { data: outletData } = useOutletData(outletName);
+  
+  // Map clusters to personas
+  const mapClusterToPersona = (clusterNumber: string | null): string => {
+    if (!clusterNumber) return "The Support Seeker";
+    
+    const clusterNum = parseInt(clusterNumber);
+    if (isNaN(clusterNum)) return "The Support Seeker";
+    
+    // Map cluster numbers to persona types
+    if (clusterNum >= 1 && clusterNum <= 3) return "The Entrepreneur";
+    if (clusterNum >= 4 && clusterNum <= 6) return "The Deal Maker";
+    if (clusterNum >= 7 && clusterNum <= 9) return "The Pragmatist";
+    return "The Support Seeker";
+  };
+  
+  // Fetch persona details
+  const { data: personaData, isLoading: isPersonaLoading } = useQuery({
+    queryKey: ['persona-details', outletData?.["Cluster Number"]],
     queryFn: async () => {
-      if (!outletName) return null;
+      if (!outletData) return null;
       
-      const { data, error } = await supabase
-        .from('daily_sales_volume')
-        .select('Cluster')
-        .eq('Outlet', outletName)
-        .limit(1);
-      
-      if (error) {
-        console.error("Error fetching cluster for outlet:", error);
-        throw error;
-      }
-      
-      const clusterName = data.length > 0 ? data[0].Cluster : null;
-      console.log("Outlet cluster:", clusterName);
-      setClusterType(clusterName);
-      return clusterName;
-    },
-    enabled: !!outletName,
-  });
-
-  const clusterDetailsQuery = useQuery({
-    queryKey: ['cluster-details', clusterType],
-    queryFn: async () => {
-      if (!clusterType) return null;
-      
-      const { data, error } = await supabase
-        .from('cluster_details')
-        .select('*')
-        .eq('name', clusterType)
-        .limit(1);
-      
-      if (error) {
-        console.error("Error fetching cluster details:", error);
-        throw error;
-      }
-      
-      const details = data.length > 0 ? data[0] as ClusterDetails : null;
-      console.log("Cluster details:", details);
-      setClusterDetails(details);
-      return details;
-    },
-    enabled: !!clusterType,
-  });
-
-  const personaQuery = useQuery({
-    queryKey: ['persona-details', clusterType],
-    queryFn: async () => {
-      if (!clusterType) return null;
-      
-      const personaName = mapClusterToPersona(clusterType);
+      const personaName = mapClusterToPersona(outletData["Cluster Number"]);
       
       const { data, error } = await supabase
         .from('persona_details')
         .select('*')
         .eq('name', personaName)
-        .limit(1);
-      
+        .maybeSingle();
+        
       if (error) {
         console.error("Error fetching persona details:", error);
         throw error;
       }
       
-      return data.length > 0 ? data[0] as PersonaDetails : null;
+      return data as PersonaDetails;
     },
-    enabled: !!clusterType,
+    enabled: !!outletData
+  });
+  
+  // Fetch cluster details
+  const { data: clusterData } = useQuery({
+    queryKey: ['cluster-details', outletData?.["Cluster Number"]],
+    queryFn: async () => {
+      if (!outletData?.["Cluster Number"]) return null;
+      
+      const { data, error } = await supabase
+        .from('cluster_details')
+        .select('*')
+        .eq('name', outletData["Cluster Number"])
+        .maybeSingle();
+        
+      if (error) {
+        console.error("Error fetching cluster details:", error);
+        throw error;
+      }
+      
+      return data as ClusterDetails;
+    },
+    enabled: !!outletData?.["Cluster Number"]
   });
 
   return {
-    isLoading: clusterQuery.isLoading || personaQuery.isLoading || clusterDetailsQuery.isLoading,
-    clusterType,
-    clusterDetails,
-    personaDetails: personaQuery.data,
-    error: clusterQuery.error || personaQuery.error || clusterDetailsQuery.error,
+    personaDetails: personaData || null,
+    clusterType: outletData?.["Cluster Number"] || null,
+    clusterDetails: clusterData || null,
+    isLoading: isPersonaLoading
   };
-};
-
-const mapClusterToPersona = (clusterType: string): string => {
-  const clusterMapping: Record<string, string> = {
-    'Neighbourhood Pub': 'The Pragmatist',
-    'Urban Bar': 'The Entrepreneur',
-    'Town Bar': 'The Support Seeker',
-    'City Centre': 'The Deal Maker'
-  };
-  
-  return clusterMapping[clusterType] || 'The Support Seeker'; // Default persona
-};
+}

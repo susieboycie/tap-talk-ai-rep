@@ -48,6 +48,54 @@ export type Database = {
         }
         Relationships: []
       }
+      contract_management_beer_data: {
+        Row: {
+          "Agreement Type": string | null
+          "Contract End Date": string | null
+          "Contract Record Type": string | null
+          "Contract Start Date": string | null
+          Duration: number | null
+          "Forecast Volume": number | null
+          "Overall Investment(incl. Indirect Inv)": number | null
+          "Payment Frequency": string | null
+          "Product growth-driver": string | null
+          "Product Name": string | null
+          "Rate/UoM": string | null
+          "Ship To": number | null
+          Status: string | null
+        }
+        Insert: {
+          "Agreement Type"?: string | null
+          "Contract End Date"?: string | null
+          "Contract Record Type"?: string | null
+          "Contract Start Date"?: string | null
+          Duration?: number | null
+          "Forecast Volume"?: number | null
+          "Overall Investment(incl. Indirect Inv)"?: number | null
+          "Payment Frequency"?: string | null
+          "Product growth-driver"?: string | null
+          "Product Name"?: string | null
+          "Rate/UoM"?: string | null
+          "Ship To"?: number | null
+          Status?: string | null
+        }
+        Update: {
+          "Agreement Type"?: string | null
+          "Contract End Date"?: string | null
+          "Contract Record Type"?: string | null
+          "Contract Start Date"?: string | null
+          Duration?: number | null
+          "Forecast Volume"?: number | null
+          "Overall Investment(incl. Indirect Inv)"?: number | null
+          "Payment Frequency"?: string | null
+          "Product growth-driver"?: string | null
+          "Product Name"?: string | null
+          "Rate/UoM"?: string | null
+          "Ship To"?: number | null
+          Status?: string | null
+        }
+        Relationships: []
+      }
       daily_sales_volume: {
         Row: {
           Calendar_day: string | null
@@ -177,6 +225,63 @@ export type Database = {
         }
         Relationships: []
       }
+      outlet_data: {
+        Row: {
+          City: string | null
+          "Cluster Number": string | null
+          Clustered: string | null
+          "Consumer Segmentation": string | null
+          "Credit terms": string | null
+          "Geo-Region": string | null
+          "Global Outlet Channel": string | null
+          "Global Outlet Segment": string | null
+          "Global Outlet Sub Segment": string | null
+          "Local Outlet-Segment1": string | null
+          "NI or ROI": string | null
+          "Outlet Name": string | null
+          "Outlet Visit Prioritisation": string | null
+          "Primary Sales Area": string | null
+          "Salesforce Record ID": string | null
+          "Ship To": number | null
+        }
+        Insert: {
+          City?: string | null
+          "Cluster Number"?: string | null
+          Clustered?: string | null
+          "Consumer Segmentation"?: string | null
+          "Credit terms"?: string | null
+          "Geo-Region"?: string | null
+          "Global Outlet Channel"?: string | null
+          "Global Outlet Segment"?: string | null
+          "Global Outlet Sub Segment"?: string | null
+          "Local Outlet-Segment1"?: string | null
+          "NI or ROI"?: string | null
+          "Outlet Name"?: string | null
+          "Outlet Visit Prioritisation"?: string | null
+          "Primary Sales Area"?: string | null
+          "Salesforce Record ID"?: string | null
+          "Ship To"?: number | null
+        }
+        Update: {
+          City?: string | null
+          "Cluster Number"?: string | null
+          Clustered?: string | null
+          "Consumer Segmentation"?: string | null
+          "Credit terms"?: string | null
+          "Geo-Region"?: string | null
+          "Global Outlet Channel"?: string | null
+          "Global Outlet Segment"?: string | null
+          "Global Outlet Sub Segment"?: string | null
+          "Local Outlet-Segment1"?: string | null
+          "NI or ROI"?: string | null
+          "Outlet Name"?: string | null
+          "Outlet Visit Prioritisation"?: string | null
+          "Primary Sales Area"?: string | null
+          "Salesforce Record ID"?: string | null
+          "Ship To"?: number | null
+        }
+        Relationships: []
+      }
       persona_details: {
         Row: {
           diageo_value: string | null
@@ -198,6 +303,249 @@ export type Database = {
           id?: string | null
           name?: string | null
           pain_points?: string | null
+        }
+        Relationships: []
+      }
+      sales_volume_data: {
+        Row: {
+          "Carlsberg (Lager)": number | null
+          "Carlsberg Non Alc (Non Alc Lager)": number | null
+          fiscal_year: string | null
+          "Guinness Draught (Stout)": number | null
+          "Guinness Non Alc (Non Alc Stout)": number | null
+          "Harp (Lager)": number | null
+          "Hop House 13": number | null
+          "Kilkenny Draught (Ale)": number | null
+          "Macardles Traditional (Ale)": number | null
+          "OGB Citra IPA (Ale)": number | null
+          "Rockshore (Lager)": number | null
+          "Rockshore Apple Cider": number | null
+          "Rockshore Light (Lager)": number | null
+          "Ship To": number | null
+          "Smithwick's (Ale)": number | null
+          "Smithwick's Pale Ale (Ale)": number | null
+          "Total Volume (HL)": number | null
+          "Tuborg (Lager)": number | null
+        }
+        Insert: {
+          "Carlsberg (Lager)"?: number | null
+          "Carlsberg Non Alc (Non Alc Lager)"?: number | null
+          fiscal_year?: string | null
+          "Guinness Draught (Stout)"?: number | null
+          "Guinness Non Alc (Non Alc Stout)"?: number | null
+          "Harp (Lager)"?: number | null
+          "Hop House 13"?: number | null
+          "Kilkenny Draught (Ale)"?: number | null
+          "Macardles Traditional (Ale)"?: number | null
+          "OGB Citra IPA (Ale)"?: number | null
+          "Rockshore (Lager)"?: number | null
+          "Rockshore Apple Cider"?: number | null
+          "Rockshore Light (Lager)"?: number | null
+          "Ship To"?: number | null
+          "Smithwick's (Ale)"?: number | null
+          "Smithwick's Pale Ale (Ale)"?: number | null
+          "Total Volume (HL)"?: number | null
+          "Tuborg (Lager)"?: number | null
+        }
+        Update: {
+          "Carlsberg (Lager)"?: number | null
+          "Carlsberg Non Alc (Non Alc Lager)"?: number | null
+          fiscal_year?: string | null
+          "Guinness Draught (Stout)"?: number | null
+          "Guinness Non Alc (Non Alc Stout)"?: number | null
+          "Harp (Lager)"?: number | null
+          "Hop House 13"?: number | null
+          "Kilkenny Draught (Ale)"?: number | null
+          "Macardles Traditional (Ale)"?: number | null
+          "OGB Citra IPA (Ale)"?: number | null
+          "Rockshore (Lager)"?: number | null
+          "Rockshore Apple Cider"?: number | null
+          "Rockshore Light (Lager)"?: number | null
+          "Ship To"?: number | null
+          "Smithwick's (Ale)"?: number | null
+          "Smithwick's Pale Ale (Ale)"?: number | null
+          "Total Volume (HL)"?: number | null
+          "Tuborg (Lager)"?: number | null
+        }
+        Relationships: []
+      }
+      target_tiering_data: {
+        Row: {
+          "Casa Ach": number | null
+          "Casa Target": number | null
+          "Compliance Ach": number | null
+          "CPD Ach": number | null
+          "CPD Target": number | null
+          "DIT Ach": number | null
+          "DIT Target": number | null
+          "GNS 0.0 Ach": number | null
+          "GNS 0.0 Target": number | null
+          "RS WAVE Ach": number | null
+          "RS WAVE Target": number | null
+          "RSL Activations": number | null
+          "Ship To": number | null
+          "SMICE Ach": number | null
+          "SMICE Target": number | null
+        }
+        Insert: {
+          "Casa Ach"?: number | null
+          "Casa Target"?: number | null
+          "Compliance Ach"?: number | null
+          "CPD Ach"?: number | null
+          "CPD Target"?: number | null
+          "DIT Ach"?: number | null
+          "DIT Target"?: number | null
+          "GNS 0.0 Ach"?: number | null
+          "GNS 0.0 Target"?: number | null
+          "RS WAVE Ach"?: number | null
+          "RS WAVE Target"?: number | null
+          "RSL Activations"?: number | null
+          "Ship To"?: number | null
+          "SMICE Ach"?: number | null
+          "SMICE Target"?: number | null
+        }
+        Update: {
+          "Casa Ach"?: number | null
+          "Casa Target"?: number | null
+          "Compliance Ach"?: number | null
+          "CPD Ach"?: number | null
+          "CPD Target"?: number | null
+          "DIT Ach"?: number | null
+          "DIT Target"?: number | null
+          "GNS 0.0 Ach"?: number | null
+          "GNS 0.0 Target"?: number | null
+          "RS WAVE Ach"?: number | null
+          "RS WAVE Target"?: number | null
+          "RSL Activations"?: number | null
+          "Ship To"?: number | null
+          "SMICE Ach"?: number | null
+          "SMICE Target"?: number | null
+        }
+        Relationships: []
+      }
+      trade_terms_data: {
+        Row: {
+          "Fiscal year/period": string | null
+          "PRDHA L5 Individual Variant": string | null
+          "Ship To": number | null
+          "Volume HL": number | null
+        }
+        Insert: {
+          "Fiscal year/period"?: string | null
+          "PRDHA L5 Individual Variant"?: string | null
+          "Ship To"?: number | null
+          "Volume HL"?: number | null
+        }
+        Update: {
+          "Fiscal year/period"?: string | null
+          "PRDHA L5 Individual Variant"?: string | null
+          "Ship To"?: number | null
+          "Volume HL"?: number | null
+        }
+        Relationships: []
+      }
+      trax_data: {
+        Row: {
+          "Price Tier Split_Luxury_#": number | null
+          "Price Tier Split_Luxury_%": number | null
+          "Price Tier Split_Premium_#": number | null
+          "Price Tier Split_Premium_%": number | null
+          "Price Tier Split_Standard_#": number | null
+          "Price Tier Split_Standard_%": number | null
+          "Price Tier Split_Super Premium_#": number | null
+          "Price Tier Split_Super Premium_%": number | null
+          "Price Tier Split_Ultra Premium_#": number | null
+          "Price Tier Split_Ultra Premium_%": number | null
+          "Price Tier Split_Value_#": number | null
+          "Price Tier Split_Value_%": number | null
+          "Share of LAD vs. RTD. Vs. Spirits_LAD_#": number | null
+          "Share of LAD vs. RTD. Vs. Spirits_LAD_%": number | null
+          "Share of LAD vs. RTD. Vs. Spirits_RTD_#": number | null
+          "Share of LAD vs. RTD. Vs. Spirits_RTD_%": number | null
+          "Share of LAD vs. RTD. Vs. Spirits_Sprits_#": number | null
+          "Share of LAD vs. RTD. Vs. Spirits_Sprits_%": number | null
+          "Share of Lager_Ale_#": number | null
+          "Share of Lager_Ale_%": number | null
+          "Share of Lager_Cider_#": number | null
+          "Share of Lager_Cider_%": number | null
+          "Share of Lager_Lager_#": number | null
+          "Share of Lager_Lager_%": number | null
+          "Share of Lager_Stout_#": number | null
+          "Share of Lager_Stout_%": number | null
+          "Share of Packaged_Beer Taps_#": number | null
+          "Share of Packaged_Beer Taps_%": number | null
+          "Share of Packaged_Packaged_#": number | null
+          "Share of Packaged_Packaged_%": number | null
+          "Ship To": number | null
+          "Total Facings": number | null
+        }
+        Insert: {
+          "Price Tier Split_Luxury_#"?: number | null
+          "Price Tier Split_Luxury_%"?: number | null
+          "Price Tier Split_Premium_#"?: number | null
+          "Price Tier Split_Premium_%"?: number | null
+          "Price Tier Split_Standard_#"?: number | null
+          "Price Tier Split_Standard_%"?: number | null
+          "Price Tier Split_Super Premium_#"?: number | null
+          "Price Tier Split_Super Premium_%"?: number | null
+          "Price Tier Split_Ultra Premium_#"?: number | null
+          "Price Tier Split_Ultra Premium_%"?: number | null
+          "Price Tier Split_Value_#"?: number | null
+          "Price Tier Split_Value_%"?: number | null
+          "Share of LAD vs. RTD. Vs. Spirits_LAD_#"?: number | null
+          "Share of LAD vs. RTD. Vs. Spirits_LAD_%"?: number | null
+          "Share of LAD vs. RTD. Vs. Spirits_RTD_#"?: number | null
+          "Share of LAD vs. RTD. Vs. Spirits_RTD_%"?: number | null
+          "Share of LAD vs. RTD. Vs. Spirits_Sprits_#"?: number | null
+          "Share of LAD vs. RTD. Vs. Spirits_Sprits_%"?: number | null
+          "Share of Lager_Ale_#"?: number | null
+          "Share of Lager_Ale_%"?: number | null
+          "Share of Lager_Cider_#"?: number | null
+          "Share of Lager_Cider_%"?: number | null
+          "Share of Lager_Lager_#"?: number | null
+          "Share of Lager_Lager_%"?: number | null
+          "Share of Lager_Stout_#"?: number | null
+          "Share of Lager_Stout_%"?: number | null
+          "Share of Packaged_Beer Taps_#"?: number | null
+          "Share of Packaged_Beer Taps_%"?: number | null
+          "Share of Packaged_Packaged_#"?: number | null
+          "Share of Packaged_Packaged_%"?: number | null
+          "Ship To"?: number | null
+          "Total Facings"?: number | null
+        }
+        Update: {
+          "Price Tier Split_Luxury_#"?: number | null
+          "Price Tier Split_Luxury_%"?: number | null
+          "Price Tier Split_Premium_#"?: number | null
+          "Price Tier Split_Premium_%"?: number | null
+          "Price Tier Split_Standard_#"?: number | null
+          "Price Tier Split_Standard_%"?: number | null
+          "Price Tier Split_Super Premium_#"?: number | null
+          "Price Tier Split_Super Premium_%"?: number | null
+          "Price Tier Split_Ultra Premium_#"?: number | null
+          "Price Tier Split_Ultra Premium_%"?: number | null
+          "Price Tier Split_Value_#"?: number | null
+          "Price Tier Split_Value_%"?: number | null
+          "Share of LAD vs. RTD. Vs. Spirits_LAD_#"?: number | null
+          "Share of LAD vs. RTD. Vs. Spirits_LAD_%"?: number | null
+          "Share of LAD vs. RTD. Vs. Spirits_RTD_#"?: number | null
+          "Share of LAD vs. RTD. Vs. Spirits_RTD_%"?: number | null
+          "Share of LAD vs. RTD. Vs. Spirits_Sprits_#"?: number | null
+          "Share of LAD vs. RTD. Vs. Spirits_Sprits_%"?: number | null
+          "Share of Lager_Ale_#"?: number | null
+          "Share of Lager_Ale_%"?: number | null
+          "Share of Lager_Cider_#"?: number | null
+          "Share of Lager_Cider_%"?: number | null
+          "Share of Lager_Lager_#"?: number | null
+          "Share of Lager_Lager_%"?: number | null
+          "Share of Lager_Stout_#"?: number | null
+          "Share of Lager_Stout_%"?: number | null
+          "Share of Packaged_Beer Taps_#"?: number | null
+          "Share of Packaged_Beer Taps_%"?: number | null
+          "Share of Packaged_Packaged_#"?: number | null
+          "Share of Packaged_Packaged_%"?: number | null
+          "Ship To"?: number | null
+          "Total Facings"?: number | null
         }
         Relationships: []
       }

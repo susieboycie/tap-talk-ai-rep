@@ -28,17 +28,17 @@ export function OutletSelector({ selectedOutlet: propSelectedOutlet, onOutletCha
     queryKey: ['outlet-names'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('daily_sales_volume')
-        .select('Outlet')
-        .not('Outlet', 'is', null)
-        .order('Outlet');
+        .from('outlet_data')
+        .select('Outlet Name')
+        .not('Outlet Name', 'is', null)
+        .order('Outlet Name');
         
       if (error) {
         console.error("Error fetching outlet names:", error);
         throw error;
       }
 
-      const uniqueOutlets = Array.from(new Set(data.map(row => row.Outlet))) as string[];
+      const uniqueOutlets = Array.from(new Set(data.map(row => row['Outlet Name']))) as string[];
       return uniqueOutlets.filter(Boolean);
     }
   });
