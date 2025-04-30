@@ -318,6 +318,7 @@ export type Database = {
           "Kilkenny Draught (Ale)": number | null
           "Macardles Traditional (Ale)": number | null
           "OGB Citra IPA (Ale)": number | null
+          "Outlet Name": string | null
           "Rockshore (Lager)": number | null
           "Rockshore Apple Cider": number | null
           "Rockshore Light (Lager)": number | null
@@ -338,6 +339,7 @@ export type Database = {
           "Kilkenny Draught (Ale)"?: number | null
           "Macardles Traditional (Ale)"?: number | null
           "OGB Citra IPA (Ale)"?: number | null
+          "Outlet Name"?: string | null
           "Rockshore (Lager)"?: number | null
           "Rockshore Apple Cider"?: number | null
           "Rockshore Light (Lager)"?: number | null
@@ -358,6 +360,7 @@ export type Database = {
           "Kilkenny Draught (Ale)"?: number | null
           "Macardles Traditional (Ale)"?: number | null
           "OGB Citra IPA (Ale)"?: number | null
+          "Outlet Name"?: string | null
           "Rockshore (Lager)"?: number | null
           "Rockshore Apple Cider"?: number | null
           "Rockshore Light (Lager)"?: number | null
@@ -426,18 +429,21 @@ export type Database = {
       trade_terms_data: {
         Row: {
           "Fiscal year/period": string | null
+          "Outlet Name": string | null
           "PRDHA L5 Individual Variant": string | null
           "Ship To": number | null
           "Volume HL": number | null
         }
         Insert: {
           "Fiscal year/period"?: string | null
+          "Outlet Name"?: string | null
           "PRDHA L5 Individual Variant"?: string | null
           "Ship To"?: number | null
           "Volume HL"?: number | null
         }
         Update: {
           "Fiscal year/period"?: string | null
+          "Outlet Name"?: string | null
           "PRDHA L5 Individual Variant"?: string | null
           "Ship To"?: number | null
           "Volume HL"?: number | null

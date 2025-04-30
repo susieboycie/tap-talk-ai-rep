@@ -26,7 +26,7 @@ export default function TradeTerms() {
   const { data: tradeTerms = [], isLoading } = useTradeTerms(selectedOutlet);
   
   const filteredTerms = tradeTerms.filter(term => 
-    term.customer.toLowerCase().includes(searchTerm.toLowerCase())
+    term.outlet_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Get count of agreements expiring soon for alert
@@ -104,12 +104,11 @@ export default function TradeTerms() {
             <Table>
               <TableHeader>
                 <TableRow className="hover:bg-repgpt-700">
-                  <TableHead className="text-gray-300">Customer</TableHead>
-                  <TableHead className="text-gray-300">Period</TableHead>
+                  <TableHead className="text-gray-300">Outlet</TableHead>
+                  <TableHead className="text-gray-300">Term</TableHead>
                   <TableHead className="text-gray-300">Status</TableHead>
-                  <TableHead className="text-gray-300">Compliance</TableHead>
-                  <TableHead className="text-gray-300">Volume Target</TableHead>
-                  <TableHead className="text-gray-300">Rebate</TableHead>
+                  <TableHead className="text-gray-300">Amount</TableHead>
+                  <TableHead className="text-gray-300">Period</TableHead>
                   <TableHead className="text-gray-300">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -117,13 +116,10 @@ export default function TradeTerms() {
                 {filteredTerms.map((term) => (
                   <TableRow key={term.id} className="hover:bg-repgpt-700">
                     <TableCell className="font-medium text-white">
-                      {term.customer}
+                      {term.outlet_name}
                     </TableCell>
-                    <TableCell>
-                      <div className="text-white">{term.startDate} - {term.endDate}</div>
-                      <div className="text-sm text-gray-400">
-                        {term.daysRemaining === 0 ? "Expired" : `${term.daysRemaining} days remaining`}
-                      </div>
+                    <TableCell className="text-white">
+                      {term.term_name}
                     </TableCell>
                     <TableCell>
                       <Badge variant={
@@ -134,18 +130,10 @@ export default function TradeTerms() {
                         {term.status}
                       </Badge>
                     </TableCell>
+                    <TableCell className="text-white">{term.amount}</TableCell>
                     <TableCell>
-                      <Badge variant={
-                        term.complianceStatus === "Compliant" ? "default" : 
-                        term.complianceStatus === "At Risk" ? "outline" : 
-                        term.complianceStatus === "Expired" ? "secondary" :
-                        "destructive"
-                      }>
-                        {term.complianceStatus}
-                      </Badge>
+                      <div className="text-white">{term.start_date} - {term.end_date}</div>
                     </TableCell>
-                    <TableCell className="text-white">{term.volume}</TableCell>
-                    <TableCell className="text-white">{term.rebate}</TableCell>
                     <TableCell>
                       <div className="flex space-x-2">
                         <Button size="sm" variant="outline" className="h-8 border-repgpt-700 text-white hover:bg-repgpt-700">

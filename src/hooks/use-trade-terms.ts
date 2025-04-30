@@ -13,7 +13,7 @@ export interface TradeTermItem {
 }
 
 export function useTradeTerms(outletName: string | null) {
-  return useQuery({
+  return useQuery<TradeTermItem[]>({
     queryKey: ['trade-terms', outletName],
     queryFn: async () => {
       if (!outletName) return [] as TradeTermItem[];

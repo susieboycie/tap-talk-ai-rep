@@ -4,12 +4,12 @@ import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import { DirectTradeChart } from "@/components/partnerships/direct-trade-chart";
 import { DirectTradeTable } from "@/components/partnerships/direct-trade-table";
 import { DirectTradeInsights } from "@/components/partnerships/direct-trade-insights";
-import { useDirectTrade } from "@/hooks/use-direct-trade";
 import { useOutlet } from "@/contexts/outlet-context";
+import { useTradeTermsData } from "@/hooks/use-trade-terms-data";
 
 export default function Partnerships() {
   const { selectedOutlet } = useOutlet();
-  const { data: directTradeData, isLoading: isLoadingDirectTrade } = useDirectTrade(selectedOutlet);
+  const { data: tradeTermsData, isLoading } = useTradeTermsData(selectedOutlet);
 
   return (
     <DashboardShell>
@@ -25,28 +25,28 @@ export default function Partnerships() {
 
       {selectedOutlet && (
         <div className="space-y-6">
-          {directTradeData && directTradeData.length > 0 && (
+          {tradeTermsData && tradeTermsData.length > 0 && (
             <>
-              <DirectTradeInsights directTradeData={directTradeData} />
+              <DirectTradeInsights directTradeData={tradeTermsData} />
               
               <div>
-                <h2 className="text-xl font-semibold text-white mb-4">Direct Trade Analysis</h2>
-                <DirectTradeChart data={directTradeData} />
+                <h2 className="text-xl font-semibold text-white mb-4">Trade Terms Analysis</h2>
+                <DirectTradeChart data={tradeTermsData} />
               </div>
               
               <div>
-                <h2 className="text-xl font-semibold text-white mb-4">Direct Trade Details</h2>
-                <DirectTradeTable data={directTradeData} />
+                <h2 className="text-xl font-semibold text-white mb-4">Trade Terms Details</h2>
+                <DirectTradeTable data={tradeTermsData} />
               </div>
             </>
           )}
           
-          {isLoadingDirectTrade && (
-            <div className="text-gray-400">Loading direct trade data...</div>
+          {isLoading && (
+            <div className="text-gray-400">Loading trade terms data...</div>
           )}
           
-          {!isLoadingDirectTrade && (!directTradeData || directTradeData.length === 0) && (
-            <div className="text-gray-400">No direct trade data available for this outlet.</div>
+          {!isLoading && (!tradeTermsData || tradeTermsData.length === 0) && (
+            <div className="text-gray-400">No trade terms data available for this outlet.</div>
           )}
         </div>
       )}
