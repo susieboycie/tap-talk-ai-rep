@@ -3,7 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 
-export type TradeTermData = Tables<"target_tiering_data">;
+// Define the TradeTermData type without creating a recursive reference
+export type TradeTermData = {
+  "Outlet Name": string;
+  "Ship To": number;
+  "PRDHA L5 Individual Variant": string;
+  "Volume HL": number;
+  "Fiscal year/period": string | Date;
+};
 
 export function useTradeTermsData(outletName: string | null) {
   return useQuery({
@@ -12,7 +19,7 @@ export function useTradeTermsData(outletName: string | null) {
       if (!outletName) return [] as TradeTermData[];
       
       const { data, error } = await supabase
-        .from('target_tiering_data')
+        .from('trade_terms_data')
         .select('*')
         .eq('Outlet Name', outletName);
 
