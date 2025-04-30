@@ -155,9 +155,6 @@ function ActivationCard({ name, activations, getStatusIcon, formatActivationDate
         <div className="space-y-2">
           {activations.map((activation, index) => (
             <div key={index} className="flex items-center justify-between p-2 bg-purple-900/30 rounded-md">
-              <span className="text-sm text-purple-200">
-                {activation["Outlet Name"] || "Unknown Outlet"}
-              </span>
               <div className="flex gap-2 items-center">
                 <TooltipProvider>
                   <UITooltip>
