@@ -44,8 +44,10 @@ export function ActivationStatusInsights({ outletName }: ActivationStatusInsight
   const getStatusIcon = (status: string | null) => {
     switch (status?.toLowerCase()) {
       case 'active':
+      case 'y':
         return <CheckCircle className="h-5 w-5 text-green-500" />;
       case 'inactive':
+      case 'n':
         return <XCircle className="h-5 w-5 text-red-500" />;
       case 'pending':
         return <Clock className="h-5 w-5 text-amber-500" />;
@@ -163,7 +165,8 @@ function ActivationCard({ name, activations, getStatusIcon, formatActivationDate
                       <div className="flex items-center cursor-help">
                         <Info className="h-4 w-4 mr-1 text-purple-400" />
                         <span className="text-xs text-purple-400">
-                          {activation["Activation Status"]?.toLowerCase() === 'active' 
+                          {(activation["Activation Status"]?.toLowerCase() === 'active' || 
+                            activation["Activation Status"]?.toLowerCase() === 'y') 
                             ? formatActivationDate(activation["Date Activated"])
                             : 'Not activated'
                           }
@@ -172,7 +175,7 @@ function ActivationCard({ name, activations, getStatusIcon, formatActivationDate
                     </TooltipTrigger>
                     <TooltipContent className="bg-purple-800 text-white border-purple-700">
                       <div className="flex flex-col">
-                        <span className="font-medium">Status: {activation["Activation Status"]}</span>
+                        <span className="font-medium">Status: {(activation["Activation Status"]?.toLowerCase() === 'y') ? 'Activated' : activation["Activation Status"]}</span>
                         {activation["Date Activated"] && (
                           <span>Activated on: {formatActivationDate(activation["Date Activated"])}</span>
                         )}
@@ -196,7 +199,7 @@ interface StatusIndicatorProps {
 }
 
 function StatusIndicator({ status }: StatusIndicatorProps) {
-  const isActive = status?.toLowerCase() === 'active';
+  const isActive = status?.toLowerCase() === 'active' || status?.toLowerCase() === 'y';
   
   return (
     <span 
@@ -208,7 +211,7 @@ function StatusIndicator({ status }: StatusIndicatorProps) {
       <span 
         className={`absolute inset-0 flex items-center justify-${isActive ? 'end' : 'start'} px-2 text-xs font-medium ${isActive ? 'text-green-500' : 'text-red-500'}`}
       >
-        {isActive ? 'Yes' : 'No'}
+        {isActive ? 'Activated' : 'No'}
       </span>
     </span>
   );
