@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { MessageSquare } from "lucide-react";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import { useState } from "react";
+import { ActivationStatusInsights } from "@/components/dashboard/activation-status-insights";
 
 export default function Activations() {
   const { selectedOutlet } = useOutlet();
@@ -29,6 +30,10 @@ export default function Activations() {
         <div className="w-[240px]">
           <OutletSelector />
         </div>
+      </div>
+      
+      <div className="mb-6">
+        <ActivationStatusInsights outletName={selectedOutlet} />
       </div>
       
       <div className="mb-6">
