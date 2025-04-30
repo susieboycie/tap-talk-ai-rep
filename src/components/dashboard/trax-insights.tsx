@@ -1,8 +1,7 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
 import { Tables } from "@/integrations/supabase/types";
-import { Camera, PercentIcon, Hash } from "lucide-react";
+import { Camera, PercentIcon, Hash, AlertCircle } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
 interface TraxInsightsProps {
@@ -73,6 +72,43 @@ export function TraxInsights({ data, isLoading }: TraxInsightsProps) {
     { name: "Luxury", value: data["Price Tier Split_Luxury_%"] || 0, count: data["Price Tier Split_Luxury_#"] || 0, color: "#8b5cf6" },
   ].filter(item => item.value > 0);
   
+  // Generate insights summary
+  const generateInsightsSummary = () => {
+    // Find the most dominant beer type
+    const dominantBeerType = [...beerTypeData].sort((a, b) => b.value - a.value)[0];
+    
+    // Find the most dominant price tier
+    const dominantPriceTier = [...priceTierData].sort((a, b) => b.value - a.value)[0];
+    
+    // Get the presentation format ratio
+    const tapPercentage = presentationData.find(item => item.name === "Taps")?.value || 0;
+    const packagingDescription = tapPercentage > 70 
+      ? "heavily tap-focused" 
+      : tapPercentage > 50 
+        ? "primarily tap-based" 
+        : tapPercentage < 30 
+          ? "mostly packaged products" 
+          : "a balanced mix of taps and packaged products";
+    
+    // Get category mix description
+    const beerCiderPercentage = categoryData.find(item => item.name === "Beer/Cider")?.value || 0;
+    const spiritsPercentage = categoryData.find(item => item.name === "Spirits")?.value || 0;
+    const rtdPercentage = categoryData.find(item => item.name === "RTD")?.value || 0;
+    
+    let categoryMixDescription = "";
+    if (beerCiderPercentage > 70) {
+      categoryMixDescription = "predominantly beer and cider";
+    } else if (spiritsPercentage > 40) {
+      categoryMixDescription = "with a strong spirits presence";
+    } else if (rtdPercentage > 30) {
+      categoryMixDescription = "with significant RTD representation";
+    } else {
+      categoryMixDescription = "with a diverse beverage category mix";
+    }
+    
+    return `This outlet offers ${packagingDescription}, ${categoryMixDescription}. The tap selection is primarily ${dominantBeerType.name.toLowerCase()} (${Math.round(dominantBeerType.value)}%), with pricing in the ${dominantPriceTier.name.toLowerCase()} tier (${Math.round(dominantPriceTier.value)}%).`;
+  };
+
   // Custom tooltip for the charts
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -95,6 +131,7 @@ export function TraxInsights({ data, isLoading }: TraxInsightsProps) {
   };
 
   const totalFacings = data["Total Facings"] || 0;
+  const insightsSummary = generateInsightsSummary();
 
   return (
     <Card className="border-purple-700 bg-purple-900/30">
@@ -108,6 +145,15 @@ export function TraxInsights({ data, isLoading }: TraxInsightsProps) {
         </div>
       </CardHeader>
       <CardContent>
+        {/* Summary Box */}
+        <div className="mb-6 p-4 bg-purple-800/30 border border-purple-700/50 rounded-md">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="h-5 w-5 text-purple-300 mt-0.5 flex-shrink-0" />
+            <p className="text-purple-100 text-sm">{insightsSummary}</p>
+          </div>
+        </div>
+
+        {/* Charts section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <h3 className="text-sm font-medium text-white">Beer Type Distribution</h3>
