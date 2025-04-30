@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
 import { Tables } from "@/integrations/supabase/types";
@@ -119,7 +118,7 @@ export function TraxInsights({ data, isLoading }: TraxInsightsProps) {
           <p className="text-sm font-medium text-white">{data.name}</p>
           <div className="flex items-center gap-1 text-xs">
             <PercentIcon className="h-3 w-3 text-blue-400" /> 
-            <span className="text-blue-400">{Math.round(data.value)}%</span>
+            <span className="text-blue-400">{data.value.toFixed(1)}%</span>
           </div>
           <div className="flex items-center gap-1 text-xs">
             <Hash className="h-3 w-3 text-green-400" />
@@ -195,7 +194,7 @@ export function TraxInsights({ data, isLoading }: TraxInsightsProps) {
                     className="h-3 w-3 rounded-sm" 
                     style={{ backgroundColor: item.color }}
                   ></div>
-                  <span className="text-xs text-gray-300">{item.name} ({Math.round(item.value)}%)</span>
+                  <span className="text-xs text-gray-300">{item.name} ({item.value.toFixed(1)}%)</span>
                 </div>
               ))}
             </div>

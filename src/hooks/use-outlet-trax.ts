@@ -22,8 +22,18 @@ export function useOutletTrax(outletName: string | null) {
         console.error("Error fetching TRAX data:", error);
         return null;
       }
+
+      // Process percentage fields - multiply by 100
+      const processedData = { ...data };
       
-      return data as Tables<"trax_data">;
+      // Process all percentage fields (those that have a % in the column name)
+      Object.keys(processedData).forEach(key => {
+        if (key.includes('%') && typeof processedData[key] === 'number') {
+          processedData[key] = processedData[key] * 100;
+        }
+      });
+      
+      return processedData as Tables<"trax_data">;
     },
     enabled: !!outletName,
   });
