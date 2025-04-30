@@ -1,8 +1,7 @@
 
-import { useOutletSales } from "@/hooks/use-outlet-sales";
+import { useSalesVolumeData } from "@/hooks/use-sales-volume-data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { format } from "date-fns";
 import { Beer, TrendingUp, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
@@ -12,7 +11,7 @@ interface BeerSalesInsightsProps {
 }
 
 export function BeerSalesInsights({ outletName }: BeerSalesInsightsProps) {
-  const { data: salesData, isLoading, error } = useOutletSales(outletName);
+  const { data: salesData, isLoading, error } = useSalesVolumeData(outletName);
   const { toast } = useToast();
   
   useEffect(() => {
@@ -60,19 +59,20 @@ export function BeerSalesInsights({ outletName }: BeerSalesInsightsProps) {
     );
   }
 
-  // Group data by fiscal year and sum up volumes
+  // Group data by fiscal year
+  // Define beer categories based on the columns in the sales_volume_data table
   const beerCategories = [
-    { name: "Guinness Draught", key: "Guinness_Draught_In_Keg_MTD_Billed", color: "#2E1A47" },
-    { name: "Carlsberg Lager", key: "Carlsberg_Lager_In_Keg_MTD_Billed", color: "#43A047" },
-    { name: "Rockshore", key: "Rockshore_in_Keg_MTD_Billed", color: "#1E88E5" },
-    { name: "Smithwick's", key: "Smithwicks_In_Keg_MTD_Billed", color: "#D81B60" },
-    { name: "Hop House 13", key: "Hop_House_13_Lager_MTD_Billed", color: "#FFC107" },
-    { name: "Guinness 0.0", key: "Guinness_Draught_0.0_in_Keg_MTD_Billed", color: "#7E57C2" },
+    { name: "Guinness Draught", key: "Guinness Draught (Stout)", color: "#2E1A47" },
+    { name: "Carlsberg", key: "Carlsberg (Lager)", color: "#43A047" },
+    { name: "Rockshore", key: "Rockshore (Lager)", color: "#1E88E5" },
+    { name: "Smithwick's", key: "Smithwick's (Ale)", color: "#D81B60" },
+    { name: "Hop House 13", key: "Hop House 13", color: "#FFC107" },
+    { name: "Guinness 0.0", key: "Guinness Non Alc (Non Alc Stout)", color: "#7E57C2" },
   ];
 
   // Process data for visualization - ensure we handle possible nulls/undefined values
   const chartData = salesData.map(item => {
-    const year = item.Calendar_day ? format(new Date(item.Calendar_day), "MMM yyyy") : "Unknown";
+    const year = item.fiscal_year ? String(item.fiscal_year).substring(0, 7) : "Unknown";
     
     const result: any = { name: year };
     beerCategories.forEach(category => {

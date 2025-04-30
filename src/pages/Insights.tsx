@@ -6,6 +6,7 @@ import { TraxInsights } from "@/components/dashboard/trax-insights";
 import { BeerSalesInsights } from "@/components/dashboard/beer-sales-insights";
 import { useOutletSales } from "@/hooks/use-outlet-sales";
 import { useOutletTrax } from "@/hooks/use-outlet-trax";
+import { useSalesVolumeData } from "@/hooks/use-sales-volume-data"; 
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import { useOutlet } from "@/contexts/outlet-context";
 
