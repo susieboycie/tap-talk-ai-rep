@@ -4,7 +4,6 @@ import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import { DirectTradeChart } from "@/components/partnerships/direct-trade-chart";
 import { DirectTradeTable } from "@/components/partnerships/direct-trade-table";
-import { DirectTradeInsights } from "@/components/partnerships/direct-trade-insights";
 import { ContractSummaryCard } from "@/components/partnerships/contract-summary-card";
 import { TradeTermsVolumeChart } from "@/components/partnerships/trade-terms-volume-chart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -49,8 +48,6 @@ export default function Partnerships() {
           <TabsContent value="performance" className="space-y-6 mt-4">
             {tradeTermsData && tradeTermsData.length > 0 && (
               <>
-                <DirectTradeInsights directTradeData={tradeTermsData} />
-                
                 <div>
                   <h2 className="text-xl font-semibold text-white mb-4">Product Performance Analysis</h2>
                   <DirectTradeChart data={tradeTermsData} />

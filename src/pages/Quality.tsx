@@ -4,6 +4,8 @@ import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import { QualityKPICard } from "@/components/quality/quality-kpi-card";
 import { useQualityMetrics } from "@/hooks/use-quality-metrics";
+import { DirectTradeInsights } from "@/components/partnerships/direct-trade-insights";
+import { useTradeTermsData } from "@/hooks/use-trade-terms-data";
 import { PhoneCall, CalendarDays, ShieldCheck, Beer, Wine, Martini, AlertCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useOutlet } from "@/contexts/outlet-context";
@@ -13,6 +15,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 export default function Quality() {
   const { selectedOutlet, setSelectedOutlet } = useOutlet();
   const { metrics, getRAGStatus, getProductRAGStatus, isLoading, error } = useQualityMetrics(selectedOutlet);
+  const { data: tradeTermsData, isLoading: termsLoading } = useTradeTermsData(selectedOutlet);
 
   const getCallComplianceStatus = () => {
     if (metrics.callCompliance >= 80) return "strong";
@@ -90,6 +93,13 @@ export default function Quality() {
 
       {selectedOutlet && !isLoading && !error && (
         <>
+          {/* Trade Insights Cards (moved from Partnerships page) */}
+          {tradeTermsData && tradeTermsData.length > 0 && (
+            <div className="mb-6">
+              <DirectTradeInsights directTradeData={tradeTermsData} />
+            </div>
+          )}
+
           <Card className="p-6 mb-6 border-orange-600 bg-orange-900/30">
             <h2 className="text-xl font-semibold text-white mb-4">Quality Overview</h2>
             <div className="text-gray-300 space-y-3">
