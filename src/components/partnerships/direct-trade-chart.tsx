@@ -48,6 +48,16 @@ export function DirectTradeChart({ data }: DirectTradeChartProps) {
     }
   ];
 
+  // Define chart config required by ChartContainer
+  const chartConfig = {
+    target: {
+      label: "Target"
+    },
+    achievement: {
+      label: "Achievement"
+    }
+  };
+
   return (
     <Card className="border-repgpt-700 bg-repgpt-800">
       <CardHeader>
@@ -55,7 +65,7 @@ export function DirectTradeChart({ data }: DirectTradeChartProps) {
       </CardHeader>
       <CardContent>
         <div className="h-[400px]">
-          <ChartContainer>
+          <ChartContainer config={chartConfig}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 50 }}>
                 <XAxis 
