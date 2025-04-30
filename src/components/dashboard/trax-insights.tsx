@@ -119,7 +119,7 @@ export function TraxInsights({ data, isLoading }: TraxInsightsProps) {
           <p className="text-sm font-medium text-white">{data.name}</p>
           <div className="flex items-center gap-1 text-xs">
             <PercentIcon className="h-3 w-3 text-blue-400" /> 
-            <span className="text-blue-400">{data.value.toFixed(1)}%</span>
+            <span className="text-blue-400">{Math.round(data.value)}%</span>
           </div>
           <div className="flex items-center gap-1 text-xs">
             <Hash className="h-3 w-3 text-green-400" />
