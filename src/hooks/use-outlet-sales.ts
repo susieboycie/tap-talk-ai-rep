@@ -6,7 +6,9 @@ export const useOutletSales = (outletName: string | null) => {
   return useQuery({
     queryKey: ['outlet-sales', outletName],
     queryFn: async () => {
-      if (!outletName) return null;
+      if (!outletName) return [];
+      
+      console.log("Fetching sales data for outlet:", outletName);
       
       const { data, error } = await supabase
         .from('daily_sales_volume')
@@ -19,7 +21,12 @@ export const useOutletSales = (outletName: string | null) => {
         throw error;
       }
       
-      console.log("Fetched sales data:", data);
+      if (!data || data.length === 0) {
+        console.log("No sales data found for outlet:", outletName);
+        return [];
+      }
+      
+      console.log("Fetched sales data:", data.length, "records");
       return data;
     },
     enabled: !!outletName,

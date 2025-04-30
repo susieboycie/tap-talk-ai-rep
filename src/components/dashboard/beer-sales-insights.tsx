@@ -2,15 +2,29 @@
 import { useOutletSales } from "@/hooks/use-outlet-sales";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { format, parseISO } from "date-fns";
-import { Beer, TrendingUp } from "lucide-react";
+import { format } from "date-fns";
+import { Beer, TrendingUp, AlertTriangle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useEffect } from "react";
 
 interface BeerSalesInsightsProps {
   outletName: string | null;
 }
 
 export function BeerSalesInsights({ outletName }: BeerSalesInsightsProps) {
-  const { data: salesData, isLoading } = useOutletSales(outletName);
+  const { data: salesData, isLoading, error } = useOutletSales(outletName);
+  const { toast } = useToast();
+  
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: "Error loading beer sales data",
+        description: "Please try again or contact support if the problem persists.",
+        variant: "destructive",
+      });
+      console.error("Beer sales data error:", error);
+    }
+  }, [error, toast]);
 
   if (isLoading) {
     return (
@@ -36,8 +50,10 @@ export function BeerSalesInsights({ outletName }: BeerSalesInsightsProps) {
           <Beer className="h-5 w-5 text-amber-400" />
         </CardHeader>
         <CardContent>
-          <div className="h-[300px] flex items-center justify-center">
-            <p className="text-amber-300">No sales data available for this outlet.</p>
+          <div className="h-[300px] flex flex-col items-center justify-center gap-2">
+            <AlertTriangle className="h-8 w-8 text-amber-400" />
+            <p className="text-amber-300 text-center">No beer sales data available for {outletName || "this outlet"}.</p>
+            <p className="text-amber-400/70 text-sm text-center">Try selecting a different outlet from the dropdown above.</p>
           </div>
         </CardContent>
       </Card>
@@ -54,7 +70,7 @@ export function BeerSalesInsights({ outletName }: BeerSalesInsightsProps) {
     { name: "Guinness 0.0", key: "Guinness_Draught_0.0_in_Keg_MTD_Billed", color: "#7E57C2" },
   ];
 
-  // Process data for visualization
+  // Process data for visualization - ensure we handle possible nulls/undefined values
   const chartData = salesData.map(item => {
     const year = item.Calendar_day ? format(new Date(item.Calendar_day), "MMM yyyy") : "Unknown";
     
@@ -67,6 +83,23 @@ export function BeerSalesInsights({ outletName }: BeerSalesInsightsProps) {
     
     return result;
   });
+
+  // If we have no data points after processing, show empty state
+  if (chartData.length === 0) {
+    return (
+      <Card className="border-amber-700 bg-amber-900/30">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-white">Beer Sales Breakdown</CardTitle>
+          <Beer className="h-5 w-5 text-amber-400" />
+        </CardHeader>
+        <CardContent>
+          <div className="h-[300px] flex items-center justify-center">
+            <p className="text-amber-300">No processable beer sales data found for {outletName}.</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   // Calculate growth trends
   const firstPeriod = chartData[0] || {};
@@ -87,6 +120,26 @@ export function BeerSalesInsights({ outletName }: BeerSalesInsightsProps) {
       color: category.color
     };
   }).sort((a, b) => b.volume - a.volume);
+
+  // Check if we actually have any sales volumes
+  const hasSalesData = growthTrends.some(item => item.volume > 0);
+  if (!hasSalesData) {
+    return (
+      <Card className="border-amber-700 bg-amber-900/30">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-white">Beer Sales Breakdown</CardTitle>
+          <Beer className="h-5 w-5 text-amber-400" />
+        </CardHeader>
+        <CardContent>
+          <div className="h-[300px] flex flex-col items-center justify-center gap-2">
+            <AlertTriangle className="h-8 w-8 text-amber-400" />
+            <p className="text-amber-300 text-center">No sales volumes recorded for {outletName || "this outlet"}.</p>
+            <p className="text-amber-400/70 text-sm text-center">All beer categories show zero volume.</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="border-amber-700 bg-amber-900/30">
