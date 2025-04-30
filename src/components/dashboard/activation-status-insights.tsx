@@ -116,7 +116,7 @@ export function ActivationStatusInsights({ outletName }: ActivationStatusInsight
         <div>
           <CardTitle className="text-white">Activation Status</CardTitle>
           <p className="text-sm text-purple-400 mt-1">
-            {activationData.length} activations for {outletName || "all outlets"}
+            {outletName || "All outlets"}
           </p>
         </div>
         <Activity className="h-5 w-5 text-purple-400" />
