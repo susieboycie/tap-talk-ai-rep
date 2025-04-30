@@ -9,7 +9,6 @@ import { useOutletTrax } from "@/hooks/use-outlet-trax";
 import { useSalesVolumeData } from "@/hooks/use-sales-volume-data"; 
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import { useOutlet } from "@/contexts/outlet-context";
-import { ActivationStatusInsights } from "@/components/dashboard/activation-status-insights";
 
 export default function Insights() {
   const { selectedOutlet } = useOutlet();
@@ -39,13 +38,6 @@ export default function Insights() {
       <div className="grid gap-4 mb-6">
         <div>
           <BeerSalesInsights outletName={selectedOutlet} />
-        </div>
-      </div>
-
-      {/* New row - Activation Status Insights */}
-      <div className="grid gap-4 mb-6">
-        <div>
-          <ActivationStatusInsights outletName={selectedOutlet} />
         </div>
       </div>
 
