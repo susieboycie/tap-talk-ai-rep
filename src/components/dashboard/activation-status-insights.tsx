@@ -86,6 +86,23 @@ export function ActivationStatusInsights({ outletName }: ActivationStatusInsight
     );
   }
   
+  // No outlet selected
+  if (!outletName) {
+    return (
+      <Card className="border-purple-700 bg-purple-900/30">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-white">Activation Status</CardTitle>
+          <Activity className="h-5 w-5 text-purple-400" />
+        </CardHeader>
+        <CardContent>
+          <div className="h-[300px] flex items-center justify-center">
+            <p className="text-purple-400">Please select an outlet to view activation data.</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+  
   if (error || !activationData || activationData.length === 0) {
     return (
       <Card className="border-purple-700 bg-purple-900/30">
