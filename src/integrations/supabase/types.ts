@@ -9,22 +9,25 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      activation_status_data: {
+      activations_data: {
         Row: {
           "Activation Name": string | null
           "Activation Status": string | null
+          "Date Activated": string | null
           "Outlet Name": string | null
           "Ship To": number | null
         }
         Insert: {
           "Activation Name"?: string | null
           "Activation Status"?: string | null
+          "Date Activated"?: string | null
           "Outlet Name"?: string | null
           "Ship To"?: number | null
         }
         Update: {
           "Activation Name"?: string | null
           "Activation Status"?: string | null
+          "Date Activated"?: string | null
           "Outlet Name"?: string | null
           "Ship To"?: number | null
         }
