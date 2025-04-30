@@ -2,22 +2,18 @@
 import { useState } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
-import { DirectTradeChart } from "@/components/partnerships/direct-trade-chart";
-import { DirectTradeTable } from "@/components/partnerships/direct-trade-table";
 import { ContractSummaryCard } from "@/components/partnerships/contract-summary-card";
 import { TradeTermsVolumeChart } from "@/components/partnerships/trade-terms-volume-chart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useOutlet } from "@/contexts/outlet-context";
-import { useTradeTermsData } from "@/hooks/use-trade-terms-data";
 import { useContractData } from "@/hooks/use-contract-data";
 import { useTradeTermsVolume } from "@/hooks/use-trade-terms-volume";
 
 export default function Partnerships() {
   const { selectedOutlet } = useOutlet();
-  const { data: tradeTermsData, isLoading: termsLoading } = useTradeTermsData(selectedOutlet);
   const { data: contractData, isLoading: contractLoading } = useContractData(selectedOutlet);
   const { data: volumeData, isLoading: volumeLoading } = useTradeTermsVolume(selectedOutlet);
-  const [activeTab, setActiveTab] = useState("performance");
+  const [activeTab, setActiveTab] = useState("contracts");
 
   return (
     <DashboardShell>
@@ -34,9 +30,6 @@ export default function Partnerships() {
       {selectedOutlet && (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="bg-repgpt-700 border-repgpt-600">
-            <TabsTrigger value="performance" className="data-[state=active]:bg-repgpt-500">
-              Performance
-            </TabsTrigger>
             <TabsTrigger value="contracts" className="data-[state=active]:bg-repgpt-500">
               Contracts
             </TabsTrigger>
@@ -44,30 +37,6 @@ export default function Partnerships() {
               Volume Analysis
             </TabsTrigger>
           </TabsList>
-
-          <TabsContent value="performance" className="space-y-6 mt-4">
-            {tradeTermsData && tradeTermsData.length > 0 && (
-              <>
-                <div>
-                  <h2 className="text-xl font-semibold text-white mb-4">Product Performance Analysis</h2>
-                  <DirectTradeChart data={tradeTermsData} />
-                </div>
-                
-                <div>
-                  <h2 className="text-xl font-semibold text-white mb-4">Performance Details</h2>
-                  <DirectTradeTable data={tradeTermsData} />
-                </div>
-              </>
-            )}
-            
-            {termsLoading && (
-              <div className="text-gray-400">Loading trade terms data...</div>
-            )}
-            
-            {!termsLoading && (!tradeTermsData || tradeTermsData.length === 0) && (
-              <div className="text-gray-400">No trade terms data available for this outlet.</div>
-            )}
-          </TabsContent>
 
           <TabsContent value="contracts" className="space-y-6 mt-4">
             {contractLoading && <div className="text-gray-400">Loading contract data...</div>}
