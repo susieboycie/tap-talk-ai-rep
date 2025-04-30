@@ -38,59 +38,63 @@ export function ContractSummaryCard({ data }: ContractSummaryCardProps) {
 
   return (
     <>
-      <Card className="border-blue-500/20 bg-blue-500/10">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg text-blue-400">Active Contracts</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-4">
-            <div className="rounded-full bg-blue-500/20 p-2">
-              <FileText className="h-6 w-6 text-blue-500" />
+      {/* Top row of cards - rearranged to be in a single row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <Card className="border-blue-500/20 bg-blue-500/10">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg text-blue-400">Active Contracts</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-4">
+              <div className="rounded-full bg-blue-500/20 p-2">
+                <FileText className="h-6 w-6 text-blue-500" />
+              </div>
+              <div>
+                <h3 className="text-3xl font-bold text-white">{activeContracts.length}</h3>
+                <p className="text-sm text-gray-400">Current agreements</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-3xl font-bold text-white">{activeContracts.length}</h3>
-              <p className="text-sm text-gray-400">Current agreements</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      <Card className="border-amber-500/20 bg-amber-500/10">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg text-amber-400">Total Investment</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-4">
-            <div className="rounded-full bg-amber-500/20 p-2">
-              <CreditCard className="h-6 w-6 text-amber-500" />
+        <Card className="border-amber-500/20 bg-amber-500/10">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg text-amber-400">Total Investment</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-4">
+              <div className="rounded-full bg-amber-500/20 p-2">
+                <CreditCard className="h-6 w-6 text-amber-500" />
+              </div>
+              <div>
+                <h3 className="text-3xl font-bold text-white">£{totalInvestment.toLocaleString()}</h3>
+                <p className="text-sm text-gray-400">Across all active contracts</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-3xl font-bold text-white">£{totalInvestment.toLocaleString()}</h3>
-              <p className="text-sm text-gray-400">Across all active contracts</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      <Card className="border-green-500/20 bg-green-500/10">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg text-green-400">Forecast Volume</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-4">
-            <div className="rounded-full bg-green-500/20 p-2">
-              <BarChart3 className="h-6 w-6 text-green-500" />
+        <Card className="border-green-500/20 bg-green-500/10">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg text-green-400">Forecast Volume</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-4">
+              <div className="rounded-full bg-green-500/20 p-2">
+                <BarChart3 className="h-6 w-6 text-green-500" />
+              </div>
+              <div>
+                <h3 className="text-3xl font-bold text-white">{totalForecastVolume.toFixed(1)} HL</h3>
+                <p className="text-sm text-gray-400">Total volume commitment</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-3xl font-bold text-white">{totalForecastVolume.toFixed(1)} HL</h3>
-              <p className="text-sm text-gray-400">Total volume commitment</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
       
+      {/* Contract details table - now expanded with full width */}
       {data.length > 0 && (
-        <Card className="border-repgpt-700 bg-repgpt-800 xl:col-span-3">
+        <Card className="border-repgpt-700 bg-repgpt-800 w-full">
           <CardHeader>
             <CardTitle>Contract Details</CardTitle>
           </CardHeader>

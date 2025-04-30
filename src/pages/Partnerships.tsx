@@ -80,9 +80,7 @@ export default function Partnerships() {
             )}
             
             {contractData && contractData.length > 0 && (
-              <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-                <ContractSummaryCard data={contractData} />
-              </div>
+              <ContractSummaryCard data={contractData} />
             )}
           </TabsContent>
 
