@@ -12,7 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from "recharts";
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 interface ActivationStatusInsightsProps {
   outletName: string | null;
@@ -20,8 +20,22 @@ interface ActivationStatusInsightsProps {
 
 export function ActivationStatusInsights({ outletName }: ActivationStatusInsightsProps) {
   const { data: activationData, isLoading, error } = useActivationStatus(outletName);
-  const [selectedView, setSelectedView] = useState<'chart' | 'cards'>('chart');
+  const [selectedView, setSelectedView] = useState<'chart' | 'cards'>('cards');
   
+  // Group activations by name
+  const groupedActivations = useMemo(() => {
+    if (!activationData || activationData.length === 0) return {};
+    
+    return activationData.reduce((acc: Record<string, ActivationStatus[]>, activation) => {
+      const name = activation["Activation Name"] || "Unnamed";
+      if (!acc[name]) {
+        acc[name] = [];
+      }
+      acc[name].push(activation);
+      return acc;
+    }, {});
+  }, [activationData]);
+
   // Helper function to get status icon
   const getStatusIcon = (status: string | null) => {
     switch (status?.toLowerCase()) {
@@ -53,7 +67,7 @@ export function ActivationStatusInsights({ outletName }: ActivationStatusInsight
         return "bg-gray-500/20 text-gray-700 border-gray-600";
     }
   };
-
+  
   // Prepare data for chart
   const prepareChartData = () => {
     const statusCounts: Record<string, number> = {};
@@ -119,9 +133,7 @@ export function ActivationStatusInsights({ outletName }: ActivationStatusInsight
       </Card>
     );
   }
-  
-  const chartData = prepareChartData();
-  
+
   return (
     <Card className="border-purple-700 bg-purple-900/30">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -142,7 +154,7 @@ export function ActivationStatusInsights({ outletName }: ActivationStatusInsight
             className={`cursor-pointer ${selectedView === 'cards' ? 'bg-purple-500' : 'bg-purple-900'}`}
             onClick={() => setSelectedView('cards')}
           >
-            Details
+            Cards
           </Badge>
           <Activity className="h-5 w-5 text-purple-400" />
         </div>
@@ -159,14 +171,14 @@ export function ActivationStatusInsights({ outletName }: ActivationStatusInsight
                 unknown: { color: '#9CA3AF' },
               }}
             >
-              <BarChart data={chartData}>
+              <BarChart data={prepareChartData()}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#4e3a60" />
                 <XAxis dataKey="name" stroke="#E5DEFF" />
                 <YAxis stroke="#E5DEFF" />
                 <Tooltip content={<ChartTooltipContent />} />
                 <Legend />
                 <Bar dataKey="value" name="Activations">
-                  {chartData.map((entry, index) => (
+                  {prepareChartData().map((entry, index) => (
                     <Cell 
                       key={`cell-${index}`} 
                       fill={getChartColor(entry.name)} 
@@ -177,27 +189,75 @@ export function ActivationStatusInsights({ outletName }: ActivationStatusInsight
             </ChartContainer>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4 max-h-[300px] overflow-y-auto pr-2">
-            {activationData.map((activation, index) => (
-              <div 
-                key={index}
-                className="p-4 bg-purple-900/50 border border-purple-800 rounded-lg flex items-center justify-between"
-              >
-                <div>
-                  <h3 className="font-medium text-white">{activation["Activation Name"] || "Unnamed Activation"}</h3>
-                  <p className="text-sm text-purple-300">{activation["Outlet Name"] || "Unknown Outlet"}</p>
-                </div>
-                <Badge className={getStatusColor(activation["Activation Status"])}>
-                  <span className="flex items-center gap-1">
-                    {getStatusIcon(activation["Activation Status"])}
-                    {activation["Activation Status"] || "Unknown"}
-                  </span>
-                </Badge>
-              </div>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 max-h-[300px] overflow-y-auto pr-2">
+            {Object.entries(groupedActivations).map(([activationName, activations]) => (
+              <ActivationCard 
+                key={activationName}
+                name={activationName}
+                activations={activations}
+                getStatusIcon={getStatusIcon}
+                getStatusColor={getStatusColor}
+              />
             ))}
           </div>
         )}
       </CardContent>
     </Card>
+  );
+}
+
+interface ActivationCardProps {
+  name: string;
+  activations: ActivationStatus[];
+  getStatusIcon: (status: string | null) => JSX.Element;
+  getStatusColor: (status: string | null) => string;
+}
+
+function ActivationCard({ name, activations, getStatusIcon, getStatusColor }: ActivationCardProps) {
+  // We'll display the status of each outlet for this activation type
+  return (
+    <Card className="border-purple-700/50 bg-purple-950/30">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-md font-medium text-white">{name}</CardTitle>
+      </CardHeader>
+      <CardContent className="pt-2">
+        <div className="space-y-2">
+          {activations.map((activation, index) => (
+            <div key={index} className="flex items-center justify-between p-2 bg-purple-900/30 rounded-md">
+              <span className="text-sm text-purple-200">
+                {activation["Outlet Name"] || "Unknown Outlet"}
+              </span>
+              <div className="flex gap-2 items-center">
+                <StatusIndicator status={activation["Activation Status"]} />
+                {getStatusIcon(activation["Activation Status"])}
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+interface StatusIndicatorProps {
+  status: string | null;
+}
+
+function StatusIndicator({ status }: StatusIndicatorProps) {
+  const isActive = status?.toLowerCase() === 'active';
+  
+  return (
+    <span 
+      className={`inline-block w-16 h-8 rounded-full relative ${isActive ? 'bg-green-500/20' : 'bg-red-500/20'} border ${isActive ? 'border-green-500' : 'border-red-500'}`}
+    >
+      <span 
+        className={`absolute inset-1 mx-1 rounded-full ${isActive ? 'bg-green-500 ml-auto right-1' : 'bg-red-500 left-1'}`}
+      />
+      <span 
+        className={`absolute inset-0 flex items-center justify-${isActive ? 'end' : 'start'} px-2 text-xs font-medium ${isActive ? 'text-green-500' : 'text-red-500'}`}
+      >
+        {isActive ? 'Yes' : 'No'}
+      </span>
+    </span>
   );
 }
