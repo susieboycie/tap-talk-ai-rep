@@ -12,68 +12,39 @@ export function DirectTradeInsights({ directTradeData }: DirectTradeInsightsProp
       <Card className="border-repgpt-700 bg-repgpt-800 mb-6">
         <CardContent className="pt-6">
           <p className="text-gray-300 leading-relaxed">
-            No direct trade data available. Please select an outlet with data to view insights.
+            No performance data available. Please select an outlet with data to view insights.
           </p>
         </CardContent>
       </Card>
     );
   }
 
-  // Calculate insights with explicit Number() conversion
-  const totalVolume = directTradeData.reduce((sum, item) => sum + (Number(item["Volume HL"]) || 0), 0);
-  const productCounts = directTradeData.reduce((acc: { [key: string]: number }, item) => {
-    const product = item["PRDHA L5 Individual Variant"] || "Unknown";
-    acc[product] = (acc[product] || 0) + (Number(item["Volume HL"]) || 0);
-    return acc;
-  }, {});
-
-  // Find the top product
-  const topProductEntries = Object.entries(productCounts).sort(([, a], [, b]) => Number(b) - Number(a));
-  const topProduct = topProductEntries.length > 0 ? topProductEntries[0] : ["No product", 0];
+  // Get the first record to display insights
+  const record = directTradeData[0];
   
-  // Calculate trends
-  const months = [...new Set(directTradeData.map(item => 
-    item["Fiscal year/period"] ? new Date(item["Fiscal year/period"]).toISOString().substring(0, 7) : null
-  ))].filter(Boolean).sort();
+  // Calculate completion percentages for available metrics
+  const guinness0Completion = record["GNS 0.0 Target"] ? 
+    Math.round((record["GNS 0.0 Ach"] / record["GNS 0.0 Target"]) * 100) : 0;
   
-  let trendMessage = "";
-  if (months.length > 1) {
-    const recentMonthsData = directTradeData.filter(item => 
-      item["Fiscal year/period"] && 
-      new Date(item["Fiscal year/period"]).toISOString().substring(0, 7) === months[months.length - 1]
-    );
-    const previousMonthsData = directTradeData.filter(item => 
-      item["Fiscal year/period"] && 
-      new Date(item["Fiscal year/period"]).toISOString().substring(0, 7) === months[months.length - 2]
-    );
-    
-    const recentVolume = recentMonthsData.reduce((sum, item) => sum + (Number(item["Volume HL"]) || 0), 0);
-    const previousVolume = previousMonthsData.reduce((sum, item) => sum + (Number(item["Volume HL"]) || 0), 0);
-    
-    if (previousVolume > 0) {
-      const recentVolumeNum = Number(recentVolume);
-      const previousVolumeNum = Number(previousVolume);
-      
-      if (recentVolumeNum > previousVolumeNum) {
-        const percentChange = ((recentVolumeNum / previousVolumeNum) - 1) * 100;
-        trendMessage = ` Volume is trending upward with a ${percentChange.toFixed(1)}% increase from the previous period.`;
-      } else if (recentVolumeNum < previousVolumeNum) {
-        const percentChange = (1 - (recentVolumeNum / previousVolumeNum)) * 100;
-        trendMessage = ` Volume is trending downward with a ${percentChange.toFixed(1)}% decrease from the previous period.`;
-      } else {
-        trendMessage = " Volume is stable compared to the previous period.";
-      }
-    }
-  }
+  const rockshoreWaveCompletion = record["RS WAVE Target"] ? 
+    Math.round((record["RS WAVE Ach"] / record["RS WAVE Target"]) * 100) : 0;
+  
+  const smiceCompletion = record["SMICE Target"] ? 
+    Math.round((record["SMICE Ach"] / record["SMICE Target"]) * 100) : 0;
+  
+  const casamigosCompletion = record["Casa Target"] ? 
+    Math.round((record["Casa Ach"] / record["Casa Target"]) * 100) : 0;
 
   return (
     <Card className="border-repgpt-700 bg-repgpt-800 mb-6">
       <CardContent className="pt-6">
         <p className="text-gray-300 leading-relaxed">
-          Your total direct trade volume is <span className="font-semibold text-white">{totalVolume.toFixed(2)} HL</span>.
-          The leading product is <span className="font-semibold text-white">{topProduct[0]}</span> with{" "}
-          <span className="font-semibold text-white">{Number(topProduct[1]).toFixed(2)} HL</span> in volume.
-          {trendMessage && <span>{trendMessage}</span>}
+          <span className="font-semibold text-white">Performance Summary for {record["Outlet Name"]}</span><br/>
+          Guinness 0.0: <span className="font-semibold text-white">{record["GNS 0.0 Ach"] || 0}/{record["GNS 0.0 Target"] || 0}</span> ({guinness0Completion}% completion)<br/>
+          Rockshore Wave: <span className="font-semibold text-white">{record["RS WAVE Ach"] || 0}/{record["RS WAVE Target"] || 0}</span> ({rockshoreWaveCompletion}% completion)<br/>
+          Smirnoff Ice: <span className="font-semibold text-white">{record["SMICE Ach"] || 0}/{record["SMICE Target"] || 0}</span> ({smiceCompletion}% completion)<br/>
+          Casamigos: <span className="font-semibold text-white">{record["Casa Ach"] || 0}/{record["Casa Target"] || 0}</span> ({casamigosCompletion}% completion)<br/>
+          Rockshore Activations: <span className="font-semibold text-white">{record["RSL Activations"] || 0}</span>
         </p>
       </CardContent>
     </Card>

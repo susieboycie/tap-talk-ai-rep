@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 
-export type TradeTermData = Tables<"trade_terms_data">;
+export type TradeTermData = Tables<"target_tiering_data">;
 
 export function useTradeTermsData(outletName: string | null) {
   return useQuery({
@@ -12,7 +12,7 @@ export function useTradeTermsData(outletName: string | null) {
       if (!outletName) return [] as TradeTermData[];
       
       const { data, error } = await supabase
-        .from('trade_terms_data')
+        .from('target_tiering_data')
         .select('*')
         .eq('Outlet Name', outletName);
 

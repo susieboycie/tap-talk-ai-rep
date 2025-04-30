@@ -30,12 +30,12 @@ export default function Partnerships() {
               <DirectTradeInsights directTradeData={tradeTermsData} />
               
               <div>
-                <h2 className="text-xl font-semibold text-white mb-4">Trade Terms Analysis</h2>
+                <h2 className="text-xl font-semibold text-white mb-4">Product Performance Analysis</h2>
                 <DirectTradeChart data={tradeTermsData} />
               </div>
               
               <div>
-                <h2 className="text-xl font-semibold text-white mb-4">Trade Terms Details</h2>
+                <h2 className="text-xl font-semibold text-white mb-4">Performance Details</h2>
                 <DirectTradeTable data={tradeTermsData} />
               </div>
             </>

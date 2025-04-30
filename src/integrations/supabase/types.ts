@@ -56,6 +56,7 @@ export type Database = {
           "Contract Start Date": string | null
           Duration: number | null
           "Forecast Volume": number | null
+          "Outlet Name": string | null
           "Overall Investment(incl. Indirect Inv)": number | null
           "Payment Frequency": string | null
           "Product growth-driver": string | null
@@ -71,6 +72,7 @@ export type Database = {
           "Contract Start Date"?: string | null
           Duration?: number | null
           "Forecast Volume"?: number | null
+          "Outlet Name"?: string | null
           "Overall Investment(incl. Indirect Inv)"?: number | null
           "Payment Frequency"?: string | null
           "Product growth-driver"?: string | null
@@ -86,6 +88,7 @@ export type Database = {
           "Contract Start Date"?: string | null
           Duration?: number | null
           "Forecast Volume"?: number | null
+          "Outlet Name"?: string | null
           "Overall Investment(incl. Indirect Inv)"?: number | null
           "Payment Frequency"?: string | null
           "Product growth-driver"?: string | null
@@ -383,6 +386,7 @@ export type Database = {
           "DIT Target": number | null
           "GNS 0.0 Ach": number | null
           "GNS 0.0 Target": number | null
+          "Outlet Name": string | null
           "RS WAVE Ach": number | null
           "RS WAVE Target": number | null
           "RSL Activations": number | null
@@ -400,6 +404,7 @@ export type Database = {
           "DIT Target"?: number | null
           "GNS 0.0 Ach"?: number | null
           "GNS 0.0 Target"?: number | null
+          "Outlet Name"?: string | null
           "RS WAVE Ach"?: number | null
           "RS WAVE Target"?: number | null
           "RSL Activations"?: number | null
@@ -417,6 +422,7 @@ export type Database = {
           "DIT Target"?: number | null
           "GNS 0.0 Ach"?: number | null
           "GNS 0.0 Target"?: number | null
+          "Outlet Name"?: string | null
           "RS WAVE Ach"?: number | null
           "RS WAVE Target"?: number | null
           "RSL Activations"?: number | null
@@ -452,6 +458,7 @@ export type Database = {
       }
       trax_data: {
         Row: {
+          "Outlet Name": string | null
           "Price Tier Split_Luxury_#": number | null
           "Price Tier Split_Luxury_%": number | null
           "Price Tier Split_Premium_#": number | null
@@ -486,6 +493,7 @@ export type Database = {
           "Total Facings": number | null
         }
         Insert: {
+          "Outlet Name"?: string | null
           "Price Tier Split_Luxury_#"?: number | null
           "Price Tier Split_Luxury_%"?: number | null
           "Price Tier Split_Premium_#"?: number | null
@@ -520,6 +528,7 @@ export type Database = {
           "Total Facings"?: number | null
         }
         Update: {
+          "Outlet Name"?: string | null
           "Price Tier Split_Luxury_#"?: number | null
           "Price Tier Split_Luxury_%"?: number | null
           "Price Tier Split_Premium_#"?: number | null
