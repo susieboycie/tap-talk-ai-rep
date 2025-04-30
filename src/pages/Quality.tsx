@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { RepSelector } from "@/components/dashboard/rep-selector";
 import { QualityKPICard } from "@/components/quality/quality-kpi-card";
@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function Quality() {
-  const { selectedRep, setSelectedRep } = useRep();
+  const { selectedRep } = useRep();
   const { metrics, getRAGStatus, getProductRAGStatus, isLoading, error } = useQualityMetrics(selectedRep);
 
   const getCallComplianceStatus = () => {
@@ -73,22 +73,13 @@ export default function Quality() {
           <h1 className="text-3xl font-bold tracking-tight text-white">Quality</h1>
           <p className="text-gray-400">Monitor call quality metrics and rep performance in last 8 weeks rolling</p>
         </div>
-        <div className="w-[240px]">
-          <RepSelector />
-        </div>
       </div>
 
-      {!selectedRep && (
-        <div className="text-center py-8">
-          <p className="text-gray-400">Please select a rep to view quality metrics.</p>
-        </div>
-      )}
+      {isLoading && renderLoadingState()}
 
-      {selectedRep && isLoading && renderLoadingState()}
+      {error && renderErrorState()}
 
-      {selectedRep && error && renderErrorState()}
-
-      {selectedRep && !isLoading && !error && (
+      {!isLoading && !error && (
         <>
           <Card className="p-6 mb-6 border-orange-600 bg-orange-900/30">
             <h2 className="text-xl font-semibold text-white mb-4">Quality Overview for Rep: {selectedRep}</h2>

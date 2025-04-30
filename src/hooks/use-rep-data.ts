@@ -3,8 +3,11 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+// Default rep ID for quality page
+const DEFAULT_REP_ID = "RE5001";
+
 export function useRepData() {
-  const [selectedRep, setSelectedRep] = useState<string | null>(null);
+  const [selectedRep, setSelectedRep] = useState<string | null>(DEFAULT_REP_ID);
   
   const { data: repIds, isLoading: isLoadingReps } = useQuery({
     queryKey: ['rep-ids'],

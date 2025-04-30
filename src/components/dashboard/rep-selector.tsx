@@ -7,9 +7,10 @@ import { useRep } from "@/contexts/rep-context";
 interface RepSelectorProps {
   selectedRep?: string;
   onRepChange?: (rep: string) => void;
+  hidden?: boolean;
 }
 
-export function RepSelector({ selectedRep: propSelectedRep, onRepChange }: RepSelectorProps = {}) {
+export function RepSelector({ selectedRep: propSelectedRep, onRepChange, hidden = false }: RepSelectorProps) {
   const { selectedRep: contextSelectedRep, setSelectedRep } = useRep();
   
   // Use either the prop value or the context value
@@ -42,6 +43,10 @@ export function RepSelector({ selectedRep: propSelectedRep, onRepChange }: RepSe
       return uniqueReps.filter(Boolean);
     }
   });
+
+  if (hidden) {
+    return null;
+  }
 
   return (
     <Select value={selectedRep || undefined} onValueChange={handleRepChange}>
