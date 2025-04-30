@@ -1,7 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ClusterDetails, PersonaDetails } from "@/hooks/use-persona-details";
-import { Store, TrendingUp, TrendingDown } from "lucide-react";
+import { Store } from "lucide-react";
 import { Tables } from "@/integrations/supabase/types";
 import { useQualityMetrics } from "@/hooks/use-quality-metrics";
 import { useOutletData } from "@/hooks/use-outlet-data";
@@ -61,29 +61,6 @@ export function OutletOverview({
     );
   }
 
-  // Calculate 7-day sales trends for Guinness and Carlsberg
-  const last14Days = salesData ? [...salesData].slice(-14) : [];
-  const lastWeek = last14Days.slice(-7);
-  const previousWeek = last14Days.slice(0, 7);
-
-  const calculateWeeklyVolume = (data: typeof salesData, field: keyof Tables<"daily_sales_volume">) => {
-    if (!data) return 0;
-    return data.reduce((sum, day) => sum + (Number(day[field]) || 0), 0);
-  };
-
-  const getPercentChange = (current: number, previous: number) => {
-    if (previous === 0) return 0;
-    return ((current - previous) / previous) * 100;
-  };
-
-  const guinnessLastWeek = calculateWeeklyVolume(lastWeek, "Guinness_Draught_In_Keg_MTD_Billed");
-  const guinnessPreviousWeek = calculateWeeklyVolume(previousWeek, "Guinness_Draught_In_Keg_MTD_Billed");
-  const guinnessTrend = getPercentChange(guinnessLastWeek, guinnessPreviousWeek);
-
-  const carlsbergLastWeek = calculateWeeklyVolume(lastWeek, "Carlsberg_Lager_In_Keg_MTD_Billed");
-  const carlsbergPreviousWeek = calculateWeeklyVolume(previousWeek, "Carlsberg_Lager_In_Keg_MTD_Billed");
-  const carlsbergTrend = getPercentChange(carlsbergLastWeek, carlsbergPreviousWeek);
-
   return (
     <Card className="border-repgpt-700 bg-repgpt-800">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -133,40 +110,6 @@ export function OutletOverview({
               <li className="break-words"><span className="font-medium">Pain Points:</span> {personaDetails.pain_points}</li>
             </ul>
           </div>
-
-          {!salesDataLoading && salesData && salesData.length > 0 && (
-            <div className="space-y-3">
-              <h3 className="text-sm font-medium text-white">7-Day Sales Performance</h3>
-              <ul className="space-y-2 text-sm text-gray-300">
-                <li className="flex items-center justify-between">
-                  <span className="truncate pr-2">Guinness Draught</span>
-                  <div className="flex items-center gap-1 flex-shrink-0">
-                    {guinnessTrend > 0 ? (
-                      <TrendingUp className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <TrendingDown className="h-4 w-4 text-red-500" />
-                    )}
-                    <span className={guinnessTrend > 0 ? "text-green-500" : "text-red-500"}>
-                      {Math.abs(guinnessTrend).toFixed(1)}%
-                    </span>
-                  </div>
-                </li>
-                <li className="flex items-center justify-between">
-                  <span className="truncate pr-2">Carlsberg Lager</span>
-                  <div className="flex items-center gap-1 flex-shrink-0">
-                    {carlsbergTrend > 0 ? (
-                      <TrendingUp className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <TrendingDown className="h-4 w-4 text-red-500" />
-                    )}
-                    <span className={carlsbergTrend > 0 ? "text-green-500" : "text-red-500"}>
-                      {Math.abs(carlsbergTrend).toFixed(1)}%
-                    </span>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          )}
 
           <div className="space-y-3">
             <h3 className="text-sm font-medium text-white">Quality Overview</h3>
