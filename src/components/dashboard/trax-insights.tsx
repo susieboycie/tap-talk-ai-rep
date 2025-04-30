@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
 import { Tables } from "@/integrations/supabase/types";
@@ -7,9 +8,26 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 interface TraxInsightsProps {
   data: Tables<"trax_data"> | null;
   isLoading: boolean;
+  outletName: string | null;
 }
 
-export function TraxInsights({ data, isLoading }: TraxInsightsProps) {
+export function TraxInsights({ data, isLoading, outletName }: TraxInsightsProps) {
+  if (!outletName) {
+    return (
+      <Card className="border-purple-700 bg-purple-900/30">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-white">Tap Insights</CardTitle>
+          <Camera className="h-4 w-4 text-purple-400" />
+        </CardHeader>
+        <CardContent>
+          <div className="h-[300px] flex items-center justify-center">
+            <p className="text-purple-400">Please select an outlet to view tap insights.</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   if (isLoading) {
     return (
       <Card className="border-purple-700 bg-purple-900/30">

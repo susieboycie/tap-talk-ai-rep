@@ -25,6 +25,23 @@ export function BeerSalesInsights({ outletName }: BeerSalesInsightsProps) {
     }
   }, [error, toast]);
 
+  // No outlet selected case
+  if (!outletName) {
+    return (
+      <Card className="border-amber-700 bg-amber-900/30">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-white">Beer Sales Breakdown</CardTitle>
+          <Beer className="h-5 w-5 text-amber-400" />
+        </CardHeader>
+        <CardContent>
+          <div className="h-[300px] flex items-center justify-center">
+            <p className="text-amber-400">Please select an outlet to view beer sales data.</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   if (isLoading) {
     return (
       <Card className="border-amber-700 bg-amber-900/30">

@@ -31,7 +31,7 @@ export default function Insights() {
       {/* First row - TRAX Insights */}
       <div className="grid gap-4 mb-6">
         <div>
-          <TraxInsights data={traxData} isLoading={isTraxLoading} />
+          <TraxInsights data={traxData} isLoading={isTraxLoading} outletName={selectedOutlet} />
         </div>
       </div>
 
