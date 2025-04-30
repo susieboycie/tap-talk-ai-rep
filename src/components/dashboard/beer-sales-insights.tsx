@@ -61,7 +61,8 @@ export function BeerSalesInsights({ outletName }: BeerSalesInsightsProps) {
     const result: any = { name: year };
     beerCategories.forEach(category => {
       const value = item[category.key as keyof typeof item] || 0;
-      result[category.name] = Number(value.toFixed(1));
+      // Ensure value is a number before using toFixed
+      result[category.name] = typeof value === 'number' ? Number(value.toFixed(1)) : 0;
     });
     
     return result;
