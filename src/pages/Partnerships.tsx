@@ -1,15 +1,24 @@
 
+import { useState } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import { DirectTradeChart } from "@/components/partnerships/direct-trade-chart";
 import { DirectTradeTable } from "@/components/partnerships/direct-trade-table";
 import { DirectTradeInsights } from "@/components/partnerships/direct-trade-insights";
+import { ContractSummaryCard } from "@/components/partnerships/contract-summary-card";
+import { TradeTermsVolumeChart } from "@/components/partnerships/trade-terms-volume-chart";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useOutlet } from "@/contexts/outlet-context";
 import { useTradeTermsData } from "@/hooks/use-trade-terms-data";
+import { useContractData } from "@/hooks/use-contract-data";
+import { useTradeTermsVolume } from "@/hooks/use-trade-terms-volume";
 
 export default function Partnerships() {
   const { selectedOutlet } = useOutlet();
-  const { data: tradeTermsData, isLoading } = useTradeTermsData(selectedOutlet);
+  const { data: tradeTermsData, isLoading: termsLoading } = useTradeTermsData(selectedOutlet);
+  const { data: contractData, isLoading: contractLoading } = useContractData(selectedOutlet);
+  const { data: volumeData, isLoading: volumeLoading } = useTradeTermsVolume(selectedOutlet);
+  const [activeTab, setActiveTab] = useState("performance");
 
   return (
     <DashboardShell>
@@ -24,30 +33,81 @@ export default function Partnerships() {
       </div>
 
       {selectedOutlet && (
-        <div className="space-y-6">
-          {tradeTermsData && tradeTermsData.length > 0 && (
-            <>
-              <DirectTradeInsights directTradeData={tradeTermsData} />
-              
-              <div>
-                <h2 className="text-xl font-semibold text-white mb-4">Product Performance Analysis</h2>
-                <DirectTradeChart data={tradeTermsData} />
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="bg-repgpt-700 border-repgpt-600">
+            <TabsTrigger value="performance" className="data-[state=active]:bg-repgpt-500">
+              Performance
+            </TabsTrigger>
+            <TabsTrigger value="contracts" className="data-[state=active]:bg-repgpt-500">
+              Contracts
+            </TabsTrigger>
+            <TabsTrigger value="volumes" className="data-[state=active]:bg-repgpt-500">
+              Volume Analysis
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="performance" className="space-y-6 mt-4">
+            {tradeTermsData && tradeTermsData.length > 0 && (
+              <>
+                <DirectTradeInsights directTradeData={tradeTermsData} />
+                
+                <div>
+                  <h2 className="text-xl font-semibold text-white mb-4">Product Performance Analysis</h2>
+                  <DirectTradeChart data={tradeTermsData} />
+                </div>
+                
+                <div>
+                  <h2 className="text-xl font-semibold text-white mb-4">Performance Details</h2>
+                  <DirectTradeTable data={tradeTermsData} />
+                </div>
+              </>
+            )}
+            
+            {termsLoading && (
+              <div className="text-gray-400">Loading trade terms data...</div>
+            )}
+            
+            {!termsLoading && (!tradeTermsData || tradeTermsData.length === 0) && (
+              <div className="text-gray-400">No trade terms data available for this outlet.</div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="contracts" className="space-y-6 mt-4">
+            {contractLoading && <div className="text-gray-400">Loading contract data...</div>}
+            
+            {!contractLoading && (!contractData || contractData.length === 0) && (
+              <div className="text-gray-400">No contract data available for this outlet.</div>
+            )}
+            
+            {contractData && contractData.length > 0 && (
+              <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                <ContractSummaryCard data={contractData} />
               </div>
-              
-              <div>
-                <h2 className="text-xl font-semibold text-white mb-4">Performance Details</h2>
-                <DirectTradeTable data={tradeTermsData} />
-              </div>
-            </>
-          )}
-          
-          {isLoading && (
-            <div className="text-gray-400">Loading trade terms data...</div>
-          )}
-          
-          {!isLoading && (!tradeTermsData || tradeTermsData.length === 0) && (
-            <div className="text-gray-400">No trade terms data available for this outlet.</div>
-          )}
+            )}
+          </TabsContent>
+
+          <TabsContent value="volumes" className="space-y-6 mt-4">
+            {volumeLoading && <div className="text-gray-400">Loading volume data...</div>}
+            
+            {!volumeLoading && (!volumeData || volumeData.length === 0) && (
+              <div className="text-gray-400">No volume data available for this outlet.</div>
+            )}
+            
+            {volumeData && volumeData.length > 0 && (
+              <>
+                <div>
+                  <h2 className="text-xl font-semibold text-white mb-4">Product Volume Analysis</h2>
+                  <TradeTermsVolumeChart data={volumeData} />
+                </div>
+              </>
+            )}
+          </TabsContent>
+        </Tabs>
+      )}
+
+      {!selectedOutlet && (
+        <div className="text-center py-8">
+          <p className="text-gray-400">Please select an outlet to view partnership data.</p>
         </div>
       )}
     </DashboardShell>
