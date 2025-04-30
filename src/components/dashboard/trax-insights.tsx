@@ -120,30 +120,33 @@ export function TraxInsights({ data, isLoading }: TraxInsightsProps) {
                   Cider: { color: "#32CD32" },
                 }}
               >
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={beerTypeData.filter(d => d.value > 0)}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      outerRadius={70}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {beerTypeData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip content={<CustomTooltip />} />
-                  </PieChart>
-                </ResponsiveContainer>
-                <ChartLegend>
-                  <ChartLegendContent payload={beerTypeData.filter(d => d.value > 0).map(item => ({
-                    value: item.name,
-                    color: item.color
-                  }))} />
-                </ChartLegend>
+                {/* Use a fragment to wrap multiple elements as a single child */}
+                <>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={beerTypeData.filter(d => d.value > 0)}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        outerRadius={70}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {beerTypeData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip content={<CustomTooltip />} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <ChartLegend>
+                    <ChartLegendContent payload={beerTypeData.filter(d => d.value > 0).map(item => ({
+                      value: item.name,
+                      color: item.color
+                    }))} />
+                  </ChartLegend>
+                </>
               </ChartContainer>
             </div>
           </div>
@@ -157,30 +160,32 @@ export function TraxInsights({ data, isLoading }: TraxInsightsProps) {
                   Packaged: { color: "#00C49F" },
                 }}
               >
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={presentationData.filter(d => d.value > 0)}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      outerRadius={70}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {presentationData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip content={<CustomTooltip />} />
-                  </PieChart>
-                </ResponsiveContainer>
-                <ChartLegend>
-                  <ChartLegendContent payload={presentationData.filter(d => d.value > 0).map(item => ({
-                    value: item.name,
-                    color: item.color
-                  }))} />
-                </ChartLegend>
+                <>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={presentationData.filter(d => d.value > 0)}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        outerRadius={70}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {presentationData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip content={<CustomTooltip />} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <ChartLegend>
+                    <ChartLegendContent payload={presentationData.filter(d => d.value > 0).map(item => ({
+                      value: item.name,
+                      color: item.color
+                    }))} />
+                  </ChartLegend>
+                </>
               </ChartContainer>
             </div>
           </div>
@@ -195,30 +200,32 @@ export function TraxInsights({ data, isLoading }: TraxInsightsProps) {
                   Spirits: { color: "#8884d8" },
                 }}
               >
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={categoryData.filter(d => d.value > 0)}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      outerRadius={70}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {categoryData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip content={<CustomTooltip />} />
-                  </PieChart>
-                </ResponsiveContainer>
-                <ChartLegend>
-                  <ChartLegendContent payload={categoryData.filter(d => d.value > 0).map(item => ({
-                    value: item.name,
-                    color: item.color
-                  }))} />
-                </ChartLegend>
+                <>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={categoryData.filter(d => d.value > 0)}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        outerRadius={70}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {categoryData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip content={<CustomTooltip />} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <ChartLegend>
+                    <ChartLegendContent payload={categoryData.filter(d => d.value > 0).map(item => ({
+                      value: item.name,
+                      color: item.color
+                    }))} />
+                  </ChartLegend>
+                </>
               </ChartContainer>
             </div>
           </div>
@@ -236,30 +243,32 @@ export function TraxInsights({ data, isLoading }: TraxInsightsProps) {
                   Luxury: { color: "#8b5cf6" },
                 }}
               >
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={priceTierData}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      outerRadius={70}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {priceTierData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip content={<CustomTooltip />} />
-                  </PieChart>
-                </ResponsiveContainer>
-                <ChartLegend>
-                  <ChartLegendContent payload={priceTierData.map(item => ({
-                    value: item.name,
-                    color: item.color
-                  }))} />
-                </ChartLegend>
+                <>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={priceTierData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        outerRadius={70}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {priceTierData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip content={<CustomTooltip />} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <ChartLegend>
+                    <ChartLegendContent payload={priceTierData.map(item => ({
+                      value: item.name,
+                      color: item.color
+                    }))} />
+                  </ChartLegend>
+                </>
               </ChartContainer>
             </div>
           </div>
