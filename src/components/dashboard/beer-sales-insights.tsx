@@ -62,7 +62,7 @@ export function BeerSalesInsights({ outletName }: BeerSalesInsightsProps) {
   // Group data by fiscal year
   // Define beer categories based on the columns in the sales_volume_data table
   const beerCategories = [
-    { name: "Guinness Draught", key: "Guinness Draught (Stout)", color: "#2E1A47" },
+    { name: "Guinness Draught", key: "Guinness Draught (Stout)", color: "#D946EF" }, // Changed color from dark purple (#2E1A47) to magenta pink
     { name: "Carlsberg", key: "Carlsberg (Lager)", color: "#43A047" },
     { name: "Rockshore", key: "Rockshore (Lager)", color: "#1E88E5" },
     { name: "Smithwick's", key: "Smithwick's (Ale)", color: "#D81B60" },
