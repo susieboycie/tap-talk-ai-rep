@@ -7,12 +7,20 @@ import {
   AlertTriangle, 
   Clock, 
   Activity,
-  CalendarClock
+  CalendarClock,
+  Info
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from "recharts";
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 import { useState, useMemo } from "react";
+import { format } from "date-fns";
+import { 
+  Tooltip as UITooltip, 
+  TooltipContent, 
+  TooltipProvider, 
+  TooltipTrigger 
+} from "@/components/ui/tooltip";
 
 interface ActivationStatusInsightsProps {
   outletName: string | null;
@@ -52,19 +60,15 @@ export function ActivationStatusInsights({ outletName }: ActivationStatusInsight
     }
   };
   
-  // Get badge color based on status
-  const getStatusColor = (status: string | null) => {
-    switch (status?.toLowerCase()) {
-      case 'active':
-        return "bg-green-500/20 text-green-700 border-green-600";
-      case 'inactive':
-        return "bg-red-500/20 text-red-700 border-red-600";
-      case 'pending':
-        return "bg-amber-500/20 text-amber-700 border-amber-600";
-      case 'scheduled':
-        return "bg-blue-500/20 text-blue-700 border-blue-600";
-      default:
-        return "bg-gray-500/20 text-gray-700 border-gray-600";
+  // Format activation date
+  const formatActivationDate = (dateString: string | null) => {
+    if (!dateString) return "Not available";
+    
+    try {
+      return format(new Date(dateString), 'MMM d, yyyy');
+    } catch (e) {
+      console.error("Error formatting date:", e);
+      return dateString;
     }
   };
   
@@ -72,7 +76,7 @@ export function ActivationStatusInsights({ outletName }: ActivationStatusInsight
   const prepareChartData = () => {
     const statusCounts: Record<string, number> = {};
     
-    activationData.forEach(item => {
+    activationData?.forEach(item => {
       const status = item["Activation Status"]?.toLowerCase() || 'unknown';
       statusCounts[status] = (statusCounts[status] || 0) + 1;
     });
@@ -196,7 +200,7 @@ export function ActivationStatusInsights({ outletName }: ActivationStatusInsight
                 name={activationName}
                 activations={activations}
                 getStatusIcon={getStatusIcon}
-                getStatusColor={getStatusColor}
+                formatActivationDate={formatActivationDate}
               />
             ))}
           </div>
@@ -210,11 +214,10 @@ interface ActivationCardProps {
   name: string;
   activations: ActivationStatus[];
   getStatusIcon: (status: string | null) => JSX.Element;
-  getStatusColor: (status: string | null) => string;
+  formatActivationDate: (date: string | null) => string;
 }
 
-function ActivationCard({ name, activations, getStatusIcon, getStatusColor }: ActivationCardProps) {
-  // We'll display the status of each outlet for this activation type
+function ActivationCard({ name, activations, getStatusIcon, formatActivationDate }: ActivationCardProps) {
   return (
     <Card className="border-purple-700/50 bg-purple-950/30">
       <CardHeader className="pb-2">
@@ -228,6 +231,29 @@ function ActivationCard({ name, activations, getStatusIcon, getStatusColor }: Ac
                 {activation["Outlet Name"] || "Unknown Outlet"}
               </span>
               <div className="flex gap-2 items-center">
+                <TooltipProvider>
+                  <UITooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center cursor-help">
+                        <Info className="h-4 w-4 mr-1 text-purple-400" />
+                        <span className="text-xs text-purple-400">
+                          {activation["Activation Status"]?.toLowerCase() === 'active' 
+                            ? formatActivationDate(activation["Date Activated"])
+                            : 'Not activated'
+                          }
+                        </span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-purple-800 text-white border-purple-700">
+                      <div className="flex flex-col">
+                        <span className="font-medium">Status: {activation["Activation Status"]}</span>
+                        {activation["Date Activated"] && (
+                          <span>Activated on: {formatActivationDate(activation["Date Activated"])}</span>
+                        )}
+                      </div>
+                    </TooltipContent>
+                  </UITooltip>
+                </TooltipProvider>
                 <StatusIndicator status={activation["Activation Status"]} />
                 {getStatusIcon(activation["Activation Status"])}
               </div>
