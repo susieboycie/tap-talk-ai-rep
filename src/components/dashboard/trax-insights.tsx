@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
 import { Tables } from "@/integrations/supabase/types";
@@ -194,7 +195,7 @@ export function TraxInsights({ data, isLoading }: TraxInsightsProps) {
                     className="h-3 w-3 rounded-sm" 
                     style={{ backgroundColor: item.color }}
                   ></div>
-                  <span className="text-xs text-gray-300">{item.name} ({item.value.toFixed(1)}%)</span>
+                  <span className="text-xs text-gray-300">{item.name} ({Math.round(item.value)}%)</span>
                 </div>
               ))}
             </div>
@@ -237,7 +238,7 @@ export function TraxInsights({ data, isLoading }: TraxInsightsProps) {
                     className="h-3 w-3 rounded-sm" 
                     style={{ backgroundColor: item.color }}
                   ></div>
-                  <span className="text-xs text-gray-300">{item.name} ({item.value.toFixed(1)}%)</span>
+                  <span className="text-xs text-gray-300">{item.name} ({Math.round(item.value)}%)</span>
                 </div>
               ))}
             </div>
@@ -281,7 +282,7 @@ export function TraxInsights({ data, isLoading }: TraxInsightsProps) {
                     className="h-3 w-3 rounded-sm" 
                     style={{ backgroundColor: item.color }}
                   ></div>
-                  <span className="text-xs text-gray-300">{item.name} ({item.value.toFixed(1)}%)</span>
+                  <span className="text-xs text-gray-300">{item.name} ({Math.round(item.value)}%)</span>
                 </div>
               ))}
             </div>
@@ -328,7 +329,7 @@ export function TraxInsights({ data, isLoading }: TraxInsightsProps) {
                     className="h-3 w-3 rounded-sm" 
                     style={{ backgroundColor: item.color }}
                   ></div>
-                  <span className="text-xs text-gray-300">{item.name} ({item.value.toFixed(1)}%)</span>
+                  <span className="text-xs text-gray-300">{item.name} ({Math.round(item.value)}%)</span>
                 </div>
               ))}
             </div>
