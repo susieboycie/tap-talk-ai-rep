@@ -1,14 +1,12 @@
+
 import { useState } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tables } from "@/integrations/supabase/types";
 import { Slider } from "@/components/ui/slider";
 import { format } from "date-fns";
 
-type SalesData = Tables<"daily_sales_volume">;
-
 interface PerformanceChartProps {
-  data: SalesData[] | null;
+  data: any[] | null;
   isLoading: boolean;
 }
 
@@ -16,7 +14,7 @@ const BEVERAGE_CONFIG = {
   guinness: { name: "Guinness Draught", field: "Guinness_Draught_In_Keg_MTD_Billed", color: "#9b87f5" },
   carlsberg: { name: "Carlsberg Lager", field: "Carlsberg_Lager_In_Keg_MTD_Billed", color: "#ff7300" },
   guinness_zero: { name: "Guinness 0.0", field: "Guinness_Draught_0.0_in_Keg_MTD_Billed", color: "#4CAF50" },
-  carlsberg_zero: { name: "Carlsberg 0.0", field: "Carlsberg_0.0_In_Keg_MTD_Billed", color: "#2196F3" },
+  carlsberg_zero: { name: "Carlsberg_0.0", field: "Carlsberg_0.0_In_Keg_MTD_Billed", color: "#2196F3" },
   harp: { name: "Harp", field: "Harp_In_Keg_MTD_Billed", color: "#FFC107" },
   hophouse: { name: "Hop House 13", field: "Hop_House_13_Lager_MTD_Billed", color: "#FF5722" },
   kilkenny: { name: "Kilkenny", field: "Kilkenny_Draught_In_Keg_MTD_Billed", color: "#E91E63" },
@@ -38,7 +36,7 @@ export function PerformanceChart({ data, isLoading }: PerformanceChartProps) {
     day: record.Calendar_day,
     ...Object.entries(BEVERAGE_CONFIG).reduce((acc, [key, config]) => ({
       ...acc,
-      [key]: record[config.field as keyof SalesData] || 0,
+      [key]: record[config.field] || 0,
     }), {}),
   })) || [];
 

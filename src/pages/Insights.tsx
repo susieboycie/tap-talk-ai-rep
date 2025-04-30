@@ -4,7 +4,7 @@ import { PerformanceChart } from "@/components/dashboard/performance-chart";
 import { SalesInsights } from "@/components/dashboard/sales-insights";
 import { TraxInsights } from "@/components/dashboard/trax-insights";
 import { BeerSalesInsights } from "@/components/dashboard/beer-sales-insights";
-import { useOutletSales } from "@/hooks/use-outlet-sales";
+import { useOutletSalesData } from "@/hooks/use-outlet-sales-data";
 import { useOutletTrax } from "@/hooks/use-outlet-trax";
 import { useSalesVolumeData } from "@/hooks/use-sales-volume-data"; 
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
@@ -12,7 +12,7 @@ import { useOutlet } from "@/contexts/outlet-context";
 
 export default function Insights() {
   const { selectedOutlet } = useOutlet();
-  const { data: salesData, isLoading: isSalesLoading } = useOutletSales(selectedOutlet);
+  const { data: salesData, isLoading: isSalesLoading } = useOutletSalesData(selectedOutlet);
   const { data: traxData, isLoading: isTraxLoading } = useOutletTrax(selectedOutlet);
   
   return (

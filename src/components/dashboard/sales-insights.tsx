@@ -1,11 +1,11 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, TrendingDown, CloudRain, Sun, Thermometer } from "lucide-react";
-import { Tables } from "@/integrations/supabase/types";
 import { formatDistanceToNow } from "date-fns";
 import { useOutletWeather } from "@/hooks/use-outlet-weather";
 
 interface SalesInsightsProps {
-  data: Tables<"daily_sales_volume">[] | null;
+  data: any[] | null;
   isLoading: boolean;
 }
 
@@ -45,7 +45,7 @@ export function SalesInsights({ data, isLoading }: SalesInsightsProps) {
   );
 
   const latestDate = sortedData[sortedData.length - 1]?.Calendar_day;
-  const latestOutlet = sortedData[sortedData.length - 1]?.Outlet;
+  const latestOutlet = sortedData[sortedData.length - 1]?.["Outlet Name"];
 
   const { data: weatherData, isLoading: isWeatherLoading } = useOutletWeather(latestOutlet, latestDate);
 

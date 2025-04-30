@@ -1,13 +1,13 @@
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useOutletSales } from "@/hooks/use-outlet-sales";
+import { useOutletSalesData } from "@/hooks/use-outlet-sales-data";
 
 interface SalesKPITableProps {
   selectedOutlet: string;
 }
 
 export function SalesKPITable({ selectedOutlet }: SalesKPITableProps) {
-  const { data: salesData, isLoading } = useOutletSales(selectedOutlet);
+  const { data: salesData, isLoading } = useOutletSalesData(selectedOutlet);
 
   if (isLoading) {
     return <div className="text-gray-400">Loading sales data...</div>;
