@@ -3,6 +3,7 @@ import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
 import { SalesInsights } from "@/components/dashboard/sales-insights";
 import { TraxInsights } from "@/components/dashboard/trax-insights";
+import { BeerSalesInsights } from "@/components/dashboard/beer-sales-insights";
 import { useOutletSales } from "@/hooks/use-outlet-sales";
 import { useOutletTrax } from "@/hooks/use-outlet-trax";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
@@ -29,6 +30,13 @@ export default function Insights() {
       <div className="grid gap-4 mb-6">
         <div>
           <TraxInsights data={traxData} isLoading={isTraxLoading} />
+        </div>
+      </div>
+
+      {/* New row - Beer Sales Insights */}
+      <div className="grid gap-4 mb-6">
+        <div>
+          <BeerSalesInsights outletName={selectedOutlet} />
         </div>
       </div>
 
