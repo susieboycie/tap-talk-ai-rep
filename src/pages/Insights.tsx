@@ -25,18 +25,24 @@ export default function Insights() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5 mb-6">
-        <div className="md:col-span-2 lg:col-span-3">
+      {/* First row - Sales Insights */}
+      <div className="grid gap-4 md:grid-cols-2 mb-6">
+        <div className="md:col-span-2">
           <SalesInsights data={salesData} isLoading={isSalesLoading} />
-        </div>
-        <div className="md:col-span-1 lg:col-span-2">
-          <TraxInsights data={traxData} isLoading={isTraxLoading} />
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5 mb-6">
-        <div className="md:col-span-3 lg:col-span-5">
+      {/* Second row - Performance Chart */}
+      <div className="grid gap-4 mb-6">
+        <div>
           <PerformanceChart data={salesData} isLoading={isSalesLoading} />
+        </div>
+      </div>
+
+      {/* Third row - TRAX Insights */}
+      <div className="grid gap-4 mb-6">
+        <div>
+          <TraxInsights data={traxData} isLoading={isTraxLoading} />
         </div>
       </div>
     </DashboardShell>
