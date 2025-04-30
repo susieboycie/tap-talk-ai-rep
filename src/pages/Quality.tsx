@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
-import { RepSelector } from "@/components/dashboard/rep-selector";
 import { QualityKPICard } from "@/components/quality/quality-kpi-card";
 import { useQualityMetrics } from "@/hooks/use-quality-metrics";
 import { PhoneCall, CalendarDays, ShieldCheck, Beer, Wine, Martini, AlertCircle } from "lucide-react";
