@@ -84,8 +84,9 @@ export function useQualityMetrics(outletName: string | null) {
   };
 
   // Transform the data from Supabase into our metrics format
+  // Convert callCompliance from decimal to percentage (multiply by 100)
   const metrics = data ? {
-    callCompliance: data["Compliance Ach"] || 0,
+    callCompliance: (data["Compliance Ach"] || 0) * 100,
     callsPerDay: data["CPD Ach"] || 0,
     daysInTrade: data["DIT Ach"] || 0,
     cpdTarget: data["CPD Target"] || 7.5,

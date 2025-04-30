@@ -21,7 +21,13 @@ export function useTradeTermsData(outletName: string | null) {
         throw new Error(error.message);
       }
       
-      return (data || []) as TradeTermData[];
+      // Convert decimal compliance values to percentages before returning
+      const formattedData = data?.map(item => ({
+        ...item,
+        "Compliance Ach": (item["Compliance Ach"] || 0) * 100
+      }));
+      
+      return (formattedData || []) as TradeTermData[];
     },
     enabled: !!outletName,
   });
