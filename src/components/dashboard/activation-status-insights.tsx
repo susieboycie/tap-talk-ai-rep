@@ -10,17 +10,14 @@ import {
   CalendarClock,
   Info
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from "recharts";
-import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
-import { useState, useMemo } from "react";
-import { format } from "date-fns";
 import { 
   Tooltip as UITooltip, 
   TooltipContent, 
   TooltipProvider, 
   TooltipTrigger 
 } from "@/components/ui/tooltip";
+import { format } from "date-fns";
+import { useMemo } from "react";
 
 interface ActivationStatusInsightsProps {
   outletName: string | null;
@@ -28,7 +25,6 @@ interface ActivationStatusInsightsProps {
 
 export function ActivationStatusInsights({ outletName }: ActivationStatusInsightsProps) {
   const { data: activationData, isLoading, error } = useActivationStatus(outletName);
-  const [selectedView, setSelectedView] = useState<'chart' | 'cards'>('cards');
   
   // Group activations by name
   const groupedActivations = useMemo(() => {
@@ -69,32 +65,6 @@ export function ActivationStatusInsights({ outletName }: ActivationStatusInsight
     } catch (e) {
       console.error("Error formatting date:", e);
       return dateString;
-    }
-  };
-  
-  // Prepare data for chart
-  const prepareChartData = () => {
-    const statusCounts: Record<string, number> = {};
-    
-    activationData?.forEach(item => {
-      const status = item["Activation Status"]?.toLowerCase() || 'unknown';
-      statusCounts[status] = (statusCounts[status] || 0) + 1;
-    });
-    
-    return Object.entries(statusCounts).map(([status, count]) => ({ 
-      name: status.charAt(0).toUpperCase() + status.slice(1), 
-      value: count 
-    }));
-  };
-  
-  // Get color for chart bars
-  const getChartColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'active': return '#10B981';
-      case 'inactive': return '#EF4444';
-      case 'pending': return '#F59E0B';
-      case 'scheduled': return '#3B82F6';
-      default: return '#9CA3AF';
     }
   };
   
@@ -147,64 +117,20 @@ export function ActivationStatusInsights({ outletName }: ActivationStatusInsight
             {activationData.length} activations for {outletName || "all outlets"}
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Badge 
-            className={`cursor-pointer ${selectedView === 'chart' ? 'bg-purple-500' : 'bg-purple-900'}`}
-            onClick={() => setSelectedView('chart')}
-          >
-            Chart
-          </Badge>
-          <Badge 
-            className={`cursor-pointer ${selectedView === 'cards' ? 'bg-purple-500' : 'bg-purple-900'}`}
-            onClick={() => setSelectedView('cards')}
-          >
-            Cards
-          </Badge>
-          <Activity className="h-5 w-5 text-purple-400" />
-        </div>
+        <Activity className="h-5 w-5 text-purple-400" />
       </CardHeader>
       <CardContent>
-        {selectedView === 'chart' ? (
-          <div className="h-[300px]">
-            <ChartContainer 
-              config={{
-                active: { color: '#10B981' },
-                inactive: { color: '#EF4444' },
-                pending: { color: '#F59E0B' },
-                scheduled: { color: '#3B82F6' },
-                unknown: { color: '#9CA3AF' },
-              }}
-            >
-              <BarChart data={prepareChartData()}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#4e3a60" />
-                <XAxis dataKey="name" stroke="#E5DEFF" />
-                <YAxis stroke="#E5DEFF" />
-                <Tooltip content={<ChartTooltipContent />} />
-                <Legend />
-                <Bar dataKey="value" name="Activations">
-                  {prepareChartData().map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={getChartColor(entry.name)} 
-                    />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ChartContainer>
-          </div>
-        ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 max-h-[300px] overflow-y-auto pr-2">
-            {Object.entries(groupedActivations).map(([activationName, activations]) => (
-              <ActivationCard 
-                key={activationName}
-                name={activationName}
-                activations={activations}
-                getStatusIcon={getStatusIcon}
-                formatActivationDate={formatActivationDate}
-              />
-            ))}
-          </div>
-        )}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 max-h-[300px] overflow-y-auto pr-2">
+          {Object.entries(groupedActivations).map(([activationName, activations]) => (
+            <ActivationCard 
+              key={activationName}
+              name={activationName}
+              activations={activations}
+              getStatusIcon={getStatusIcon}
+              formatActivationDate={formatActivationDate}
+            />
+          ))}
+        </div>
       </CardContent>
     </Card>
   );
