@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CalendarClock, CreditCard, BarChart3, FileText } from "lucide-react";
@@ -66,7 +67,7 @@ export function ContractSummaryCard({ data }: ContractSummaryCardProps) {
                 <CreditCard className="h-6 w-6 text-amber-500" />
               </div>
               <div>
-                <h3 className="text-3xl font-bold text-white">€{totalInvestment.toLocaleString()}</h3>
+                <h3 className="text-3xl font-bold text-white">€{Math.round(totalInvestment).toLocaleString()}</h3>
                 <p className="text-sm text-gray-400">Across all active contracts</p>
               </div>
             </div>
@@ -128,7 +129,7 @@ export function ContractSummaryCard({ data }: ContractSummaryCardProps) {
                     <div className="flex items-center gap-2">
                       <CreditCard className="h-4 w-4 text-gray-400" />
                       <span className="text-gray-400">Investment:</span>
-                      <span className="text-white">€{(contract["Overall Investment(incl. Indirect Inv)"] || 0).toLocaleString()}</span>
+                      <span className="text-white">€{Math.round(contract["Overall Investment(incl. Indirect Inv)"] || 0).toLocaleString()}</span>
                     </div>
                     
                     <div className="flex items-center gap-2">
