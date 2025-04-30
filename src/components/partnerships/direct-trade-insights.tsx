@@ -19,7 +19,7 @@ export function DirectTradeInsights({ directTradeData }: DirectTradeInsightsProp
   const smirnoffPercentage = data["SMICE Target"] ? Math.round((data["SMICE Ach"] / data["SMICE Target"]) * 100) : 0;
   
   // Call Compliance is already multiplied by 100 in the hook
-  const callCompliancePercentage = Math.round(data["Compliance Ach"] || 0);
+  const callCompliancePercentage = data["Compliance Ach"] ? Number(data["Compliance Ach"].toFixed(1)) : 0;
 
   return (
     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -31,7 +31,7 @@ export function DirectTradeInsights({ directTradeData }: DirectTradeInsightsProp
             </div>
             <div>
               <p className="text-sm font-medium text-blue-500">Call Compliance</p>
-              <h3 className="text-2xl font-bold text-white">{callCompliancePercentage}%</h3>
+              <h3 className="text-2xl font-bold text-white">{callCompliancePercentage.toFixed(1)}%</h3>
             </div>
           </div>
         </CardContent>
@@ -45,7 +45,7 @@ export function DirectTradeInsights({ directTradeData }: DirectTradeInsightsProp
             </div>
             <div>
               <p className="text-sm font-medium text-purple-500">Days in Trade</p>
-              <h3 className="text-2xl font-bold text-white">{data["DIT Ach"] || 0} / {data["DIT Target"] || 0} days</h3>
+              <h3 className="text-2xl font-bold text-white">{(data["DIT Ach"] || 0).toFixed(1)} / {(data["DIT Target"] || 0).toFixed(1)} days</h3>
             </div>
           </div>
         </CardContent>
@@ -59,7 +59,7 @@ export function DirectTradeInsights({ directTradeData }: DirectTradeInsightsProp
             </div>
             <div>
               <p className="text-sm font-medium text-green-500">Rockshore Activations</p>
-              <h3 className="text-2xl font-bold text-white">{data["RSL Activations"] || 0}</h3>
+              <h3 className="text-2xl font-bold text-white">{(data["RSL Activations"] || 0).toFixed(1)}</h3>
             </div>
           </div>
         </CardContent>
@@ -70,7 +70,7 @@ export function DirectTradeInsights({ directTradeData }: DirectTradeInsightsProp
         {guinessPercentage < 70 && (
           <Alert variant="destructive">
             <AlertDescription>
-              Guinness 0.0 is underperforming at {guinessPercentage}% of target. Consider promotional activities.
+              Guinness 0.0 is underperforming at {guinessPercentage.toFixed(1)}% of target. Consider promotional activities.
             </AlertDescription>
           </Alert>
         )}
@@ -78,7 +78,7 @@ export function DirectTradeInsights({ directTradeData }: DirectTradeInsightsProp
         {rockshorePercentage < 70 && (
           <Alert variant="destructive">
             <AlertDescription>
-              Rockshore Wave is underperforming at {rockshorePercentage}% of target. Consider increasing visibility.
+              Rockshore Wave is underperforming at {rockshorePercentage.toFixed(1)}% of target. Consider increasing visibility.
             </AlertDescription>
           </Alert>
         )}
@@ -86,7 +86,7 @@ export function DirectTradeInsights({ directTradeData }: DirectTradeInsightsProp
         {casamigosPercentage < 70 && (
           <Alert variant="destructive">
             <AlertDescription>
-              Casamigos is underperforming at {casamigosPercentage}% of target. Review pricing strategy.
+              Casamigos is underperforming at {casamigosPercentage.toFixed(1)}% of target. Review pricing strategy.
             </AlertDescription>
           </Alert>
         )}
@@ -94,7 +94,7 @@ export function DirectTradeInsights({ directTradeData }: DirectTradeInsightsProp
         {smirnoffPercentage < 70 && (
           <Alert variant="destructive">
             <AlertDescription>
-              Smirnoff Ice is underperforming at {smirnoffPercentage}% of target. Consider bundle offers.
+              Smirnoff Ice is underperforming at {smirnoffPercentage.toFixed(1)}% of target. Consider bundle offers.
             </AlertDescription>
           </Alert>
         )}
@@ -102,7 +102,7 @@ export function DirectTradeInsights({ directTradeData }: DirectTradeInsightsProp
         {callCompliancePercentage < 60 && (
           <Alert variant="destructive">
             <AlertDescription>
-              Call compliance is low at {callCompliancePercentage}%. Schedule more visits to improve relationship.
+              Call compliance is low at {callCompliancePercentage.toFixed(1)}%. Schedule more visits to improve relationship.
             </AlertDescription>
           </Alert>
         )}

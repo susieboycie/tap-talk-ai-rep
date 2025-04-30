@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
@@ -93,15 +94,15 @@ export default function Quality() {
             <h2 className="text-xl font-semibold text-white mb-4">Quality Overview</h2>
             <div className="text-gray-300 space-y-3">
               <p>
-                Call compliance is currently {metrics.callCompliance}%, which is {getCallComplianceStatus()}. 
-                The outlet is averaging {metrics.callsPerDay.toFixed(1)} calls per day against a target of {metrics.cpdTarget}, 
-                with {metrics.daysInTrade} days in trade versus the target of {metrics.ditTarget} days.
+                Call compliance is currently {metrics.callCompliance.toFixed(1)}%, which is {getCallComplianceStatus()}. 
+                The outlet is averaging {metrics.callsPerDay.toFixed(1)} calls per day against a target of {metrics.cpdTarget.toFixed(1)}, 
+                with {metrics.daysInTrade.toFixed(1)} days in trade versus the target of {metrics.ditTarget.toFixed(1)} days.
               </p>
               <p>
                 Product distribution shows: 
-                Guinness is {getDistributionStatus(metrics.guinness.actual, metrics.guinness.target)} at {metrics.guinness.target > 0 ? Math.round((metrics.guinness.actual / metrics.guinness.target) * 100) : 0}% of target, 
-                Rockshore distribution is {getDistributionStatus(metrics.rockshoreDistribution.actual, metrics.rockshoreDistribution.target)} at {metrics.rockshoreDistribution.target > 0 ? Math.round((metrics.rockshoreDistribution.actual / metrics.rockshoreDistribution.target) * 100) : 0}% of target, 
-                and Smirnoff Ice is {getDistributionStatus(metrics.smirnoffIce.actual, metrics.smirnoffIce.target)} at {metrics.smirnoffIce.target > 0 ? Math.round((metrics.smirnoffIce.actual / metrics.smirnoffIce.target) * 100) : 0}% of target.
+                Guinness is {getDistributionStatus(metrics.guinness.actual, metrics.guinness.target)} at {metrics.guinness.target > 0 ? (Math.round((metrics.guinness.actual / metrics.guinness.target) * 1000) / 10).toFixed(1) : 0.0}% of target, 
+                Rockshore distribution is {getDistributionStatus(metrics.rockshoreDistribution.actual, metrics.rockshoreDistribution.target)} at {metrics.rockshoreDistribution.target > 0 ? (Math.round((metrics.rockshoreDistribution.actual / metrics.rockshoreDistribution.target) * 1000) / 10).toFixed(1) : 0.0}% of target, 
+                and Smirnoff Ice is {getDistributionStatus(metrics.smirnoffIce.actual, metrics.smirnoffIce.target)} at {metrics.smirnoffIce.target > 0 ? (Math.round((metrics.smirnoffIce.actual / metrics.smirnoffIce.target) * 1000) / 10).toFixed(1) : 0.0}% of target.
               </p>
             </div>
           </Card>

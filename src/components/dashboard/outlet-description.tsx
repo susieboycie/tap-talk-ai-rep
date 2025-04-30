@@ -75,11 +75,11 @@ export function OutletDescription({
     ${outletData?.["Global Outlet Segment"] ? `This ${outletData["Global Outlet Segment"].toLowerCase()} venue` : 'This venue'} typically focuses on ${clusterDetails.product_focus?.toLowerCase() || 'various products'} 
     and serves customers during ${clusterDetails.key_occasions?.toLowerCase() || 'various occasions'}. 
     ${clusterDetails.consumption_behavior ? `The typical consumption pattern shows ${clusterDetails.consumption_behavior.toLowerCase()}.` : ''} 
-    ${totalGuinnessSales > 0 ? `The outlet has recorded ${totalGuinnessSales.toFixed(2)} units in Guinness sales.` : ''}
+    ${totalGuinnessSales > 0 ? `The outlet has recorded ${totalGuinnessSales.toFixed(1)} units in Guinness sales.` : ''}
     As a ${personaDetails.name}, their key goals include ${personaDetails.goals?.toLowerCase()}, 
     while facing challenges such as ${personaDetails.pain_points?.toLowerCase()}. 
-    In terms of quality metrics, the outlet has ${metrics.callCompliance}% call compliance, 
-    averaging ${metrics.callsPerDay.toFixed(1)} calls per day and ${metrics.daysInTrade} days in trade over the last 8 weeks.`;
+    In terms of quality metrics, the outlet has ${metrics.callCompliance.toFixed(1)}% call compliance, 
+    averaging ${metrics.callsPerDay.toFixed(1)} calls per day and ${metrics.daysInTrade.toFixed(1)} days in trade over the last 8 weeks.`;
 
   return (
     <Card className="border-repgpt-700 bg-repgpt-800">
