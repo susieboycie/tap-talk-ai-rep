@@ -1,17 +1,18 @@
+
 import { useState } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
-import { OutletSelector } from "@/components/dashboard/outlet-selector";
+import { RepSelector } from "@/components/dashboard/rep-selector";
 import { QualityKPICard } from "@/components/quality/quality-kpi-card";
 import { useQualityMetrics } from "@/hooks/use-quality-metrics";
 import { PhoneCall, CalendarDays, ShieldCheck, Beer, Wine, Martini, AlertCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { useOutlet } from "@/contexts/outlet-context";
+import { useRep } from "@/contexts/rep-context";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function Quality() {
-  const { selectedOutlet, setSelectedOutlet } = useOutlet();
-  const { metrics, getRAGStatus, getProductRAGStatus, isLoading, error } = useQualityMetrics(selectedOutlet);
+  const { selectedRep, setSelectedRep } = useRep();
+  const { metrics, getRAGStatus, getProductRAGStatus, isLoading, error } = useQualityMetrics(selectedRep);
 
   const getCallComplianceStatus = () => {
     if (metrics.callCompliance >= 80) return "strong";
@@ -70,31 +71,31 @@ export default function Quality() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-white">Quality</h1>
-          <p className="text-gray-400">Monitor call quality metrics and compliance in last 8 weeks rolling</p>
+          <p className="text-gray-400">Monitor call quality metrics and rep performance in last 8 weeks rolling</p>
         </div>
         <div className="w-[240px]">
-          <OutletSelector />
+          <RepSelector />
         </div>
       </div>
 
-      {!selectedOutlet && (
+      {!selectedRep && (
         <div className="text-center py-8">
-          <p className="text-gray-400">Please select an outlet to view quality metrics.</p>
+          <p className="text-gray-400">Please select a rep to view quality metrics.</p>
         </div>
       )}
 
-      {selectedOutlet && isLoading && renderLoadingState()}
+      {selectedRep && isLoading && renderLoadingState()}
 
-      {selectedOutlet && error && renderErrorState()}
+      {selectedRep && error && renderErrorState()}
 
-      {selectedOutlet && !isLoading && !error && (
+      {selectedRep && !isLoading && !error && (
         <>
           <Card className="p-6 mb-6 border-orange-600 bg-orange-900/30">
-            <h2 className="text-xl font-semibold text-white mb-4">Quality Overview</h2>
+            <h2 className="text-xl font-semibold text-white mb-4">Quality Overview for Rep: {selectedRep}</h2>
             <div className="text-gray-300 space-y-3">
               <p>
                 Call compliance is currently {metrics.callCompliance.toFixed(1)}%, which is {getCallComplianceStatus()}. 
-                The outlet is averaging {metrics.callsPerDay.toFixed(1)} calls per day against a target of {metrics.cpdTarget.toFixed(1)}, 
+                The rep is averaging {metrics.callsPerDay.toFixed(1)} calls per day against a target of {metrics.cpdTarget.toFixed(1)}, 
                 with {metrics.daysInTrade.toFixed(1)} days in trade versus the target of {metrics.ditTarget.toFixed(1)} days.
               </p>
               <p>
@@ -112,7 +113,7 @@ export default function Quality() {
                 <QualityKPICard
                   title="Call Compliance"
                   subtitle="In last 8 weeks rolling"
-                  value={`${metrics.callCompliance}%`}
+                  value={`${metrics.callCompliance.toFixed(1)}%`}
                   icon={ShieldCheck}
                   status={getRAGStatus(metrics.callCompliance, "callCompliance")}
                 />

@@ -1,7 +1,6 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
-import { useOutletData } from "@/hooks/use-outlet-data";
 import { useQuery } from "@tanstack/react-query";
 
 export interface QualityMetrics {
@@ -29,44 +28,40 @@ export interface QualityMetrics {
   };
 }
 
-export function useQualityMetrics(outletName: string | null) {
-  const { data: outletData } = useOutletData(outletName);
-  
-  // Use React Query to fetch data from target_tiering_data
+export function useQualityMetrics(repId: string | null) {
+  // Use React Query to fetch data from target_tiering_data based on Rep ID
   const { data, isLoading, error } = useQuery({
-    queryKey: ['quality-metrics', outletName, outletData?.["Ship To"]],
+    queryKey: ['quality-metrics-by-rep', repId],
     queryFn: async () => {
-      if (!outletData?.["Ship To"]) {
-        console.log("No Ship To found for outlet:", outletName);
+      if (!repId) {
+        console.log("No Rep ID provided");
         return null;
       }
       
-      const shipTo = outletData["Ship To"];
+      console.log("Fetching quality metrics for Rep:", repId);
       
-      console.log("Fetching quality metrics for Ship To:", shipTo);
-      
-      const { data: tierData, error } = await supabase
+      const { data: repData, error } = await supabase
         .from('target_tiering_data')
         .select('*')
-        .eq('Ship To', shipTo)
-        .maybeSingle();
+        .eq('Rep ID', repId);
 
       if (error) {
-        console.error("Error fetching target tiering data:", error);
+        console.error("Error fetching rep tiering data:", error);
         throw error;
       }
 
-      console.log("Retrieved target tiering data:", tierData);
+      console.log("Retrieved rep tiering data:", repData);
       
-      if (!tierData) {
-        console.log("No target tiering data found for Ship To:", shipTo);
+      if (!repData || repData.length === 0) {
+        console.log("No tiering data found for Rep:", repId);
         // Return default values if no data found
         return null;
       }
       
-      return tierData;
+      // We can return all the data and process it later
+      return repData;
     },
-    enabled: !!outletData?.["Ship To"]
+    enabled: !!repId
   });
 
   // Default values fallback
@@ -83,32 +78,62 @@ export function useQualityMetrics(outletName: string | null) {
     casamigos: { target: 0, actual: 0 }
   };
 
+  // Process the rep data to calculate aggregate metrics
+  const processRepData = (repData: any[]): QualityMetrics => {
+    if (!repData || repData.length === 0) return defaultMetrics;
+    
+    // Calculate averages for percentage-based metrics
+    const callComplianceAvg = repData.reduce((sum, item) => sum + (item["Compliance Ach"] || 0), 0) / repData.length * 100;
+    const callsPerDayAvg = repData.reduce((sum, item) => sum + (item["CPD Ach"] || 0), 0) / repData.length;
+    const daysInTradeAvg = repData.reduce((sum, item) => sum + (item["DIT Ach"] || 0), 0) / repData.length;
+    
+    // Sum up for accumulation metrics
+    const guinnessTgt = repData.reduce((sum, item) => sum + (item["GNS 0.0 Target"] || 0), 0);
+    const guinnessAch = repData.reduce((sum, item) => sum + (item["GNS 0.0 Ach"] || 0), 0);
+    
+    const rockshoreDistTgt = repData.reduce((sum, item) => sum + (item["RS WAVE Target"] || 0), 0);
+    const rockshoreDistAch = repData.reduce((sum, item) => sum + (item["RS WAVE Ach"] || 0), 0);
+    
+    const rockshoreActivations = repData.reduce((sum, item) => sum + (item["RSL Activations"] || 0), 0);
+    
+    const smirnoffTgt = repData.reduce((sum, item) => sum + (item["SMICE Target"] || 0), 0);
+    const smirnoffAch = repData.reduce((sum, item) => sum + (item["SMICE Ach"] || 0), 0);
+    
+    const casamigosTgt = repData.reduce((sum, item) => sum + (item["Casa Target"] || 0), 0);
+    const casamigosAch = repData.reduce((sum, item) => sum + (item["Casa Ach"] || 0), 0);
+    
+    // Get average targets
+    const cpdTarget = repData.reduce((sum, item) => sum + (item["CPD Target"] || 0), 0) / repData.length;
+    const ditTarget = repData.reduce((sum, item) => sum + (item["DIT Target"] || 0), 0) / repData.length;
+    
+    return {
+      callCompliance: callComplianceAvg,
+      callsPerDay: callsPerDayAvg,
+      daysInTrade: daysInTradeAvg,
+      cpdTarget,
+      ditTarget,
+      guinness: { 
+        target: guinnessTgt, 
+        actual: guinnessAch 
+      },
+      rockshoreDistribution: { 
+        target: rockshoreDistTgt, 
+        actual: rockshoreDistAch 
+      },
+      rockshoreActivations,
+      smirnoffIce: { 
+        target: smirnoffTgt, 
+        actual: smirnoffAch
+      },
+      casamigos: { 
+        target: casamigosTgt, 
+        actual: casamigosAch 
+      }
+    };
+  };
+
   // Transform the data from Supabase into our metrics format
-  // Convert callCompliance from decimal to percentage (multiply by 100)
-  const metrics = data ? {
-    callCompliance: (data["Compliance Ach"] || 0) * 100,
-    callsPerDay: data["CPD Ach"] || 0,
-    daysInTrade: data["DIT Ach"] || 0,
-    cpdTarget: data["CPD Target"] || 7.5,
-    ditTarget: data["DIT Target"] || 30,
-    guinness: { 
-      target: data["GNS 0.0 Target"] || 0, 
-      actual: data["GNS 0.0 Ach"] || 0 
-    },
-    rockshoreDistribution: { 
-      target: data["RS WAVE Target"] || 0, 
-      actual: data["RS WAVE Ach"] || 0 
-    },
-    rockshoreActivations: data["RSL Activations"] || 0,
-    smirnoffIce: { 
-      target: data["SMICE Target"] || 0, 
-      actual: data["SMICE Ach"] || 0 
-    },
-    casamigos: { 
-      target: data["Casa Target"] || 0, 
-      actual: data["Casa Ach"] || 0 
-    }
-  } : defaultMetrics;
+  const metrics = data ? processRepData(data) : defaultMetrics;
 
   const getRAGStatus = (value: number, metric: keyof QualityMetrics): "red" | "amber" | "green" => {
     switch (metric) {

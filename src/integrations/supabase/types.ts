@@ -386,11 +386,10 @@ export type Database = {
           "DIT Target": number | null
           "GNS 0.0 Ach": number | null
           "GNS 0.0 Target": number | null
-          "Outlet Name": string | null
+          "Rep ID": string | null
           "RS WAVE Ach": number | null
           "RS WAVE Target": number | null
           "RSL Activations": number | null
-          "Ship To": number | null
           "SMICE Ach": number | null
           "SMICE Target": number | null
         }
@@ -404,11 +403,10 @@ export type Database = {
           "DIT Target"?: number | null
           "GNS 0.0 Ach"?: number | null
           "GNS 0.0 Target"?: number | null
-          "Outlet Name"?: string | null
+          "Rep ID"?: string | null
           "RS WAVE Ach"?: number | null
           "RS WAVE Target"?: number | null
           "RSL Activations"?: number | null
-          "Ship To"?: number | null
           "SMICE Ach"?: number | null
           "SMICE Target"?: number | null
         }
@@ -422,11 +420,10 @@ export type Database = {
           "DIT Target"?: number | null
           "GNS 0.0 Ach"?: number | null
           "GNS 0.0 Target"?: number | null
-          "Outlet Name"?: string | null
+          "Rep ID"?: string | null
           "RS WAVE Ach"?: number | null
           "RS WAVE Target"?: number | null
           "RSL Activations"?: number | null
-          "Ship To"?: number | null
           "SMICE Ach"?: number | null
           "SMICE Target"?: number | null
         }
