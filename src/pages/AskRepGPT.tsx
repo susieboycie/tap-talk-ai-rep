@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { Button } from "@/components/ui/button";
@@ -163,11 +164,13 @@ const AskRepGPT = () => {
               <CardHeader className="pb-2">
                 <CardTitle className="text-white text-lg">Conversation Starters</CardTitle>
               </CardHeader>
-              <CardContent>
-                <ConversationStartersGrid
-                  selectedOutlet={selectedOutlet}
-                  onConversationStart={handleConversationStart}
-                />
+              <CardContent className="pb-4">
+                <div className="grid grid-cols-1 gap-4">
+                  <ConversationStartersGrid
+                    selectedOutlet={selectedOutlet}
+                    onConversationStart={handleConversationStart}
+                  />
+                </div>
               </CardContent>
             </Card>
             
@@ -183,6 +186,6 @@ const AskRepGPT = () => {
       </div>
     </DashboardShell>
   );
-};
+}
 
 export default AskRepGPT;

@@ -1,8 +1,8 @@
+
 import { ConversationStarter } from "@/components/repgpt/conversation-starter";
 import { MessageSquare } from "lucide-react";
 import { Insights, Partnership, Quality } from "@/components/icons";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 
 interface ConversationStartersGridProps {
   selectedOutlet: string;
@@ -75,9 +75,9 @@ export function ConversationStartersGrid({ selectedOutlet, onConversationStart }
     );
   }
 
-  // For other pages (like AskRepGPT), keep the original conversation starters
+  // For AskRepGPT page, show full conversation starters
   return (
-    <div className={`grid gap-4 ${isAskRepGPTPage ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-2 lg:grid-cols-4'} w-full`}>
+    <div className="space-y-4 w-full">
       {(!isInsightsPage && !isPartnershipsPage && !isQualityPage) && (
         <ConversationStarter
           icon={<MessageSquare className="h-5 w-5 text-purple-400" />}
