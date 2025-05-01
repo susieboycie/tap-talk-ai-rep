@@ -1,10 +1,12 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ClusterDetails, PersonaDetails } from "@/hooks/use-persona-details";
-import { Store } from "lucide-react";
+import { Store, Camera } from "lucide-react";
 import { Tables } from "@/integrations/supabase/types";
-import { useQualityMetrics } from "@/hooks/use-quality-metrics";
 import { useOutletData } from "@/hooks/use-outlet-data";
+import { useOutletTrax } from "@/hooks/use-outlet-trax";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { ChartContainer } from "@/components/ui/chart";
 
 interface OutletOverviewProps {
   outletName: string | null;
@@ -20,13 +22,13 @@ export function OutletOverview({
   outletName, 
   cluster, 
   clusterDetails, 
-  personaDetails, 
+  personaDetails,
   salesData,
   isLoading,
   salesDataLoading = false
 }: OutletOverviewProps) {
-  const { metrics, getRAGStatus } = useQualityMetrics(outletName || "");
   const { data: outletData } = useOutletData(outletName);
+  const { data: traxData, isLoading: isTraxLoading } = useOutletTrax(outletName);
 
   if (isLoading) {
     return (
@@ -60,6 +62,92 @@ export function OutletOverview({
       </Card>
     );
   }
+
+  // Prepare Trax data for visualization
+  const renderTraxInsights = () => {
+    if (isTraxLoading) {
+      return (
+        <div className="animate-pulse space-y-2">
+          <div className="h-4 w-3/4 bg-repgpt-700 rounded"></div>
+          <div className="h-4 w-1/2 bg-repgpt-700 rounded"></div>
+        </div>
+      );
+    }
+
+    if (!traxData) {
+      return (
+        <p className="text-sm text-gray-400">No TRAX insights available for this outlet</p>
+      );
+    }
+
+    // Extract beer type distribution data for a simple visualization
+    const beerTypeData = [
+      { name: "Lager", value: traxData["Share of Lager_Lager_%"] || 0, color: "#FFD700" },
+      { name: "Stout", value: traxData["Share of Lager_Stout_%"] || 0, color: "#1A1A1A" },
+      { name: "Ale", value: traxData["Share of Lager_Ale_%"] || 0, color: "#8B4513" },
+      { name: "Cider", value: traxData["Share of Lager_Cider_%"] || 0, color: "#32CD32" },
+    ].filter(item => item.value > 0);
+
+    const totalFacings = traxData["Total Facings"] || 0;
+
+    return (
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-medium text-white">Tap Insights</h3>
+          <div className="flex items-center gap-2">
+            <Camera className="h-4 w-4 text-gray-400" />
+            <span className="text-xs text-gray-300">{totalFacings} total facings</span>
+          </div>
+        </div>
+
+        {beerTypeData.length > 0 ? (
+          <div className="grid grid-cols-2 gap-4">
+            <div className="h-[120px]">
+              <ChartContainer>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={beerTypeData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      outerRadius={45}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {beerTypeData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value) => `${value.toFixed(1)}%`} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </div>
+            <div className="flex flex-col justify-center">
+              <ul className="space-y-1">
+                {beerTypeData.map((item, index) => (
+                  <li key={`legend-${index}`} className="flex items-center gap-1 text-xs">
+                    <div 
+                      className="h-2 w-2 rounded-sm" 
+                      style={{ backgroundColor: item.color }}
+                    ></div>
+                    <span className="text-gray-300">{item.name}: {item.value.toFixed(1)}%</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ) : (
+          <p className="text-sm text-gray-400">No beer type distribution data available</p>
+        )}
+
+        <div className="text-xs text-gray-400 mt-2">
+          <p>Visit the Insights page for complete tap insights</p>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <Card className="border-repgpt-700 bg-repgpt-800">
@@ -112,28 +200,8 @@ export function OutletOverview({
           </div>
 
           <div className="space-y-3">
-            <h3 className="text-sm font-medium text-white">Quality Overview</h3>
-            <ul className="space-y-2 text-sm text-gray-300">
-              <li className="break-words"><span className="font-medium">Call Compliance:</span> {metrics.callCompliance}% ({getRAGStatus(metrics.callCompliance, "callCompliance") === "green" ? "Good" : getRAGStatus(metrics.callCompliance, "callCompliance") === "amber" ? "Needs Attention" : "At Risk"})</li>
-              <li className="break-words"><span className="font-medium">Calls per Day:</span> {metrics.callsPerDay.toFixed(1)} vs target {metrics.cpdTarget}</li>
-              <li className="break-words"><span className="font-medium">Days in Trade:</span> {metrics.daysInTrade} days vs target {metrics.ditTarget}</li>
-              <li className="break-words space-y-1"><span className="font-medium">Product Distribution:</span> 
-                <ul className="pl-4">
-                  <li className="flex flex-wrap justify-between">
-                    <span>Guinness:</span> 
-                    <span>{metrics.guinness.target > 0 ? Math.round((metrics.guinness.actual / metrics.guinness.target) * 100) : 0}% of target</span>
-                  </li>
-                  <li className="flex flex-wrap justify-between">
-                    <span>Rockshore:</span> 
-                    <span>{metrics.rockshoreDistribution.target > 0 ? Math.round((metrics.rockshoreDistribution.actual / metrics.rockshoreDistribution.target) * 100) : 0}% of target</span>
-                  </li>
-                  <li className="flex flex-wrap justify-between">
-                    <span>Smirnoff Ice:</span> 
-                    <span>{metrics.smirnoffIce.target > 0 ? Math.round((metrics.smirnoffIce.actual / metrics.smirnoffIce.target) * 100) : 0}% of target</span>
-                  </li>
-                </ul>
-              </li>
-            </ul>
+            <h3 className="text-sm font-medium text-white">TRAX Insights</h3>
+            {renderTraxInsights()}
           </div>
         </div>
       </CardContent>
