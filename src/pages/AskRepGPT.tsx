@@ -10,6 +10,7 @@ import { useOutlet } from "@/contexts/outlet-context";
 import { usePersonaDetails } from "@/hooks/use-persona-details";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { ConversationStartersGrid } from "@/components/dashboard/conversation-starters-grid";
 
 interface Message {
   role: "user" | "assistant";
@@ -98,6 +99,11 @@ const AskRepGPT = () => {
     }
   };
 
+  // Handle conversation starter clicks
+  const handleConversationStart = (prompt: string) => {
+    setInput(prompt);
+  };
+
   return (
     <DashboardShell>
       <div className="flex flex-col h-[calc(100vh-120px)]">
@@ -111,6 +117,14 @@ const AskRepGPT = () => {
               Your AI-powered sales assistant with personalized insights and recommendations
             </p>
           </div>
+        </div>
+
+        {/* Conversation Starters */}
+        <div className="mb-6">
+          <ConversationStartersGrid
+            selectedOutlet={selectedOutlet}
+            onConversationStart={handleConversationStart}
+          />
         </div>
 
         {/* Chat messages area */}
