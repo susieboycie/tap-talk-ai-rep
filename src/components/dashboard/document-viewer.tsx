@@ -15,7 +15,7 @@ export function DocumentViewer() {
     <Card className="w-full bg-repgpt-700 border-repgpt-600">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-white">
-          📄 View Support Documents
+          📄 View Activation Decks
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
