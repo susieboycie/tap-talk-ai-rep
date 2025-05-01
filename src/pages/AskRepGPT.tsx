@@ -188,6 +188,6 @@ const AskRepGPT = () => {
       </div>
     </DashboardShell>
   );
-};
+}
 
 export default AskRepGPT;

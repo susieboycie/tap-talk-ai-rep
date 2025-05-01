@@ -23,9 +23,15 @@ export function ConversationStartersGrid({ selectedOutlet, onConversationStart }
   const isInsightsPage = currentPath === "/insights";
   const isPartnershipsPage = currentPath === "/partnerships";
   const isQualityPage = currentPath === "/quality";
+  const isAskRepGPTPage = currentPath === "/ask-repgpt";
+
+  // If we're on the Activations page or Ask RepGPT page, don't show any prompts
+  if (isActivationsPage || isAskRepGPTPage) {
+    return null;
+  }
 
   return (
-    <div className={`grid gap-4 ${isActivationsPage ? 'grid-cols-1' : 'md:grid-cols-2 lg:grid-cols-4'} mb-6`}>
+    <div className={`grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6`}>
       {(!isInsightsPage && !isPartnershipsPage && !isQualityPage) && (
         <ConversationStarter
           icon={<MessageSquare className="h-5 w-5 text-purple-400" />}
