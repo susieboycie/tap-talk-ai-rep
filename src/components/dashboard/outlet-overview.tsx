@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ClusterDetails, PersonaDetails } from "@/hooks/use-persona-details";
 import { Store, Camera } from "lucide-react";
@@ -191,8 +192,9 @@ export function OutletOverview({
         <div className="overflow-hidden">
           <CardTitle className="text-lg font-medium text-white truncate">{outletName}</CardTitle>
           <p className="text-sm text-gray-400 mt-1 truncate">
-            {cluster && `Cluster ${cluster}`} {outletData?.["City"] && `| ${outletData["City"]}`} 
-            {outletData?.["Global Outlet Segment"] && `| ${outletData["Global Outlet Segment"]}`}
+            {outletData?.["City"] && `${outletData["City"]}`} 
+            {outletData?.["Global Outlet Segment"] && ` | ${outletData["Global Outlet Segment"]}`}
+            {outletData?.["Local Outlet-Segment1"] && ` | ${outletData["Local Outlet-Segment1"]}`}
           </p>
         </div>
         <Store className="h-5 w-5 text-gray-400 flex-shrink-0" />
@@ -219,6 +221,9 @@ export function OutletOverview({
               )}
               {outletData?.["Global Outlet Segment"] && (
                 <li className="break-words"><span className="font-medium">Segment:</span> {outletData["Global Outlet Segment"]}</li>
+              )}
+              {outletData?.["Local Outlet-Segment1"] && (
+                <li className="break-words"><span className="font-medium">Local Segment:</span> {outletData["Local Outlet-Segment1"]}</li>
               )}
               {/* Add Outlet Visit Prioritisation information */}
               {outletData?.["Outlet Visit Prioritisation"] && (
