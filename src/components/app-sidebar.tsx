@@ -1,5 +1,5 @@
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -15,6 +15,9 @@ import {
 import { BarChart, Home, FileText, BarChart3, Users, Shield, MessageSquare } from "lucide-react";
 
 export function AppSidebar() {
+  const location = useLocation();
+  const currentPath = location.pathname;
+
   return (
     <Sidebar className="border-r border-repgpt-700">
       <SidebarHeader className="flex items-center justify-between px-4 py-2">
@@ -33,7 +36,7 @@ export function AppSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/" className="flex items-center gap-2">
+                  <Link to="/" className={`flex items-center gap-2 ${currentPath === "/" ? "text-repgpt-400" : ""}`}>
                     <Home className="h-4 w-4" />
                     <span>RepGPT Home</span>
                   </Link>
@@ -41,7 +44,7 @@ export function AppSidebar() {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/ask-repgpt" className="flex items-center gap-2">
+                  <Link to="/ask-repgpt" className={`flex items-center gap-2 ${currentPath === "/ask-repgpt" ? "text-repgpt-400" : ""}`}>
                     <MessageSquare className="h-4 w-4" />
                     <span>Ask RepGPT</span>
                   </Link>
@@ -49,7 +52,7 @@ export function AppSidebar() {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/activations" className="flex items-center gap-2">
+                  <Link to="/activations" className={`flex items-center gap-2 ${currentPath === "/activations" ? "text-repgpt-400" : ""}`}>
                     <FileText className="h-4 w-4" />
                     <span>Activations</span>
                   </Link>
@@ -57,7 +60,7 @@ export function AppSidebar() {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/insights" className="flex items-center gap-2">
+                  <Link to="/insights" className={`flex items-center gap-2 ${currentPath === "/insights" ? "text-repgpt-400" : ""}`}>
                     <BarChart3 className="h-4 w-4" />
                     <span>Insights</span>
                   </Link>
@@ -65,7 +68,7 @@ export function AppSidebar() {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/partnerships" className="flex items-center gap-2">
+                  <Link to="/partnerships" className={`flex items-center gap-2 ${currentPath === "/partnerships" ? "text-repgpt-400" : ""}`}>
                     <Users className="h-4 w-4" />
                     <span>Partnerships</span>
                   </Link>
@@ -73,7 +76,7 @@ export function AppSidebar() {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/quality" className="flex items-center gap-2">
+                  <Link to="/quality" className={`flex items-center gap-2 ${currentPath === "/quality" ? "text-repgpt-400" : ""}`}>
                     <Shield className="h-4 w-4" />
                     <span>Quality</span>
                   </Link>

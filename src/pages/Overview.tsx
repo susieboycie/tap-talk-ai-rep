@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { AIAssistant } from "@/components/ai-assistant";
@@ -13,6 +14,7 @@ import { ConversationStartersGrid } from "@/components/dashboard/conversation-st
 import { supabase } from "@/integrations/supabase/client";
 import { OutletOverview } from "@/components/dashboard/outlet-overview";
 import { useOutlet } from "@/contexts/outlet-context";
+import { useNavigate } from "react-router-dom";
 
 export default function Overview() {
   const { user } = useAuth();
@@ -21,6 +23,7 @@ export default function Overview() {
   const [selectedPersona, setSelectedPersona] = useState("");
   const [assistantPrompt, setAssistantPrompt] = useState<string | null>(null);
   const [manualPersonaDetails, setManualPersonaDetails] = useState<PersonaDetails | null>(null);
+  const navigate = useNavigate();
 
   const { 
     personaDetails: outletPersonaDetails, 
@@ -122,10 +125,7 @@ export default function Overview() {
 
       <Button 
         className="fixed bottom-4 right-4 z-40 bg-repgpt-400 hover:bg-repgpt-500 text-white shadow-lg"
-        onClick={() => {
-          setAssistantPrompt(null);
-          setIsAssistantOpen(true);
-        }}
+        onClick={() => navigate('/ask-repgpt')}
       >
         <MessageSquare className="mr-2 h-4 w-4" />
         Ask RepGPT
