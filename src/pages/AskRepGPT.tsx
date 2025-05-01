@@ -119,8 +119,8 @@ const AskRepGPT = () => {
           </div>
         </div>
 
-        {/* Chat messages area - increased height */}
-        <div className="flex-grow mb-4 bg-repgpt-900/50 rounded-lg border border-repgpt-700 p-4 overflow-y-auto">
+        {/* Chat messages area - with fixed height instead of overflow */}
+        <div className="mb-4 bg-repgpt-900/50 rounded-lg border border-repgpt-700 p-4">
           <div className="space-y-4">
             {messages.map((message, index) => (
               <div
@@ -151,12 +151,12 @@ const AskRepGPT = () => {
           </div>
         </div>
 
-        {/* Input area - reduced height */}
-        <div className="border-t border-repgpt-700 pt-2 mb-3">
+        {/* Input area */}
+        <div className="border-t border-repgpt-700 pt-4 mb-4">
           <div className="flex gap-3">
             <Textarea
               placeholder="Ask RepGPT..."
-              className="flex-1 h-12 resize-none border-repgpt-600 bg-repgpt-700/50 text-white"
+              className="flex-1 h-16 resize-none border-repgpt-600 bg-repgpt-700/50 text-white"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyPress}
@@ -173,21 +173,19 @@ const AskRepGPT = () => {
           </div>
         </div>
 
-        {/* Conversation Starters - reduced height */}
-        <div className="mb-4">
-          <h2 className="text-sm font-medium text-white mb-2">Suggested prompts</h2>
-          <div className="max-h-[150px] overflow-y-auto">
-            <ConversationStartersGrid
-              selectedOutlet={selectedOutlet}
-              onConversationStart={handleConversationStart}
-            />
-          </div>
+        {/* Conversation Starters - below chat and input */}
+        <div className="mb-6">
+          <h2 className="text-lg font-medium text-white mb-3">Suggested prompts</h2>
+          <ConversationStartersGrid
+            selectedOutlet={selectedOutlet}
+            onConversationStart={handleConversationStart}
+          />
         </div>
 
         {/* Context information */}
         {selectedOutlet && personaDetails && (
-          <Card className="mt-1 bg-repgpt-800 border-repgpt-700">
-            <CardContent className="pt-2 pb-2">
+          <Card className="mt-2 bg-repgpt-800 border-repgpt-700">
+            <CardContent className="pt-4">
               <div className="flex flex-wrap gap-2 text-xs text-gray-400">
                 <div className="flex items-center">
                   <span className="font-semibold">Current outlet:</span>
