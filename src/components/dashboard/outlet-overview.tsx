@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ClusterDetails, PersonaDetails } from "@/hooks/use-persona-details";
 import { Store, Camera } from "lucide-react";
@@ -219,6 +220,10 @@ export function OutletOverview({
               )}
               {outletData?.["Global Outlet Segment"] && (
                 <li className="break-words"><span className="font-medium">Segment:</span> {outletData["Global Outlet Segment"]}</li>
+              )}
+              {/* Add Outlet Visit Prioritisation information */}
+              {outletData?.["Outlet Visit Prioritisation"] && (
+                <li className="break-words"><span className="font-medium">Visit Priority:</span> {outletData["Outlet Visit Prioritisation"]}</li>
               )}
               {clusterDetails?.price_tier && (
                 <li className="break-words"><span className="font-medium">Price Tier:</span> {clusterDetails.price_tier}</li>
