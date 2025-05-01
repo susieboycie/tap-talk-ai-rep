@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { Button } from "@/components/ui/button";
@@ -124,7 +123,7 @@ const AskRepGPT = () => {
             <CardContent className="p-0 flex flex-col flex-1">
               {/* Chat Messages Area */}
               <div 
-                className="flex-1 overflow-y-auto p-4 space-y-4"
+                className="flex-1 overflow-y-auto p-3 space-y-3"
                 ref={chatContainerRef}
               >
                 {!hasMessages && <ChatEmptyState />}
@@ -138,8 +137,8 @@ const AskRepGPT = () => {
                 ))}
                 
                 {isLoading && (
-                  <div className="flex items-center gap-2 animate-pulse pl-2 text-gray-400">
-                    <Bot className="h-6 w-6 text-repgpt-400" />
+                  <div className="flex items-center gap-2 animate-pulse pl-2 text-gray-400 text-sm">
+                    <Bot className="h-4 w-4 text-repgpt-400" />
                     <span>Thinking...</span>
                   </div>
                 )}
