@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { Button } from "@/components/ui/button";
@@ -119,17 +118,15 @@ const AskRepGPT = () => {
           </div>
         </div>
 
-        {/* Conversation Starters - made smaller with compact layout */}
-        <div className="mb-4">
-          <div className="grid gap-2 grid-cols-2 md:grid-cols-4">
-            <ConversationStartersGrid
-              selectedOutlet={selectedOutlet}
-              onConversationStart={handleConversationStart}
-            />
-          </div>
+        {/* Conversation Starters - full width layout */}
+        <div className="mb-6">
+          <ConversationStartersGrid
+            selectedOutlet={selectedOutlet}
+            onConversationStart={handleConversationStart}
+          />
         </div>
 
-        {/* Chat messages area - adjusted height */}
+        {/* Chat messages area */}
         <div className="flex-1 overflow-y-auto mb-4 bg-repgpt-900/50 rounded-lg border border-repgpt-700 p-4">
           <div className="space-y-4">
             {messages.map((message, index) => (

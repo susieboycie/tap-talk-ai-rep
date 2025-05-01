@@ -12,6 +12,7 @@ interface ConversationStartersGridProps {
 export function ConversationStartersGrid({ selectedOutlet, onConversationStart }: ConversationStartersGridProps) {
   const location = useLocation();
   const currentPath = location.pathname;
+  const isAskRepGPTPage = currentPath === "/ask-repgpt";
   
   // Truncate outlet name if it's too long
   const outletDisplay = selectedOutlet && selectedOutlet.length > 15 
@@ -20,9 +21,6 @@ export function ConversationStartersGrid({ selectedOutlet, onConversationStart }
 
   // Only show relevant cards based on current page
   const isActivationsPage = currentPath === "/activations";
-  // Remove the AskRepGPT page from the check so prompts will show there
-  const isAskRepGPTPage = false; // Changed from: currentPath === "/ask-repgpt";
-  
   const isInsightsPage = currentPath === "/insights";
   const isPartnershipsPage = currentPath === "/partnerships";
   const isQualityPage = currentPath === "/quality";
@@ -33,7 +31,7 @@ export function ConversationStartersGrid({ selectedOutlet, onConversationStart }
   }
 
   return (
-    <div className={`grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6`}>
+    <div className={`grid gap-4 ${isAskRepGPTPage ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-2 lg:grid-cols-4'} w-full`}>
       {(!isInsightsPage && !isPartnershipsPage && !isQualityPage) && (
         <ConversationStarter
           icon={<MessageSquare className="h-5 w-5 text-purple-400" />}
