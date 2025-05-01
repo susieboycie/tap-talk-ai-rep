@@ -2,7 +2,7 @@
 import { useSalesVolumeData } from "@/hooks/use-sales-volume-data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { Beer, TrendingUp, AlertTriangle } from "lucide-react";
+import { Beer, TrendingUp, AlertTriangle, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
 
@@ -79,7 +79,7 @@ export function BeerSalesInsights({ outletName }: BeerSalesInsightsProps) {
   // Group data by fiscal year
   // Define beer categories based on the columns in the sales_volume_data table
   const beerCategories = [
-    { name: "Guinness Draught", key: "Guinness Draught (Stout)", color: "#D946EF" }, // Changed color from dark purple (#2E1A47) to magenta pink
+    { name: "Guinness Draught", key: "Guinness Draught (Stout)", color: "#D946EF" },
     { name: "Carlsberg", key: "Carlsberg (Lager)", color: "#43A047" },
     { name: "Rockshore", key: "Rockshore (Lager)", color: "#1E88E5" },
     { name: "Smithwick's", key: "Smithwick's (Ale)", color: "#D81B60" },
@@ -158,6 +158,80 @@ export function BeerSalesInsights({ outletName }: BeerSalesInsightsProps) {
     );
   }
 
+  // Generate natural language insights
+  const generateTextInsights = () => {
+    // Find top and bottom performing products
+    const topPerformer = [...growthTrends].sort((a, b) => b.growth - a.growth)[0];
+    const bottomPerformer = [...growthTrends].filter(item => item.volume > 0).sort((a, b) => a.growth - b.growth)[0];
+    
+    // Calculate total volume
+    const totalVolume = growthTrends.reduce((sum, item) => sum + item.volume, 0);
+    
+    // Get active products (with volume > 0)
+    const activeProducts = growthTrends.filter(item => item.volume > 0);
+    
+    // Calculate market share percentages
+    const marketShareData = activeProducts.map(item => ({
+      ...item,
+      share: (item.volume / totalVolume) * 100
+    }));
+    
+    // Get dominant product (highest volume)
+    const dominantProduct = marketShareData[0]; // Already sorted by volume
+    
+    // Build insights text
+    let insights = `${outletName} primarily sells ${dominantProduct.name} (${dominantProduct.share.toFixed(1)}% of total volume)`;
+    
+    if (marketShareData.length > 1) {
+      insights += `, followed by ${marketShareData[1].name} (${marketShareData[1].share.toFixed(1)}%)`;
+    }
+    
+    insights += `. `;
+    
+    // Add growth trend insights
+    if (topPerformer && topPerformer.growth !== 0) {
+      insights += `${topPerformer.name} is showing the strongest growth at ${topPerformer.growth > 0 ? '+' : ''}${topPerformer.growth.toFixed(1)}%. `;
+    }
+    
+    if (bottomPerformer && bottomPerformer.growth < 0) {
+      insights += `${bottomPerformer.name} is underperforming with ${bottomPerformer.growth.toFixed(1)}% change. `;
+    }
+    
+    // Product mix insights
+    const stoutShare = marketShareData.filter(item => item.name.includes("Guinness")).reduce((sum, item) => sum + item.share, 0);
+    const lagerShare = marketShareData.filter(item => !item.name.includes("Guinness") && !item.name.includes("Smithwick")).reduce((sum, item) => sum + item.share, 0);
+    
+    if (stoutShare > 50) {
+      insights += `This is a stout-dominant outlet. `;
+    } else if (lagerShare > 50) {
+      insights += `This is a lager-dominant outlet. `;
+    } else {
+      insights += `This outlet has a balanced product mix. `;
+    }
+    
+    // Non-alcoholic insights
+    const nonAlcShare = marketShareData.filter(item => item.name.includes("0.0")).reduce((sum, item) => sum + item.share, 0);
+    if (nonAlcShare > 5) {
+      insights += `There is significant non-alcoholic beer sales (${nonAlcShare.toFixed(1)}% of volume). `;
+    }
+    
+    // Period-to-period trend
+    if (chartData.length > 1) {
+      const overallTrend = totalVolume - growthTrends.reduce((sum, item) => sum + (firstPeriod[item.name] || 0), 0);
+      const overallPercent = (overallTrend / growthTrends.reduce((sum, item) => sum + (firstPeriod[item.name] || 0), 0)) * 100;
+      
+      if (Math.abs(overallPercent) > 5) {
+        insights += `Overall, this outlet's beer sales have ${overallPercent > 0 ? 'increased' : 'decreased'} by ${Math.abs(overallPercent).toFixed(1)}% from ${chartData[0].name} to ${chartData[chartData.length - 1].name}.`;
+      } else {
+        insights += `Overall beer sales have remained relatively stable over the analyzed periods.`;
+      }
+    }
+    
+    return insights;
+  };
+
+  const textInsights = generateTextInsights();
+
   return (
     <Card className="border-amber-700 bg-amber-900/30">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -170,6 +244,15 @@ export function BeerSalesInsights({ outletName }: BeerSalesInsightsProps) {
         <Beer className="h-5 w-5 text-amber-400" />
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Natural Language Insights */}
+        <div className="bg-amber-900/50 p-4 rounded-md border border-amber-700">
+          <div className="flex items-center gap-2 mb-2">
+            <FileText className="h-4 w-4 text-amber-400" />
+            <h3 className="text-white font-medium">Key Insights</h3>
+          </div>
+          <p className="text-amber-100 text-sm">{textInsights}</p>
+        </div>
+
         {/* Sales Volume Chart */}
         <div className="h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
