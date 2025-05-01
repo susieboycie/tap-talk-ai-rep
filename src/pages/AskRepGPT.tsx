@@ -3,14 +3,20 @@ import { useState, useRef, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { MessageSquare, Send } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { MessageCircle, Send, UserCircle, Bot } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useOutlet } from "@/contexts/outlet-context";
 import { usePersonaDetails } from "@/hooks/use-persona-details";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { ConversationStartersGrid } from "@/components/dashboard/conversation-starters-grid";
+import { AIMessage } from "@/components/repgpt/ai-message";
+import { UserMessage } from "@/components/repgpt/user-message";
+import { ChatHeader } from "@/components/repgpt/chat-header";
+import { ChatInput } from "@/components/repgpt/chat-input";
+import { ChatEmptyState } from "@/components/repgpt/chat-empty-state";
+import { ChatContext } from "@/components/repgpt/chat-context";
 
 interface Message {
   role: "user" | "assistant";
@@ -24,14 +30,13 @@ const AskRepGPT = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { selectedOutlet } = useOutlet();
   const { personaDetails } = usePersonaDetails(selectedOutlet);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  // Add initial assistant message when component loads
   useEffect(() => {
     const welcomeMessage = "Hello! I am RepGPT - your personalised AI driven sales assistant! How can I help you today?";
     setMessages([{ role: "assistant", content: welcomeMessage }]);
   }, []);
 
-  // Auto scroll to bottom when messages change
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -43,7 +48,6 @@ const AskRepGPT = () => {
   const handleSendMessage = async () => {
     if (!input.trim()) return;
     
-    // Add user message
     setMessages(prev => [...prev, { role: "user", content: input }]);
     const userMessage = input;
     setInput("");
@@ -99,110 +103,87 @@ const AskRepGPT = () => {
     }
   };
 
-  // Handle conversation starter clicks
   const handleConversationStart = (prompt: string) => {
     setInput(prompt);
+    // Auto-focus the input field after setting the prompt
+    if (document.getElementById('chat-input')) {
+      (document.getElementById('chat-input') as HTMLTextAreaElement).focus();
+    }
   };
+
+  const hasMessages = messages.length > 0;
 
   return (
     <DashboardShell>
       <div className="flex flex-col h-[calc(100vh-120px)]">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight text-white flex items-center">
-              <MessageSquare className="mr-2 h-8 w-8 text-repgpt-400" />
-              Ask RepGPT
-            </h1>
-            <p className="text-gray-400">
-              Your AI-powered sales assistant with personalized insights and recommendations
-            </p>
-          </div>
-        </div>
-
-        {/* Chat messages area - with fixed height instead of overflow */}
-        <div className="mb-4 bg-repgpt-900/50 rounded-lg border border-repgpt-700 p-4">
-          <div className="space-y-4">
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+        <ChatHeader selectedOutlet={selectedOutlet} personaName={personaDetails?.name} />
+        
+        <div className="flex flex-1 gap-4 overflow-hidden">
+          {/* Chat Container */}
+          <Card className="flex-1 flex flex-col bg-repgpt-900/50 border-repgpt-700 overflow-hidden">
+            <CardContent className="p-0 flex flex-col flex-1">
+              {/* Chat Messages Area */}
+              <div 
+                className="flex-1 overflow-y-auto p-4 space-y-4"
+                ref={chatContainerRef}
               >
-                <div
-                  className={`rounded-lg px-4 py-2 max-w-[80%] ${
-                    message.role === "user"
-                      ? "bg-repgpt-400 text-white"
-                      : "bg-repgpt-700 text-white"
-                  }`}
-                >
-                  {message.content.split('\n').map((line, i) => (
-                    <div key={i}>{line || <br />}</div>
-                  ))}
-                </div>
+                {!hasMessages && <ChatEmptyState />}
+                
+                {messages.map((message, index) => (
+                  message.role === "user" ? (
+                    <UserMessage key={index} content={message.content} />
+                  ) : (
+                    <AIMessage key={index} content={message.content} />
+                  )
+                ))}
+                
+                {isLoading && (
+                  <div className="flex items-center gap-2 animate-pulse pl-2 text-gray-400">
+                    <Bot className="h-6 w-6 text-repgpt-400" />
+                    <span>Thinking...</span>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
               </div>
-            ))}
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className="bg-repgpt-700 text-white rounded-lg px-4 py-2">
-                  Thinking...
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-        </div>
-
-        {/* Input area */}
-        <div className="border-t border-repgpt-700 pt-4 mb-4">
-          <div className="flex gap-3">
-            <Textarea
-              placeholder="Ask RepGPT..."
-              className="flex-1 h-16 resize-none border-repgpt-600 bg-repgpt-700/50 text-white"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyPress}
-              disabled={isLoading}
-            />
-            <Button
-              className="self-end bg-repgpt-400 hover:bg-repgpt-500"
-              size="icon"
-              onClick={handleSendMessage}
-              disabled={isLoading || !input.trim()}
-            >
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-
-        {/* Conversation Starters - below chat and input */}
-        <div className="mb-6">
-          <h2 className="text-lg font-medium text-white mb-3">Suggested prompts</h2>
-          <ConversationStartersGrid
-            selectedOutlet={selectedOutlet}
-            onConversationStart={handleConversationStart}
-          />
-        </div>
-
-        {/* Context information */}
-        {selectedOutlet && personaDetails && (
-          <Card className="mt-2 bg-repgpt-800 border-repgpt-700">
-            <CardContent className="pt-4">
-              <div className="flex flex-wrap gap-2 text-xs text-gray-400">
-                <div className="flex items-center">
-                  <span className="font-semibold">Current outlet:</span>
-                  <span className="ml-1">{selectedOutlet}</span>
-                </div>
-                <Separator orientation="vertical" className="h-4 bg-repgpt-600" />
-                <div className="flex items-center">
-                  <span className="font-semibold">Persona:</span>
-                  <span className="ml-1">{personaDetails.name}</span>
-                </div>
-              </div>
+              
+              {/* Chat Input */}
+              <ChatInput 
+                value={input}
+                onChange={setInput}
+                onSend={handleSendMessage}
+                onKeyPress={handleKeyPress}
+                isLoading={isLoading}
+              />
             </CardContent>
           </Card>
-        )}
+          
+          {/* Sidebar */}
+          <div className="w-80 flex flex-col gap-4 hidden lg:flex">
+            {/* Conversation Starters */}
+            <Card className="bg-repgpt-800 border-repgpt-700">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-white text-lg">Conversation Starters</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ConversationStartersGrid
+                  selectedOutlet={selectedOutlet}
+                  onConversationStart={handleConversationStart}
+                />
+              </CardContent>
+            </Card>
+            
+            {/* Context Information */}
+            {selectedOutlet && personaDetails && (
+              <ChatContext 
+                outletName={selectedOutlet} 
+                personaDetails={personaDetails} 
+              />
+            )}
+          </div>
+        </div>
       </div>
     </DashboardShell>
   );
-}
+};
 
 export default AskRepGPT;
