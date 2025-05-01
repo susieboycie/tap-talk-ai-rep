@@ -53,6 +53,7 @@ export function SalesInsights({ data, isLoading, embedded = false }: SalesInsigh
   );
 
   const latestDate = sortedData[sortedData.length - 1]?.Calendar_day;
+  // Get outlet name from either data format (supports both data structures)
   const latestOutlet = sortedData[sortedData.length - 1]?.["Outlet Name"] || sortedData[sortedData.length - 1]?.Outlet;
 
   const { data: weatherData, isLoading: isWeatherLoading } = useOutletWeather(latestOutlet, latestDate);

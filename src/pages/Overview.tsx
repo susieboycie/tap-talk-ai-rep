@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { MessageSquare } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 import { useOutletSales } from "@/hooks/use-outlet-sales";
+import { useOutletSalesData } from "@/hooks/use-outlet-sales-data";
 import { usePersonaDetails, type PersonaDetails } from "@/hooks/use-persona-details";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import { PersonaSelector } from "@/components/dashboard/persona-selector";
@@ -30,6 +31,11 @@ export default function Overview() {
   } = usePersonaDetails(selectedOutlet);
   
   const { data: salesData, isLoading: isSalesLoading } = useOutletSales(selectedOutlet);
+  const { data: salesDataAlt, isLoading: isSalesDataAltLoading } = useOutletSalesData(selectedOutlet);
+
+  // Combine both datasets - prefer salesData if available, otherwise fallback to salesDataAlt
+  const combinedSalesData = salesData && salesData.length > 0 ? salesData : salesDataAlt;
+  const isCombinedDataLoading = isSalesLoading && isSalesDataAltLoading;
 
   useEffect(() => {
     if (outletPersonaDetails && !selectedPersona) {
@@ -104,9 +110,9 @@ export default function Overview() {
           cluster={clusterType}
           clusterDetails={clusterDetails}
           personaDetails={effectivePersonaDetails}
-          salesData={salesData}
+          salesData={combinedSalesData}
           isLoading={isPersonaLoading && !manualPersonaDetails}
-          salesDataLoading={isSalesLoading}
+          salesDataLoading={isCombinedDataLoading}
         />
       </div>
 
