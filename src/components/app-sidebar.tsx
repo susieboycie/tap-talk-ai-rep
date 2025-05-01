@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import {
   Sidebar,
@@ -11,7 +12,7 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { BarChart, Home, FileText, BarChart3, Users, Shield } from "lucide-react";
+import { BarChart, Home, FileText, BarChart3, Users, Shield, MessageSquare } from "lucide-react";
 
 export function AppSidebar() {
   return (
@@ -35,6 +36,14 @@ export function AppSidebar() {
                   <Link to="/" className="flex items-center gap-2">
                     <Home className="h-4 w-4" />
                     <span>RepGPT Home</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/ask-repgpt" className="flex items-center gap-2">
+                    <MessageSquare className="h-4 w-4" />
+                    <span>Ask RepGPT</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

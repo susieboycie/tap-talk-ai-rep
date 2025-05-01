@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { AIAssistant } from "@/components/ai-assistant";
@@ -34,7 +33,7 @@ export default function Overview() {
   const { data: salesDataAlt, isLoading: isSalesDataAltLoading } = useOutletSalesData(selectedOutlet);
 
   // Combine both datasets - prefer salesData if available, otherwise fallback to salesDataAlt
-  const combinedSalesData = salesData && salesData.length > 0 ? salesData : salesDataAlt;
+  const combinedSalesData = salesData && salesData.length > 0 ? salesData : (salesDataAlt || []);
   const isCombinedDataLoading = isSalesLoading && isSalesDataAltLoading;
 
   useEffect(() => {
