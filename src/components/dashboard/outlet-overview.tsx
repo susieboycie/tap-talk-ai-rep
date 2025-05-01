@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ClusterDetails, PersonaDetails } from "@/hooks/use-persona-details";
 import { Store, Camera } from "lucide-react";
@@ -192,7 +191,7 @@ export function OutletOverview({
         <div className="overflow-hidden">
           <CardTitle className="text-lg font-medium text-white truncate">{outletName}</CardTitle>
           <p className="text-sm text-gray-400 mt-1 truncate">
-            {cluster} {outletData?.["City"] && `| ${outletData["City"]}`} 
+            {cluster && `Cluster ${cluster}`} {outletData?.["City"] && `| ${outletData["City"]}`} 
             {outletData?.["Global Outlet Segment"] && `| ${outletData["Global Outlet Segment"]}`}
           </p>
         </div>
