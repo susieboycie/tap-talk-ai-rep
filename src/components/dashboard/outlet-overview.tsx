@@ -103,7 +103,14 @@ export function OutletOverview({
         {beerTypeData.length > 0 ? (
           <div className="grid grid-cols-2 gap-4">
             <div className="h-[120px]">
-              <ChartContainer>
+              <ChartContainer
+                config={{
+                  Lager: { color: "#FFD700" },
+                  Stout: { color: "#1A1A1A" },
+                  Ale: { color: "#8B4513" },
+                  Cider: { color: "#32CD32" },
+                }}
+              >
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
@@ -119,7 +126,7 @@ export function OutletOverview({
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value) => `${value.toFixed(1)}%`} />
+                    <Tooltip formatter={(value) => `${typeof value === 'number' ? value.toFixed(1) : value}%`} />
                   </PieChart>
                 </ResponsiveContainer>
               </ChartContainer>
@@ -132,7 +139,7 @@ export function OutletOverview({
                       className="h-2 w-2 rounded-sm" 
                       style={{ backgroundColor: item.color }}
                     ></div>
-                    <span className="text-gray-300">{item.name}: {item.value.toFixed(1)}%</span>
+                    <span className="text-gray-300">{item.name}: {typeof item.value === 'number' ? item.value.toFixed(1) : item.value}%</span>
                   </li>
                 ))}
               </ul>
