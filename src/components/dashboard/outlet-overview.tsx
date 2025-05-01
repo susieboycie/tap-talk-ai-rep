@@ -5,8 +5,6 @@ import { Store, Camera } from "lucide-react";
 import { Tables } from "@/integrations/supabase/types";
 import { useOutletData } from "@/hooks/use-outlet-data";
 import { useOutletTrax } from "@/hooks/use-outlet-trax";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import { ChartContainer } from "@/components/ui/chart";
 
 interface OutletOverviewProps {
   outletName: string | null;
@@ -63,8 +61,8 @@ export function OutletOverview({
     );
   }
 
-  // Prepare Trax data for visualization
-  const renderTraxInsights = () => {
+  // Generate text description for TRAX insights
+  const renderTraxTextInsights = () => {
     if (isTraxLoading) {
       return (
         <div className="animate-pulse space-y-2">
@@ -80,16 +78,86 @@ export function OutletOverview({
       );
     }
 
-    // Extract beer type distribution data for a simple visualization
-    const beerTypeData = [
-      { name: "Lager", value: traxData["Share of Lager_Lager_%"] || 0, color: "#FFD700" },
-      { name: "Stout", value: traxData["Share of Lager_Stout_%"] || 0, color: "#1A1A1A" },
-      { name: "Ale", value: traxData["Share of Lager_Ale_%"] || 0, color: "#8B4513" },
-      { name: "Cider", value: traxData["Share of Lager_Cider_%"] || 0, color: "#32CD32" },
+    // Extract beer type distribution data
+    const beerTypes = [
+      { name: "Lager", value: traxData["Share of Lager_Lager_%"] || 0 },
+      { name: "Stout", value: traxData["Share of Lager_Stout_%"] || 0 },
+      { name: "Ale", value: traxData["Share of Lager_Ale_%"] || 0 },
+      { name: "Cider", value: traxData["Share of Lager_Cider_%"] || 0 },
     ].filter(item => item.value > 0);
 
+    // Extract presentation format data
+    const tapsPercentage = traxData["Share of Packaged_Beer Taps_%"] || 0;
+    const packagedPercentage = traxData["Share of Packaged_Packaged_%"] || 0;
+    
+    // Extract beverage category mix
+    const beerCiderPercentage = traxData["Share of LAD vs. RTD. Vs. Spirits_LAD_%"] || 0;
+    const spiritsPercentage = traxData["Share of LAD vs. RTD. Vs. Spirits_Sprits_%"] || 0;
+    const rtdPercentage = traxData["Share of LAD vs. RTD. Vs. Spirits_RTD_%"] || 0;
+    
+    // Find dominant beer type
+    const dominantBeerType = beerTypes.length > 0 
+      ? beerTypes.sort((a, b) => b.value - a.value)[0] 
+      : null;
+    
+    // Find dominant price tier
+    const priceTiers = [
+      { name: "Value", value: traxData["Price Tier Split_Value_%"] || 0 },
+      { name: "Standard", value: traxData["Price Tier Split_Standard_%"] || 0 },
+      { name: "Premium", value: traxData["Price Tier Split_Premium_%"] || 0 },
+      { name: "Super Premium", value: traxData["Price Tier Split_Super Premium_%"] || 0 },
+      { name: "Ultra Premium", value: traxData["Price Tier Split_Ultra Premium_%"] || 0 },
+      { name: "Luxury", value: traxData["Price Tier Split_Luxury_%"] || 0 },
+    ].filter(item => item.value > 0);
+    
+    const dominantPriceTier = priceTiers.length > 0 
+      ? priceTiers.sort((a, b) => b.value - a.value)[0] 
+      : null;
+    
+    // Generate descriptive text
     const totalFacings = traxData["Total Facings"] || 0;
-
+    
+    // Format for presentation style
+    let presentationStyle = "";
+    if (tapsPercentage > 70) {
+      presentationStyle = "primarily served on tap";
+    } else if (tapsPercentage > 50) {
+      presentationStyle = "served more on tap than packaged";
+    } else if (tapsPercentage < 30) {
+      presentationStyle = "primarily served in packaged format";
+    } else {
+      presentationStyle = "served with a balanced mix of tap and packaged formats";
+    }
+    
+    // Format for category mix
+    let categoryMix = "";
+    if (beerCiderPercentage > 70) {
+      categoryMix = "predominantly beer and cider";
+    } else if (spiritsPercentage > 40) {
+      categoryMix = "with a strong spirits presence";
+    } else if (rtdPercentage > 30) {
+      categoryMix = "with significant RTD representation";
+    } else {
+      categoryMix = "with a diverse beverage category mix";
+    }
+    
+    // Build the insights text
+    let insightsText = `This outlet has ${totalFacings} total facings, ${presentationStyle}, ${categoryMix}.`;
+    
+    if (dominantBeerType) {
+      insightsText += ` The beer selection is primarily ${dominantBeerType.name.toLowerCase()} (${Math.round(dominantBeerType.value)}%).`;
+    }
+    
+    if (dominantPriceTier) {
+      insightsText += ` Products are mostly in the ${dominantPriceTier.name.toLowerCase()} price tier (${Math.round(dominantPriceTier.value)}%).`;
+    }
+    
+    // Add beer type breakdown if there's more than one type
+    if (beerTypes.length > 1) {
+      insightsText += " Beer type breakdown: ";
+      insightsText += beerTypes.map(type => `${type.name} (${Math.round(type.value)}%)`).join(", ") + ".";
+    }
+    
     return (
       <div className="space-y-3">
         <div className="flex items-center justify-between">
@@ -99,56 +167,9 @@ export function OutletOverview({
             <span className="text-xs text-gray-300">{totalFacings} total facings</span>
           </div>
         </div>
-
-        {beerTypeData.length > 0 ? (
-          <div className="grid grid-cols-2 gap-4">
-            <div className="h-[120px]">
-              <ChartContainer
-                config={{
-                  Lager: { color: "#FFD700" },
-                  Stout: { color: "#1A1A1A" },
-                  Ale: { color: "#8B4513" },
-                  Cider: { color: "#32CD32" },
-                }}
-              >
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={beerTypeData}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      outerRadius={45}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {beerTypeData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip formatter={(value) => `${typeof value === 'number' ? value.toFixed(1) : value}%`} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </ChartContainer>
-            </div>
-            <div className="flex flex-col justify-center">
-              <ul className="space-y-1">
-                {beerTypeData.map((item, index) => (
-                  <li key={`legend-${index}`} className="flex items-center gap-1 text-xs">
-                    <div 
-                      className="h-2 w-2 rounded-sm" 
-                      style={{ backgroundColor: item.color }}
-                    ></div>
-                    <span className="text-gray-300">{item.name}: {typeof item.value === 'number' ? item.value.toFixed(1) : item.value}%</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        ) : (
-          <p className="text-sm text-gray-400">No beer type distribution data available</p>
-        )}
-
+        <p className="text-sm text-gray-300 leading-relaxed">
+          {insightsText}
+        </p>
         <div className="text-xs text-gray-400 mt-2">
           <p>Visit the Insights page for complete tap insights</p>
         </div>
@@ -208,7 +229,7 @@ export function OutletOverview({
 
           <div className="space-y-3">
             <h3 className="text-sm font-medium text-white">TRAX Insights</h3>
-            {renderTraxInsights()}
+            {renderTraxTextInsights()}
           </div>
         </div>
       </CardContent>
