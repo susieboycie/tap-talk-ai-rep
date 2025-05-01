@@ -12,7 +12,6 @@ import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import { PersonaSelector } from "@/components/dashboard/persona-selector";
 import { ConversationStartersGrid } from "@/components/dashboard/conversation-starters-grid";
 import { supabase } from "@/integrations/supabase/client";
-import { OutletDescription } from "@/components/dashboard/outlet-description";
 import { OutletOverview } from "@/components/dashboard/outlet-overview";
 import { useOutlet } from "@/contexts/outlet-context";
 
@@ -100,29 +99,16 @@ export default function Overview() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 mb-6">
-        <div>
-          <OutletDescription 
-            outletName={selectedOutlet}
-            cluster={clusterType}
-            clusterDetails={clusterDetails}
-            personaDetails={effectivePersonaDetails}
-            salesData={salesData}
-            isLoading={isPersonaLoading && !manualPersonaDetails}
-            salesDataLoading={isSalesLoading}
-          />
-        </div>
-        <div>
-          <OutletOverview 
-            outletName={selectedOutlet}
-            cluster={clusterType}
-            clusterDetails={clusterDetails}
-            personaDetails={effectivePersonaDetails}
-            salesData={salesData}
-            isLoading={isPersonaLoading && !manualPersonaDetails}
-            salesDataLoading={isSalesLoading}
-          />
-        </div>
+      <div className="mb-6">
+        <OutletOverview 
+          outletName={selectedOutlet}
+          cluster={clusterType}
+          clusterDetails={clusterDetails}
+          personaDetails={effectivePersonaDetails}
+          salesData={salesData}
+          isLoading={isPersonaLoading && !manualPersonaDetails}
+          salesDataLoading={isSalesLoading}
+        />
       </div>
 
       {selectedOutlet && (
