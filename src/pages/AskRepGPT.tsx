@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { Button } from "@/components/ui/button";
@@ -118,15 +119,7 @@ const AskRepGPT = () => {
           </div>
         </div>
 
-        {/* Conversation Starters - full width layout */}
-        <div className="mb-6">
-          <ConversationStartersGrid
-            selectedOutlet={selectedOutlet}
-            onConversationStart={handleConversationStart}
-          />
-        </div>
-
-        {/* Chat messages area */}
+        {/* Chat messages area - now above the prompt cards */}
         <div className="flex-1 overflow-y-auto mb-4 bg-repgpt-900/50 rounded-lg border border-repgpt-700 p-4">
           <div className="space-y-4">
             {messages.map((message, index) => (
@@ -159,7 +152,7 @@ const AskRepGPT = () => {
         </div>
 
         {/* Input area */}
-        <div className="border-t border-repgpt-700 pt-4">
+        <div className="border-t border-repgpt-700 pt-4 mb-4">
           <div className="flex gap-3">
             <Textarea
               placeholder="Ask RepGPT..."
@@ -180,9 +173,18 @@ const AskRepGPT = () => {
           </div>
         </div>
 
+        {/* Conversation Starters - moved below chat and input */}
+        <div className="mb-6">
+          <h2 className="text-lg font-medium text-white mb-3">Suggested prompts</h2>
+          <ConversationStartersGrid
+            selectedOutlet={selectedOutlet}
+            onConversationStart={handleConversationStart}
+          />
+        </div>
+
         {/* Context information */}
         {selectedOutlet && personaDetails && (
-          <Card className="mt-4 bg-repgpt-800 border-repgpt-700">
+          <Card className="mt-2 bg-repgpt-800 border-repgpt-700">
             <CardContent className="pt-4">
               <div className="flex flex-wrap gap-2 text-xs text-gray-400">
                 <div className="flex items-center">
