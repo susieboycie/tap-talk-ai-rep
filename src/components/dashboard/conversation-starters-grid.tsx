@@ -73,10 +73,10 @@ export function ConversationStartersGrid({ selectedOutlet, onConversationStart }
           icon={<Quality className="h-5 w-5 text-amber-400" />}
           title="Quality"
           description="Ensure highest quality"
-          examples=[
+          examples={[
             "Guinness 0.0 requirements",
             `Diageo taps at ${outletDisplay}`
-          ]
+          ]}
           color="border-amber-500"
           onClick={onConversationStart}
         />
