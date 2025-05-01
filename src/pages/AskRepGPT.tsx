@@ -119,8 +119,8 @@ const AskRepGPT = () => {
           </div>
         </div>
 
-        {/* Chat messages area - now above the prompt cards */}
-        <div className="flex-1 overflow-y-auto mb-4 bg-repgpt-900/50 rounded-lg border border-repgpt-700 p-4">
+        {/* Chat messages area - with fixed height instead of overflow */}
+        <div className="mb-4 bg-repgpt-900/50 rounded-lg border border-repgpt-700 p-4">
           <div className="space-y-4">
             {messages.map((message, index) => (
               <div
@@ -173,7 +173,7 @@ const AskRepGPT = () => {
           </div>
         </div>
 
-        {/* Conversation Starters - moved below chat and input */}
+        {/* Conversation Starters - below chat and input */}
         <div className="mb-6">
           <h2 className="text-lg font-medium text-white mb-3">Suggested prompts</h2>
           <ConversationStartersGrid
