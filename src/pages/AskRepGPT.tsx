@@ -119,15 +119,17 @@ const AskRepGPT = () => {
           </div>
         </div>
 
-        {/* Conversation Starters */}
-        <div className="mb-6">
-          <ConversationStartersGrid
-            selectedOutlet={selectedOutlet}
-            onConversationStart={handleConversationStart}
-          />
+        {/* Conversation Starters - made smaller with compact layout */}
+        <div className="mb-4">
+          <div className="grid gap-2 grid-cols-2 md:grid-cols-4">
+            <ConversationStartersGrid
+              selectedOutlet={selectedOutlet}
+              onConversationStart={handleConversationStart}
+            />
+          </div>
         </div>
 
-        {/* Chat messages area */}
+        {/* Chat messages area - adjusted height */}
         <div className="flex-1 overflow-y-auto mb-4 bg-repgpt-900/50 rounded-lg border border-repgpt-700 p-4">
           <div className="space-y-4">
             {messages.map((message, index) => (
