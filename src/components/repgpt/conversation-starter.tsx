@@ -26,18 +26,18 @@ export function ConversationStarter({
   // Compact version for AskRepGPT page
   if (isAskRepGPTPage) {
     return (
-      <div className={`rounded-lg bg-repgpt-800 border ${color} p-4 flex flex-col h-full`}>
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-white">{icon}</span>
+      <div className={`rounded-lg bg-repgpt-800 border ${color} p-4 flex flex-col h-full w-full`}>
+        <div className="flex items-center gap-2 mb-2">
+          {icon}
           <h3 className="text-base font-semibold text-white">{title}</h3>
         </div>
-        <div className="flex flex-col gap-2 mt-2">
+        <div className="flex flex-col gap-2 mt-2 w-full">
           {examples.map((example, i) => (
             <Button 
               key={i}
               variant="ghost" 
               size="sm"
-              className="justify-start text-left text-sm text-gray-300 hover:text-white hover:bg-repgpt-700"
+              className="justify-start text-left text-sm text-gray-300 hover:text-white hover:bg-repgpt-700 truncate w-full"
               onClick={() => onClick(example)}
             >
               "{example}"
