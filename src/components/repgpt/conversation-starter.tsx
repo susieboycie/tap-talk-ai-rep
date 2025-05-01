@@ -31,7 +31,7 @@ export function ConversationStarter({
           <Button 
             key={i}
             variant="ghost" 
-            className="justify-start text-left text-sm text-gray-300 hover:text-white hover:bg-repgpt-700"
+            className="justify-start text-left text-xs text-gray-300 hover:text-white hover:bg-repgpt-700 truncate"
             onClick={() => onClick(example)}
           >
             "{example}"

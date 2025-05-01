@@ -12,6 +12,11 @@ interface ConversationStartersGridProps {
 export function ConversationStartersGrid({ selectedOutlet, onConversationStart }: ConversationStartersGridProps) {
   const location = useLocation();
   const currentPath = location.pathname;
+  
+  // Truncate outlet name if it's too long
+  const outletDisplay = selectedOutlet && selectedOutlet.length > 15 
+    ? selectedOutlet.substring(0, 15) + "..." 
+    : selectedOutlet || "outlet";
 
   // Only show relevant cards based on current page
   const isActivationsPage = currentPath === "/activations";
@@ -27,8 +32,8 @@ export function ConversationStartersGrid({ selectedOutlet, onConversationStart }
           title="Activations"
           description="Help you sell and activate"
           examples={[
-            `Key EPL deck points for ${selectedOutlet || "outlet"}`,
-            `Tailor pitch for ${selectedOutlet || "client"}`
+            `Key EPL points for ${outletDisplay}`,
+            `Pitch for ${outletDisplay}`
           ]}
           color="border-purple-500"
           onClick={onConversationStart}
@@ -41,8 +46,8 @@ export function ConversationStartersGrid({ selectedOutlet, onConversationStart }
           title="Insights"
           description="Insights tailored to your client"
           examples={[
-            "Smirnoff vs Absolut in Dublin",
-            `Non-Diageo draught in ${selectedOutlet || "outlet"}`
+            "Smirnoff vs Absolut",
+            `Non-Diageo draught in ${outletDisplay}`
           ]}
           color="border-blue-500"
           onClick={onConversationStart}
@@ -55,8 +60,8 @@ export function ConversationStartersGrid({ selectedOutlet, onConversationStart }
           title="Partnership"
           description="Manage contracts & volumes"
           examples={[
-            `Guinness volume for ${selectedOutlet || "outlet"}`,
-            `${selectedOutlet || "Outlet"} order history`
+            `Guinness volume for ${outletDisplay}`,
+            `${outletDisplay} orders`
           ]}
           color="border-green-500"
           onClick={onConversationStart}
@@ -68,10 +73,10 @@ export function ConversationStartersGrid({ selectedOutlet, onConversationStart }
           icon={<Quality className="h-5 w-5 text-amber-400" />}
           title="Quality"
           description="Ensure highest quality"
-          examples={[
-            "Guinness 0.0 install requirements",
-            `Diageo taps at ${selectedOutlet || "outlet"}`
-          ]}
+          examples=[
+            "Guinness 0.0 requirements",
+            `Diageo taps at ${outletDisplay}`
+          ]
           color="border-amber-500"
           onClick={onConversationStart}
         />
