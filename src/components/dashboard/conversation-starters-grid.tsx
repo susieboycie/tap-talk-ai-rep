@@ -20,13 +20,15 @@ export function ConversationStartersGrid({ selectedOutlet, onConversationStart }
 
   // Only show relevant cards based on current page
   const isActivationsPage = currentPath === "/activations";
+  // Remove the AskRepGPT page from the check so prompts will show there
+  const isAskRepGPTPage = false; // Changed from: currentPath === "/ask-repgpt";
+  
   const isInsightsPage = currentPath === "/insights";
   const isPartnershipsPage = currentPath === "/partnerships";
   const isQualityPage = currentPath === "/quality";
-  const isAskRepGPTPage = currentPath === "/ask-repgpt";
 
-  // If we're on the Activations page or Ask RepGPT page, don't show any prompts
-  if (isActivationsPage || isAskRepGPTPage) {
+  // If we're on the Activations page, don't show any prompts
+  if (isActivationsPage) {
     return null;
   }
 
