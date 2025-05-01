@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
-import { PerformanceChart } from "@/components/dashboard/performance-chart";
 import { AIAssistant } from "@/components/ai-assistant";
 import { Button } from "@/components/ui/button";
 import { MessageSquare } from "lucide-react";
@@ -110,14 +109,6 @@ export default function Overview() {
           salesDataLoading={isSalesLoading}
         />
       </div>
-
-      {selectedOutlet && (
-        <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5 mb-6">
-          <div className="md:col-span-3 lg:col-span-5">
-            <PerformanceChart data={salesData} isLoading={isSalesLoading} />
-          </div>
-        </div>
-      )}
 
       <ConversationStartersGrid 
         selectedOutlet={selectedOutlet}
