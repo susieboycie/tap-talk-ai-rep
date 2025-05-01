@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { AIAssistant } from "@/components/ai-assistant";
@@ -15,6 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { OutletOverview } from "@/components/dashboard/outlet-overview";
 import { useOutlet } from "@/contexts/outlet-context";
 import { useNavigate } from "react-router-dom";
+import { Tables } from "@/integrations/supabase/types";
 
 export default function Overview() {
   const { user } = useAuth();
@@ -35,8 +35,8 @@ export default function Overview() {
   const { data: salesData, isLoading: isSalesLoading } = useOutletSales(selectedOutlet);
   const { data: salesDataAlt, isLoading: isSalesDataAltLoading } = useOutletSalesData(selectedOutlet);
 
-  // Combine both datasets - prefer salesData if available, otherwise fallback to salesDataAlt
-  const combinedSalesData = salesData && salesData.length > 0 ? salesData : (salesDataAlt || []);
+  // Instead of combining both datasets, we'll now use salesData as the primary source
+  // and only use salesDataAlt if needed for the SalesInsights component
   const isCombinedDataLoading = isSalesLoading && isSalesDataAltLoading;
 
   useEffect(() => {
@@ -83,6 +83,11 @@ export default function Overview() {
     setIsAssistantOpen(true);
   };
 
+  // Determine which sales data to use for the SalesInsights component
+  // while keeping the proper data type for the OutletOverview component
+  const hasPrimarySalesData = salesData && salesData.length > 0;
+  const hasAlternativeSalesData = salesDataAlt && salesDataAlt.length > 0;
+
   return (
     <DashboardShell>
       <div className="flex items-center justify-between mb-6">
@@ -112,9 +117,9 @@ export default function Overview() {
           cluster={clusterType}
           clusterDetails={clusterDetails}
           personaDetails={effectivePersonaDetails}
-          salesData={combinedSalesData}
+          salesData={salesData}
           isLoading={isPersonaLoading && !manualPersonaDetails}
-          salesDataLoading={isCombinedDataLoading}
+          salesDataLoading={isSalesLoading}
         />
       </div>
 

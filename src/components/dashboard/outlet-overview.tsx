@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ClusterDetails, PersonaDetails } from "@/hooks/use-persona-details";
 import { Store, Camera } from "lucide-react";
@@ -6,6 +5,7 @@ import { Tables } from "@/integrations/supabase/types";
 import { useOutletData } from "@/hooks/use-outlet-data";
 import { useOutletTrax } from "@/hooks/use-outlet-trax";
 import { SalesInsights } from "@/components/dashboard/sales-insights";
+import { useOutletSalesData } from "@/hooks/use-outlet-sales-data";
 
 interface OutletOverviewProps {
   outletName: string | null;
@@ -28,6 +28,13 @@ export function OutletOverview({
 }: OutletOverviewProps) {
   const { data: outletData } = useOutletData(outletName);
   const { data: traxData, isLoading: isTraxLoading } = useOutletTrax(outletName);
+  
+  // Add fallback data source for sales insights
+  const { data: altSalesData, isLoading: isAltSalesDataLoading } = useOutletSalesData(outletName);
+  
+  // Use either primary sales data or alternative data
+  const effectiveSalesData = (salesData && salesData.length > 0) ? salesData : altSalesData;
+  const isEffectiveSalesDataLoading = salesDataLoading && isAltSalesDataLoading;
 
   if (isLoading) {
     return (
@@ -223,7 +230,7 @@ export function OutletOverview({
           <div className="space-y-3">
             <h3 className="text-sm font-medium text-white">7-Day Sales Trends</h3>
             <div className="bg-blue-900/20 rounded-md border border-blue-800">
-              <SalesInsights data={salesData} isLoading={salesDataLoading} />
+              <SalesInsights data={effectiveSalesData} isLoading={isEffectiveSalesDataLoading} />
             </div>
           </div>
 
