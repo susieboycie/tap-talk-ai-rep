@@ -5,6 +5,7 @@ import { Store, Camera } from "lucide-react";
 import { Tables } from "@/integrations/supabase/types";
 import { useOutletData } from "@/hooks/use-outlet-data";
 import { useOutletTrax } from "@/hooks/use-outlet-trax";
+import { SalesInsights } from "@/components/dashboard/sales-insights";
 
 interface OutletOverviewProps {
   outletName: string | null;
@@ -216,6 +217,14 @@ export function OutletOverview({
                 <li className="break-words"><span className="font-medium">Price Tier:</span> {clusterDetails.price_tier}</li>
               )}
             </ul>
+          </div>
+
+          {/* Add the 7-day Sales Trends section */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-medium text-white">7-Day Sales Trends</h3>
+            <div className="bg-blue-900/20 rounded-md border border-blue-800">
+              <SalesInsights data={salesData} isLoading={salesDataLoading} />
+            </div>
           </div>
 
           <div className="space-y-3">
