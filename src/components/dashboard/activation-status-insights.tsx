@@ -1,4 +1,3 @@
-
 import { useActivationStatus, ActivationStatus } from "@/hooks/use-activation-status";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
@@ -216,17 +215,23 @@ function StatusIndicator({ status }: StatusIndicatorProps) {
   const isActive = status?.toLowerCase() === 'active' || status?.toLowerCase() === 'y';
   
   return (
-    <span 
-      className={`inline-block w-16 h-8 rounded-full relative ${isActive ? 'bg-green-500/20' : 'bg-red-500/20'} border ${isActive ? 'border-green-500' : 'border-red-500'}`}
-    >
-      <span 
-        className={`absolute inset-1 mx-1 rounded-full ${isActive ? 'bg-green-500 ml-auto right-1' : 'bg-red-500 left-1'}`}
-      />
-      <span 
-        className={`absolute inset-0 flex items-center justify-${isActive ? 'end' : 'start'} px-2 text-xs font-medium ${isActive ? 'text-green-500' : 'text-red-500'}`}
-      >
-        {isActive ? 'Activated' : 'No'}
-      </span>
-    </span>
+    <TooltipProvider>
+      <UITooltip>
+        <TooltipTrigger asChild>
+          <div className={`flex items-center justify-center w-8 h-8 rounded-full relative cursor-help ${
+            isActive ? 'bg-green-500/20 border border-green-500' : 'bg-red-500/20 border border-red-500'
+          }`}>
+            <div className={`w-5 h-5 rounded-full ${
+              isActive ? 'bg-green-500' : 'bg-red-500'
+            }`} />
+          </div>
+        </TooltipTrigger>
+        <TooltipContent className="bg-purple-800 text-white border-purple-700">
+          <div className="flex flex-col">
+            <span className="font-medium">{isActive ? 'Activated' : 'Not Activated'}</span>
+          </div>
+        </TooltipContent>
+      </UITooltip>
+    </TooltipProvider>
   );
 }
