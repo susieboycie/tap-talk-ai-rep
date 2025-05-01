@@ -1,15 +1,11 @@
+
 import { useState, useRef, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { MessageCircle, Send, UserCircle, Bot } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent } from "@/components/ui/card";
 import { useOutlet } from "@/contexts/outlet-context";
 import { usePersonaDetails } from "@/hooks/use-persona-details";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { ConversationStartersGrid } from "@/components/dashboard/conversation-starters-grid";
 import { AIMessage } from "@/components/repgpt/ai-message";
 import { UserMessage } from "@/components/repgpt/user-message";
 import { ChatHeader } from "@/components/repgpt/chat-header";
@@ -102,14 +98,6 @@ const AskRepGPT = () => {
     }
   };
 
-  const handleConversationStart = (prompt: string) => {
-    setInput(prompt);
-    // Auto-focus the input field after setting the prompt
-    if (document.getElementById('chat-input')) {
-      (document.getElementById('chat-input') as HTMLTextAreaElement).focus();
-    }
-  };
-
   const hasMessages = messages.length > 0;
 
   return (
@@ -138,7 +126,6 @@ const AskRepGPT = () => {
                 
                 {isLoading && (
                   <div className="flex items-center gap-2 animate-pulse pl-2 text-gray-400 text-sm">
-                    <Bot className="h-4 w-4 text-repgpt-400" />
                     <span>Thinking...</span>
                   </div>
                 )}
@@ -156,29 +143,15 @@ const AskRepGPT = () => {
             </CardContent>
           </Card>
           
-          {/* Sidebar */}
-          <div className="w-80 flex flex-col gap-4 hidden lg:flex">
-            {/* Conversation Starters */}
-            <Card className="bg-repgpt-800 border-repgpt-700">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-white text-lg">Conversation Starters</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ConversationStartersGrid
-                  selectedOutlet={selectedOutlet}
-                  onConversationStart={handleConversationStart}
-                />
-              </CardContent>
-            </Card>
-            
-            {/* Context Information */}
-            {selectedOutlet && personaDetails && (
+          {/* Context Sidebar - Only show if outlet is selected */}
+          {selectedOutlet && personaDetails && (
+            <div className="w-80 hidden lg:block">
               <ChatContext 
                 outletName={selectedOutlet} 
                 personaDetails={personaDetails} 
               />
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </DashboardShell>
