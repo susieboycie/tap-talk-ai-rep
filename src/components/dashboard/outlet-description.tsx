@@ -10,7 +10,7 @@ interface OutletDescriptionProps {
   cluster: string | null;
   clusterDetails?: ClusterDetails | null;
   personaDetails: PersonaDetails | null;
-  salesData: Tables<"daily_sales_volume">[] | null;
+  salesData: any[] | null; // Updated type to be more generic
   isLoading: boolean;
   salesDataLoading?: boolean;
 }
@@ -64,15 +64,15 @@ export function OutletDescription({
     total + (record.Guinness_Draught_In_Keg_MTD_Billed || 0), 0) || 0;
 
   // Enhanced natural language description without quality metrics
-  const description = `${outletName} is a ${clusterDetails.venue_description?.toLowerCase() || cluster?.toLowerCase() || 'venue'} 
+  const description = `${outletName} is a ${clusterDetails?.venue_description?.toLowerCase() || cluster?.toLowerCase() || 'venue'} 
     ${outletData?.["City"] ? `in ${outletData["City"]}` : ''} 
-    operating as a ${personaDetails.name}. 
-    ${outletData?.["Global Outlet Segment"] ? `This ${outletData["Global Outlet Segment"].toLowerCase()} venue` : 'This venue'} typically focuses on ${clusterDetails.product_focus?.toLowerCase() || 'various products'} 
-    and serves customers during ${clusterDetails.key_occasions?.toLowerCase() || 'various occasions'}. 
-    ${clusterDetails.consumption_behavior ? `The typical consumption pattern shows ${clusterDetails.consumption_behavior.toLowerCase()}.` : ''} 
+    operating as a ${personaDetails?.name}. 
+    ${outletData?.["Global Outlet Segment"] ? `This ${outletData["Global Outlet Segment"].toLowerCase()} venue` : 'This venue'} typically focuses on ${clusterDetails?.product_focus?.toLowerCase() || 'various products'} 
+    and serves customers during ${clusterDetails?.key_occasions?.toLowerCase() || 'various occasions'}. 
+    ${clusterDetails?.consumption_behavior ? `The typical consumption pattern shows ${clusterDetails.consumption_behavior.toLowerCase()}.` : ''} 
     ${totalGuinnessSales > 0 ? `The outlet has recorded ${totalGuinnessSales.toFixed(1)} units in Guinness sales.` : ''}
-    As a ${personaDetails.name}, their key goals include ${personaDetails.goals?.toLowerCase()}, 
-    while facing challenges such as ${personaDetails.pain_points?.toLowerCase()}.`;
+    As a ${personaDetails?.name}, their key goals include ${personaDetails?.goals?.toLowerCase()}, 
+    while facing challenges such as ${personaDetails?.pain_points?.toLowerCase()}.`;
 
   return (
     <Card className="border-repgpt-700 bg-repgpt-800">

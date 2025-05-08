@@ -264,60 +264,6 @@ export type Database = {
         }
         Relationships: []
       }
-      daily_weather: {
-        Row: {
-          created_at: string
-          date: string
-          description: string | null
-          id: string
-          outlet_name: string | null
-          precipitation: number | null
-          temperature_max: number | null
-          temperature_min: number | null
-        }
-        Insert: {
-          created_at?: string
-          date: string
-          description?: string | null
-          id?: string
-          outlet_name?: string | null
-          precipitation?: number | null
-          temperature_max?: number | null
-          temperature_min?: number | null
-        }
-        Update: {
-          created_at?: string
-          date?: string
-          description?: string | null
-          id?: string
-          outlet_name?: string | null
-          precipitation?: number | null
-          temperature_max?: number | null
-          temperature_min?: number | null
-        }
-        Relationships: []
-      }
-      direct_on_trade: {
-        Row: {
-          "Fiscal year/period": string | null
-          Outlet: string | null
-          "PRDHA L5 Individual Variant": string | null
-          "Volume HL": number | null
-        }
-        Insert: {
-          "Fiscal year/period"?: string | null
-          Outlet?: string | null
-          "PRDHA L5 Individual Variant"?: string | null
-          "Volume HL"?: number | null
-        }
-        Update: {
-          "Fiscal year/period"?: string | null
-          Outlet?: string | null
-          "PRDHA L5 Individual Variant"?: string | null
-          "Volume HL"?: number | null
-        }
-        Relationships: []
-      }
       outlet_data: {
         Row: {
           City: string | null

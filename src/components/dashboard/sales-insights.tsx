@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, TrendingDown, CloudRain, Sun, Thermometer } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
@@ -53,8 +52,8 @@ export function SalesInsights({ data, isLoading, embedded = false }: SalesInsigh
   );
 
   const latestDate = sortedData[sortedData.length - 1]?.Calendar_day;
-  // Get outlet name from either data format (supports both data structures)
-  const latestOutlet = sortedData[sortedData.length - 1]?.["Outlet Name"] || sortedData[sortedData.length - 1]?.Outlet;
+  // Get outlet name from daily_sales_data structure
+  const latestOutlet = sortedData[sortedData.length - 1]?.["Outlet Name"];
 
   const { data: weatherData, isLoading: isWeatherLoading } = useOutletWeather(latestOutlet, latestDate);
 
@@ -186,11 +185,7 @@ export function SalesInsights({ data, isLoading, embedded = false }: SalesInsigh
     </div>
   );
 
-  if (embedded) {
-    return content;
-  }
-
-  return (
+  return embedded ? content : (
     <Card className="border-blue-700 bg-blue-900/30">
       <CardHeader>
         <CardTitle className="text-sm font-medium text-white">7-Day Sales Trends</CardTitle>

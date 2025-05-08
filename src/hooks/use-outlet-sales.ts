@@ -11,9 +11,9 @@ export const useOutletSales = (outletName: string | null) => {
       console.log("Fetching sales data for outlet:", outletName);
       
       const { data, error } = await supabase
-        .from('daily_sales_volume')
+        .from('daily_sales_data')
         .select('*')
-        .eq('Outlet', outletName)
+        .eq('Outlet Name', outletName)
         .order('Calendar_day', { ascending: true });
 
       if (error) {

@@ -1,10 +1,10 @@
+
 import { useState, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { AIAssistant } from "@/components/ai-assistant";
 import { Button } from "@/components/ui/button";
 import { MessageSquare } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
-import { useOutletSales } from "@/hooks/use-outlet-sales";
 import { useOutletSalesData } from "@/hooks/use-outlet-sales-data";
 import { usePersonaDetails, type PersonaDetails } from "@/hooks/use-persona-details";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
@@ -32,12 +32,10 @@ export default function Overview() {
     isLoading: isPersonaLoading 
   } = usePersonaDetails(selectedOutlet);
   
-  const { data: salesData, isLoading: isSalesLoading } = useOutletSales(selectedOutlet);
-  const { data: salesDataAlt, isLoading: isSalesDataAltLoading } = useOutletSalesData(selectedOutlet);
-
-  // Instead of combining both datasets, we'll now use salesData as the primary source
-  // and only use salesDataAlt if needed for the SalesInsights component
-  const isCombinedDataLoading = isSalesLoading && isSalesDataAltLoading;
+  const { data: salesData, isLoading: isSalesLoading } = useOutletSalesData(selectedOutlet);
+  
+  // We now only use one data source
+  const isCombinedDataLoading = isSalesLoading;
 
   useEffect(() => {
     if (outletPersonaDetails && !selectedPersona) {
@@ -83,10 +81,8 @@ export default function Overview() {
     setIsAssistantOpen(true);
   };
 
-  // Determine which sales data to use for the SalesInsights component
-  // while keeping the proper data type for the OutletOverview component
-  const hasPrimarySalesData = salesData && salesData.length > 0;
-  const hasAlternativeSalesData = salesDataAlt && salesDataAlt.length > 0;
+  // Using only the salesData for simplicity
+  const hasSalesData = salesData && salesData.length > 0;
 
   return (
     <DashboardShell>
