@@ -28,14 +28,30 @@ This directory contains the code to migrate from Supabase to direct PostgreSQL c
    const { data, error } = await postgres.from('table').select('*');
    ```
 
+4. Alternatively, use the migration helper to easily switch between data sources:
+   ```typescript
+   import { db } from "@/integrations/postgres/migration-helper";
+   
+   // This will use either Postgres or Supabase based on the configuration
+   const { data, error } = await db.from('table').select('*');
+   ```
+
 ## Gradual Migration Strategy
 
 1. Update one component or hook at a time
-2. Create PostgreSQL versions of hooks (e.g., `use-outlet-data-postgres.ts`)
-3. Test thoroughly after each migration
-4. Once all components are migrated, remove the Supabase client
+2. Test thoroughly after each migration
+3. Update the `ACTIVE_DATA_SOURCE` in `migration-helper.ts` when ready to switch all components
 
 ## Database Schema
 
 Ensure your PostgreSQL database has the same schema as the Supabase database.
-You might need to run migrations to create the necessary tables and indexes.
+You may need to run migrations to create the necessary tables and indexes.
+
+## Connection Troubleshooting
+
+If you encounter connection issues:
+
+1. Check that your PostgreSQL server is running
+2. Verify your connection string in the `.env` file
+3. Ensure your database user has the necessary permissions
+4. Check for SSL requirements in your connection string

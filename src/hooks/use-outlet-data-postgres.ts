@@ -1,26 +1,13 @@
 
 import { postgres } from "@/integrations/postgres/client";
 import { useQuery } from "@tanstack/react-query";
+import type { OutletData } from "./use-outlet-data";
 
-export type OutletData = {
-  "Outlet Name": string | null;
-  "Ship To": number | null;
-  "NI or ROI": string | null;
-  "Clustered": string | null;
-  "Cluster Number": string | null;
-  "Outlet Visit Prioritisation": string | null;
-  "Geo-Region": string | null;
-  "Primary Sales Area": string | null;
-  "Global Outlet Channel": string | null;
-  "Global Outlet Segment": string | null;
-  "Global Outlet Sub Segment": string | null;
-  "Consumer Segmentation": string | null;
-  "Local Outlet-Segment1": string | null;
-  "City": string | null;
-  "Credit terms": string | null;
-  "Salesforce Record ID": string | null;
-};
-
+/**
+ * Hook to fetch outlet data from PostgreSQL database
+ * @param outletName The name of the outlet to fetch data for
+ * @returns Query result containing outlet data or null
+ */
 export function useOutletDataPostgres(outletName: string | null) {
   return useQuery({
     queryKey: ['outlet-data-postgres', outletName],
@@ -34,7 +21,7 @@ export function useOutletDataPostgres(outletName: string | null) {
         .maybeSingle();
 
       if (error) {
-        console.error("Error fetching outlet data:", error);
+        console.error("Error fetching outlet data from Postgres:", error);
         throw error;
       }
       
