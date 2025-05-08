@@ -14,7 +14,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { OutletOverview } from "@/components/dashboard/outlet-overview";
 import { useOutlet } from "@/contexts/outlet-context";
 import { useNavigate } from "react-router-dom";
-import { Tables } from "@/integrations/supabase/types";
 
 export default function Overview() {
   const { user } = useAuth();
@@ -81,6 +80,16 @@ export default function Overview() {
     setIsAssistantOpen(true);
   };
 
+  // Adapt the sales data for components that still expect the daily_sales_volume structure
+  const adaptedSalesData = salesData ? salesData.map(item => ({
+    ...item,
+    Calendar_Year: new Date(item.Calendar_day || "").getFullYear(),
+    Cluster: clusterType || "",
+    Country: "Ireland", // Default value
+    Outlet: item["Outlet Name"] || "",
+    prim_key: 0 // Default value
+  })) : [];
+
   // Using only the salesData for simplicity
   const hasSalesData = salesData && salesData.length > 0;
 
@@ -113,7 +122,7 @@ export default function Overview() {
           cluster={clusterType}
           clusterDetails={clusterDetails}
           personaDetails={effectivePersonaDetails}
-          salesData={salesData}
+          salesData={adaptedSalesData}
           isLoading={isPersonaLoading && !manualPersonaDetails}
           salesDataLoading={isSalesLoading}
         />

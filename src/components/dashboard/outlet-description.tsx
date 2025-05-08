@@ -10,7 +10,7 @@ interface OutletDescriptionProps {
   cluster: string | null;
   clusterDetails?: ClusterDetails | null;
   personaDetails: PersonaDetails | null;
-  salesData: any[] | null; // Updated type to be more generic
+  salesData: any[] | null; // Using any[] type for more flexibility
   isLoading: boolean;
   salesDataLoading?: boolean;
 }

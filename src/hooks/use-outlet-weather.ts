@@ -17,7 +17,7 @@ export const useOutletWeather = (outletName: string | null, date: string | null)
         .select('*')
         .eq('outlet_name', outletName)
         .eq('date', date)
-        .maybeSingle();
+        .maybeSingle() as any;
 
       if (fetchError) {
         console.error("Error fetching weather data:", fetchError);
