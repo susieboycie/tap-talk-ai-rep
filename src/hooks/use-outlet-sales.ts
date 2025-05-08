@@ -1,5 +1,5 @@
 
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/postgres/migration-helper";
 import { useQuery } from "@tanstack/react-query";
 
 export const useOutletSales = (outletName: string | null) => {
@@ -10,7 +10,7 @@ export const useOutletSales = (outletName: string | null) => {
       
       console.log("Fetching sales data for outlet:", outletName);
       
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from('daily_sales_volume')
         .select('*')
         .eq('Outlet', outletName)
