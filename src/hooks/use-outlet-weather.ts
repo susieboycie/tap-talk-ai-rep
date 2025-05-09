@@ -3,6 +3,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 
+// Define a type for the expected weather data
+interface WeatherData {
+  [key: string]: any;
+  outlet_name?: string;
+  date?: string;
+}
+
 export const useOutletWeather = (outletName: string | null, date: string | null) => {
   return useQuery({
     queryKey: ['outlet-weather', outletName, date],
@@ -11,13 +18,16 @@ export const useOutletWeather = (outletName: string | null, date: string | null)
       
       console.log(`Fetching weather data for ${outletName} on ${date}`);
       
-      // First try to get cached weather data
+      // First try to get cached weather data with proper type assertion
       const { data: existingData, error: fetchError } = await supabase
         .from('daily_weather')
         .select('*')
         .eq('outlet_name', outletName)
         .eq('date', date)
-        .maybeSingle() as any;
+        .maybeSingle() as {
+          data: WeatherData | null;
+          error: Error | null;
+        };
 
       if (fetchError) {
         console.error("Error fetching weather data:", fetchError);

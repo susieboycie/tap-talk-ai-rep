@@ -2,7 +2,6 @@
 import { PersonaDetails, ClusterDetails } from "@/hooks/use-persona-details";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Store } from "lucide-react";
-import { Tables } from "@/integrations/supabase/types";
 import { useOutletData } from "@/hooks/use-outlet-data";
 
 interface OutletDescriptionProps {
@@ -59,9 +58,12 @@ export function OutletDescription({
     );
   }
 
-  // Calculate total Guinness sales if available
-  const totalGuinnessSales = salesData?.reduce((total, record) => 
-    total + (record.Guinness_Draught_In_Keg_MTD_Billed || 0), 0) || 0;
+  // Calculate total Guinness sales if available - adapt to handle both old and new data formats
+  const totalGuinnessSales = salesData?.reduce((total, record) => {
+    // Check for the field based on either data format
+    const salesValue = record.Guinness_Draught_In_Keg_MTD_Billed || 0;
+    return total + salesValue;
+  }, 0) || 0;
 
   // Enhanced natural language description without quality metrics
   const description = `${outletName} is a ${clusterDetails?.venue_description?.toLowerCase() || cluster?.toLowerCase() || 'venue'} 
