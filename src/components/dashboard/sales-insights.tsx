@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, TrendingDown, CloudRain, Sun, Thermometer } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
@@ -108,7 +109,7 @@ export function SalesInsights({ data, isLoading, embedded = false }: SalesInsigh
 
   const content = (
     <div className="space-y-4">
-      {/* Weather section */}
+      {/* Weather section - now simplified since we're not fetching weather data */}
       {isWeatherLoading ? (
         <div className="flex items-center gap-2 p-2 rounded-md bg-blue-800/30">
           <div className="animate-pulse flex items-center gap-2 text-sm text-blue-300">
@@ -118,7 +119,7 @@ export function SalesInsights({ data, isLoading, embedded = false }: SalesInsigh
         </div>
       ) : weatherData ? (
         <div className="flex items-center gap-2 p-2 bg-blue-800/30 rounded-md">
-          {weatherData.description.includes("rain") || weatherData.description.includes("drizzle") ? (
+          {weatherData.description?.includes("rain") || weatherData.description?.includes("drizzle") ? (
             <CloudRain className="h-4 w-4 text-blue-300" />
           ) : (
             <Sun className="h-4 w-4 text-yellow-300" />
