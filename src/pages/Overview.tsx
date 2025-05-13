@@ -11,6 +11,7 @@ import { PersonaSelector } from "@/components/dashboard/persona-selector";
 import { ConversationStartersGrid } from "@/components/dashboard/conversation-starters-grid";
 import { supabase } from "@/integrations/supabase/client";
 import { OutletOverview } from "@/components/dashboard/outlet-overview";
+import { NotesAndActions } from "@/components/dashboard/notes-and-actions";
 import { useOutlet } from "@/contexts/outlet-context";
 import { useNavigate } from "react-router-dom";
 
@@ -126,6 +127,12 @@ export default function Overview() {
           salesDataLoading={isSalesLoading}
         />
       </div>
+
+      {/* Add the new Notes & Actions section here */}
+      <NotesAndActions 
+        outletName={selectedOutlet}
+        onStartAIChat={handleConversationStart}
+      />
 
       <ConversationStartersGrid 
         selectedOutlet={selectedOutlet}
