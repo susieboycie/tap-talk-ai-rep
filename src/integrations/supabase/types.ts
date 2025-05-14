@@ -264,6 +264,33 @@ export type Database = {
         }
         Relationships: []
       }
+      outlet_actions: {
+        Row: {
+          completed: boolean
+          created_at: string
+          id: string
+          outlet_name: string
+          text: string
+          updated_at: string
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          id?: string
+          outlet_name: string
+          text: string
+          updated_at?: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          id?: string
+          outlet_name?: string
+          text?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       outlet_data: {
         Row: {
           City: string | null
