@@ -9,6 +9,7 @@ import { toast } from "@/hooks/use-toast";
 import { useOutlet } from "@/contexts/outlet-context";
 import { useAuth } from "@/contexts/auth-context";
 import { supabase } from "@/integrations/supabase/client";
+import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import {
   Select,
   SelectContent,
@@ -224,12 +225,36 @@ const NotesToActions = () => {
 
   return (
     <DashboardShell>
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight text-white mb-2">Notes to Actions</h1>
-        <p className="text-gray-400">
-          Convert your outlet notes into actionable tasks
-          {selectedOutlet ? ` for ${selectedOutlet}` : ""}
-        </p>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-white mb-2">Notes to Actions</h1>
+          <p className="text-gray-400">
+            Convert your outlet notes into actionable tasks
+          </p>
+        </div>
+        <div className="w-[220px]">
+          <OutletSelector />
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center space-x-2">
+          <h2 className="text-xl font-semibold text-white">Action Items</h2>
+          <Select 
+            value={filterOutlet} 
+            onValueChange={setFilterOutlet}
+          >
+            <SelectTrigger className="w-[180px] bg-repgpt-800 border-repgpt-600 text-white">
+              <SelectValue placeholder="Filter by outlet" />
+            </SelectTrigger>
+            <SelectContent className="bg-repgpt-800 border-repgpt-600 text-white">
+              <SelectItem value="all">All Outlets</SelectItem>
+              {outlets.map(outlet => (
+                <SelectItem key={outlet} value={outlet}>{outlet}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -265,26 +290,10 @@ const NotesToActions = () => {
 
         <Card className="bg-repgpt-700 border-repgpt-600">
           <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2 text-white">
-                <Clipboard className="h-5 w-5" />
-                Action Items
-              </CardTitle>
-              <Select 
-                value={filterOutlet} 
-                onValueChange={setFilterOutlet}
-              >
-                <SelectTrigger className="w-[180px] bg-repgpt-800 border-repgpt-600 text-white">
-                  <SelectValue placeholder="Filter by outlet" />
-                </SelectTrigger>
-                <SelectContent className="bg-repgpt-800 border-repgpt-600 text-white">
-                  <SelectItem value="all">All Outlets</SelectItem>
-                  {outlets.map(outlet => (
-                    <SelectItem key={outlet} value={outlet}>{outlet}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <CardTitle className="flex items-center gap-2 text-white">
+              <Clipboard className="h-5 w-5" />
+              Action Items
+            </CardTitle>
             <CardDescription className="text-gray-400">
               {filterOutlet === 'all' 
                 ? "Showing actions for all outlets" 
