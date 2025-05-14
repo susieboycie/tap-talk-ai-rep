@@ -71,8 +71,8 @@ function ConversationStartersGrid({ selectedOutlet, onConversationStart }: Conve
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
-
-  // Update with new path check
+  
+  // Define isNotesToActionsPage correctly
   const isNotesToActionsPage = currentPath === "/notes-to-actions";
   
   return (

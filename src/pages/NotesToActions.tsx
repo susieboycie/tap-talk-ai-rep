@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
-import { Separator } from "@/components/ui/separator";
 import { Edit, Check, Clipboard, ClipboardList } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useOutlet } from "@/contexts/outlet-context";
