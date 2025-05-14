@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { AIAssistant } from "@/components/ai-assistant";
@@ -8,7 +9,7 @@ import { useOutletSalesData } from "@/hooks/use-outlet-sales-data";
 import { usePersonaDetails, type PersonaDetails } from "@/hooks/use-persona-details";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import { PersonaSelector } from "@/components/dashboard/persona-selector";
-import { ConversationStartersGrid } from "@/components/dashboard/conversation-starters-grid";
+import ConversationStartersGrid from "@/components/dashboard/conversation-starters-grid";
 import { supabase } from "@/integrations/supabase/client";
 import { OutletOverview } from "@/components/dashboard/outlet-overview";
 import { useOutlet } from "@/contexts/outlet-context";

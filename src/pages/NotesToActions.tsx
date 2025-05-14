@@ -17,7 +17,7 @@ interface Action {
 }
 
 const NotesToActions = () => {
-  const { outlet } = useOutlet();
+  const { selectedOutlet } = useOutlet();
   const { user } = useAuth();
   const [notes, setNotes] = useState<string>("");
   const [actions, setActions] = useState<Action[]>([]);
@@ -79,7 +79,7 @@ const NotesToActions = () => {
       <div className="mb-6">
         <h1 className="text-3xl font-bold tracking-tight text-white mb-2">Notes to Actions</h1>
         <p className="text-gray-400">
-          Convert your outlet notes into actionable tasks for {outlet?.name || "your outlet"}
+          Convert your outlet notes into actionable tasks for {selectedOutlet || "your outlet"}
         </p>
       </div>
 
