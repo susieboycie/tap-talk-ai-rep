@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+
 import { useLocation, useNavigate } from "react-router-dom";
 
 interface ConversationStarterProps {
@@ -7,6 +7,11 @@ interface ConversationStarterProps {
   description: string;
   active: boolean;
   onClick: () => void;
+}
+
+interface ConversationStartersGridProps {
+  selectedOutlet?: string;
+  onConversationStart?: (prompt: string) => void;
 }
 
 function ConversationStarter({ icon, title, description, active, onClick }: ConversationStarterProps) {
@@ -62,7 +67,7 @@ function ConversationStarter({ icon, title, description, active, onClick }: Conv
   );
 }
 
-export default function ConversationStartersGrid() {
+function ConversationStartersGrid({ selectedOutlet, onConversationStart }: ConversationStartersGridProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
@@ -138,3 +143,7 @@ export default function ConversationStartersGrid() {
     </div>
   );
 }
+
+// Export both as default and named export to be backward compatible
+export default ConversationStartersGrid;
+export { ConversationStartersGrid };
