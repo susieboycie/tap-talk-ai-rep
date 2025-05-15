@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -96,6 +97,13 @@ const NotesToActions = () => {
 
     fetchActions();
   }, [filterOutlet]);
+  
+  // Update filter outlet when selectedOutlet changes
+  useEffect(() => {
+    if (selectedOutlet) {
+      setFilterOutlet(selectedOutlet);
+    }
+  }, [selectedOutlet]);
 
   // Separate notes into actionable items
   const processNotes = async () => {
@@ -232,20 +240,6 @@ const NotesToActions = () => {
           </p>
         </div>
         <div className="flex items-center space-x-4">
-          <Select 
-            value={filterOutlet} 
-            onValueChange={setFilterOutlet}
-          >
-            <SelectTrigger className="w-[180px] bg-repgpt-800 border-repgpt-600 text-white">
-              <SelectValue placeholder="Filter actions" />
-            </SelectTrigger>
-            <SelectContent className="bg-repgpt-800 border-repgpt-600 text-white">
-              <SelectItem value="all">All Outlets</SelectItem>
-              {outlets.map(outlet => (
-                <SelectItem key={outlet} value={outlet}>{outlet}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
           <OutletSelector />
         </div>
       </div>
@@ -290,9 +284,9 @@ const NotesToActions = () => {
               Action Items
             </CardTitle>
             <CardDescription className="text-gray-400">
-              {filterOutlet === 'all' 
-                ? "Showing actions for all outlets" 
-                : `Showing actions for ${filterOutlet}`}
+              {selectedOutlet 
+                ? `Showing actions for ${selectedOutlet}` 
+                : "Select an outlet to view actions"}
             </CardDescription>
           </CardHeader>
           <CardContent>
