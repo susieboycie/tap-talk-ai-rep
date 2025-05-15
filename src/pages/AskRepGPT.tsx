@@ -153,7 +153,7 @@ const AskRepGPT = () => {
                 >
                   <Link to="/notes-to-actions">
                     <ClipboardList className="mr-2 h-4 w-4" />
-                    Convert conversation to actions
+                    Go to Notes to Actions
                   </Link>
                 </Button>
               </div>
