@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -231,28 +232,28 @@ const NotesToActions = () => {
             Convert your outlet notes into actionable tasks
           </p>
         </div>
-        <div className="w-[220px]">
-          <OutletSelector />
+        <div className="flex items-center space-x-4">
+          <Select 
+            value={filterOutlet} 
+            onValueChange={setFilterOutlet}
+          >
+            <SelectTrigger className="w-[180px] bg-repgpt-800 border-repgpt-600 text-white">
+              <SelectValue placeholder="Filter actions" />
+            </SelectTrigger>
+            <SelectContent className="bg-repgpt-800 border-repgpt-600 text-white">
+              <SelectItem value="all">All Outlets</SelectItem>
+              {outlets.map(outlet => (
+                <SelectItem key={outlet} value={outlet}>{outlet}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <div className="w-[220px]">
+            <OutletSelector />
+          </div>
         </div>
       </div>
 
-      <div className="flex items-center mb-4">
-        <h2 className="text-xl font-semibold text-white mr-2">Action Items</h2>
-        <Select 
-          value={filterOutlet} 
-          onValueChange={setFilterOutlet}
-        >
-          <SelectTrigger className="w-[180px] bg-repgpt-800 border-repgpt-600 text-white">
-            <SelectValue placeholder="Filter by outlet" />
-          </SelectTrigger>
-          <SelectContent className="bg-repgpt-800 border-repgpt-600 text-white">
-            <SelectItem value="all">All Outlets</SelectItem>
-            {outlets.map(outlet => (
-              <SelectItem key={outlet} value={outlet}>{outlet}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <h2 className="text-xl font-semibold text-white mb-4">Action Items</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card className="bg-repgpt-700 border-repgpt-600">
