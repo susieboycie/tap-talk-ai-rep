@@ -12,6 +12,9 @@ import { ChatHeader } from "@/components/repgpt/chat-header";
 import { ChatInput } from "@/components/repgpt/chat-input";
 import { ChatEmptyState } from "@/components/repgpt/chat-empty-state";
 import { ChatContext } from "@/components/repgpt/chat-context";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { ClipboardList } from "lucide-react";
 
 interface Message {
   role: "user" | "assistant";
@@ -140,6 +143,20 @@ const AskRepGPT = () => {
                 onKeyPress={handleKeyPress}
                 isLoading={isLoading}
               />
+
+              {/* Link to Notes to Actions */}
+              <div className="p-3 border-t border-repgpt-700 bg-repgpt-800/50 flex justify-center">
+                <Button
+                  variant="outline"
+                  className="w-full sm:w-auto border-repgpt-600 bg-repgpt-800 hover:bg-repgpt-700 text-gray-300"
+                  asChild
+                >
+                  <Link to="/notes-to-actions">
+                    <ClipboardList className="mr-2 h-4 w-4" />
+                    Convert conversation to actions
+                  </Link>
+                </Button>
+              </div>
             </CardContent>
           </Card>
           
