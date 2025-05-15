@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -216,7 +215,7 @@ const OutletActionsInsights = () => {
 
       {/* Time range filter */}
       <div className="mb-6">
-        <Card className="bg-repgpt-700 border-repgpt-600">
+        <Card className="bg-gray-800/50 border-gray-700">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-white">
@@ -242,7 +241,7 @@ const OutletActionsInsights = () => {
 
       {/* Stats cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        <Card className="bg-repgpt-700 border-repgpt-600">
+        <Card className="bg-gray-800/50 border-gray-700">
           <CardHeader className="pb-2">
             <CardDescription className="text-gray-400">Total Actions</CardDescription>
             <CardTitle className="text-white text-2xl flex items-center gap-2">
@@ -252,7 +251,7 @@ const OutletActionsInsights = () => {
           </CardHeader>
         </Card>
 
-        <Card className="bg-repgpt-700 border-repgpt-600">
+        <Card className="bg-gray-800/50 border-gray-700">
           <CardHeader className="pb-2">
             <CardDescription className="text-gray-400">Completed Actions</CardDescription>
             <CardTitle className="text-white text-2xl flex items-center gap-2">
@@ -262,7 +261,7 @@ const OutletActionsInsights = () => {
           </CardHeader>
         </Card>
 
-        <Card className="bg-repgpt-700 border-repgpt-600">
+        <Card className="bg-gray-800/50 border-gray-700">
           <CardHeader className="pb-2">
             <CardDescription className="text-gray-400">Pending Actions</CardDescription>
             <CardTitle className="text-white text-2xl flex items-center gap-2">
@@ -272,7 +271,7 @@ const OutletActionsInsights = () => {
           </CardHeader>
         </Card>
 
-        <Card className="bg-repgpt-700 border-repgpt-600">
+        <Card className="bg-gray-800/50 border-gray-700">
           <CardHeader className="pb-2">
             <CardDescription className="text-gray-400">Completion Rate</CardDescription>
             <CardTitle className="text-white text-2xl flex items-center gap-2">
@@ -285,7 +284,7 @@ const OutletActionsInsights = () => {
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <Card className="bg-repgpt-700 border-repgpt-600">
+        <Card className="bg-gray-800/50 border-gray-700">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-white">
               <BarChart className="h-5 w-5" />
@@ -327,7 +326,7 @@ const OutletActionsInsights = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-repgpt-700 border-repgpt-600">
+        <Card className="bg-gray-800/50 border-gray-700">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-white">
               <BarChart className="h-5 w-5" />
@@ -373,7 +372,7 @@ const OutletActionsInsights = () => {
       </div>
 
       {/* Outlet performance table */}
-      <Card className="bg-repgpt-700 border-repgpt-600">
+      <Card className="bg-gray-800/50 border-gray-700">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <BarChart className="h-5 w-5" />
@@ -392,7 +391,7 @@ const OutletActionsInsights = () => {
             <div className="rounded overflow-hidden">
               <table className="w-full">
                 <thead>
-                  <tr className="bg-repgpt-600 text-left">
+                  <tr className="bg-gray-700 text-left">
                     <th className="px-4 py-2 text-white">Outlet Name</th>
                     <th className="px-4 py-2 text-white text-center">Total Actions</th>
                     <th className="px-4 py-2 text-white text-center">Completed</th>
@@ -403,12 +402,12 @@ const OutletActionsInsights = () => {
                   {outletSummaries.map((outlet, index) => (
                     <tr 
                       key={index} 
-                      className={`text-white ${index % 2 === 0 ? 'bg-repgpt-800' : 'bg-repgpt-750'}`}
+                      className={`text-white ${index % 2 === 0 ? 'bg-gray-800' : 'bg-gray-750'}`}
                     >
                       <td className="px-4 py-3">
                         <Button 
                           variant="link" 
-                          className="p-0 font-normal text-white hover:text-repgpt-400"
+                          className="p-0 font-normal text-white hover:text-blue-400"
                           onClick={() => setSelectedOutlet(outlet.outlet_name)}
                         >
                           {outlet.outlet_name}
