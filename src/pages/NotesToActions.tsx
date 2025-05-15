@@ -1,21 +1,24 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
-import { Edit, Check, Clipboard, ClipboardList, Building } from "lucide-react";
+import { Edit, Check, Clipboard, ClipboardList, Building, Table } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useOutlet } from "@/contexts/outlet-context";
 import { useAuth } from "@/contexts/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ActionsTable } from "@/components/dashboard/actions-table";
 
 interface Action {
   id: string;
   text: string;
   completed: boolean;
   outlet_name?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 const NotesToActions = () => {
@@ -26,6 +29,7 @@ const NotesToActions = () => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [outlets, setOutlets] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<string>("cards");
 
   // Fetch available outlets
   useEffect(() => {
@@ -76,7 +80,9 @@ const NotesToActions = () => {
             id: item.id,
             text: item.text,
             completed: item.completed,
-            outlet_name: item.outlet_name
+            outlet_name: item.outlet_name,
+            created_at: item.created_at,
+            updated_at: item.updated_at
           }));
           setActions(formattedActions);
         }
@@ -142,7 +148,9 @@ const NotesToActions = () => {
             id: data.id,
             text: data.text,
             completed: data.completed,
-            outlet_name: data.outlet_name
+            outlet_name: data.outlet_name,
+            created_at: data.created_at,
+            updated_at: data.updated_at
           });
         }
       }
@@ -250,9 +258,7 @@ const NotesToActions = () => {
         </div>
       </div>
 
-      <h2 className="text-xl font-semibold text-white mb-4">Action Items</h2>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <Card className="bg-repgpt-700 border-repgpt-600">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-white">
@@ -346,6 +352,91 @@ const NotesToActions = () => {
           </CardFooter>
         </Card>
       </div>
+      
+      {/* All Actions Table */}
+      <Card className="bg-repgpt-700 border-repgpt-600">
+        <CardHeader className="pb-2">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-white">
+              <Table className="h-5 w-5" />
+              All Actions
+            </CardTitle>
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-auto">
+              <TabsList className="bg-repgpt-800">
+                <TabsTrigger value="cards" className="data-[state=active]:bg-repgpt-400">
+                  Cards
+                </TabsTrigger>
+                <TabsTrigger value="table" className="data-[state=active]:bg-repgpt-400">
+                  Table
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+          <CardDescription className="text-gray-400">
+            {selectedOutlet 
+              ? `Showing all actions for ${selectedOutlet}` 
+              : "All actions in the system"}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <TabsContent value="cards" className="mt-0">
+            <div className="space-y-4 py-2">
+              {isLoading ? (
+                <p className="text-center text-gray-400 py-10">Loading actions...</p>
+              ) : actions.length === 0 ? (
+                <p className="text-center text-gray-400 py-10">No action items found.</p>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {actions.map((action) => (
+                    <div 
+                      key={action.id} 
+                      className="flex items-start gap-2 p-3 bg-repgpt-800 rounded-md border border-repgpt-600"
+                    >
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className={`rounded-full p-1 ${action.completed ? 'bg-green-900/20 text-green-500' : 'bg-gray-800 text-gray-400'}`}
+                        onClick={() => toggleActionCompletion(action.id)}
+                      >
+                        <Check className="h-4 w-4" />
+                      </Button>
+                      <div className="flex-1">
+                        <p className={`text-sm ${action.completed ? 'line-through text-gray-400' : 'text-white'}`}>
+                          {action.text}
+                        </p>
+                        <div className="flex items-center justify-between mt-1">
+                          <div className="flex items-center text-xs text-gray-500">
+                            <Building className="h-3 w-3 mr-1" />
+                            {action.outlet_name}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {new Date(action.created_at).toLocaleDateString()}
+                          </div>
+                        </div>
+                      </div>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="text-gray-400 hover:text-white"
+                        onClick={() => deleteAction(action.id)}
+                      >
+                        ×
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </TabsContent>
+          <TabsContent value="table" className="mt-0">
+            <ActionsTable 
+              actions={actions}
+              onToggleComplete={toggleActionCompletion}
+              onDelete={deleteAction}
+            />
+          </TabsContent>
+        </CardContent>
+      </Card>
     </DashboardShell>
   );
 };
