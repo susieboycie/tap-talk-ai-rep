@@ -4,19 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
-import { Edit, Check, Clipboard, ClipboardList, Building, Filter } from "lucide-react";
+import { Edit, Check, Clipboard, ClipboardList, Building } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useOutlet } from "@/contexts/outlet-context";
 import { useAuth } from "@/contexts/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 interface Action {
   id: string;
@@ -33,7 +26,6 @@ const NotesToActions = () => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [outlets, setOutlets] = useState<string[]>([]);
-  const [filterOutlet, setFilterOutlet] = useState<string>("all");
 
   // Fetch available outlets
   useEffect(() => {
@@ -61,15 +53,15 @@ const NotesToActions = () => {
     fetchOutlets();
   }, []);
 
-  // Fetch actions for the current outlet or all outlets
+  // Fetch actions for the current outlet
   useEffect(() => {
     const fetchActions = async () => {
       setIsLoading(true);
       try {
         let query = supabase.from('outlet_actions').select('*');
         
-        if (filterOutlet !== 'all') {
-          query = query.eq('outlet_name', filterOutlet);
+        if (selectedOutlet) {
+          query = query.eq('outlet_name', selectedOutlet);
         }
         
         const { data, error } = await query.order('created_at', { ascending: false });
@@ -96,13 +88,6 @@ const NotesToActions = () => {
     };
 
     fetchActions();
-  }, [filterOutlet]);
-  
-  // Update filter outlet when selectedOutlet changes
-  useEffect(() => {
-    if (selectedOutlet) {
-      setFilterOutlet(selectedOutlet);
-    }
   }, [selectedOutlet]);
 
   // Separate notes into actionable items
@@ -188,23 +173,44 @@ const NotesToActions = () => {
     const newCompletedState = !action.completed;
     
     try {
+      console.log(`Updating action ${id} to completed=${newCompletedState}`);
+      
       const { error } = await supabase
         .from('outlet_actions')
-        .update({ completed: newCompletedState, updated_at: new Date().toISOString() })
+        .update({ 
+          completed: newCompletedState,
+          updated_at: new Date().toISOString()
+        })
         .eq('id', id);
         
       if (error) {
         console.error("Error updating action:", error);
+        toast({
+          title: "Error",
+          description: "Failed to update action status.",
+          variant: "destructive",
+        });
         return;
       }
       
+      // Only update the UI if the database update was successful
       setActions(
         actions.map(action =>
           action.id === id ? { ...action, completed: newCompletedState } : action
         )
       );
+      
+      toast({
+        title: "Action updated",
+        description: newCompletedState ? "Action marked as completed." : "Action reopened.",
+      });
     } catch (error) {
       console.error("Error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update action status.",
+        variant: "destructive",
+      });
     }
   };
 
