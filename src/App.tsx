@@ -20,6 +20,7 @@ import NotFound from "./pages/NotFound";
 import TradeTerms from "./pages/TradeTerms";
 import AskRepGPT from "./pages/AskRepGPT";
 import NotesToActions from "./pages/NotesToActions";
+import OutletActionsInsights from "./pages/OutletActionsInsights";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +46,7 @@ const App = () => (
                     <Route path="/trade-terms" element={<TradeTerms />} />
                     <Route path="/ask-repgpt" element={<AskRepGPT />} />
                     <Route path="/notes-to-actions" element={<NotesToActions />} />
+                    <Route path="/outlet-actions-insights" element={<OutletActionsInsights />} />
                   </Route>
                 </Route>
                 

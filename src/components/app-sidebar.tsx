@@ -12,7 +12,7 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { BarChart, Home, FileText, BarChart3, Users, Shield, MessageSquare, ClipboardList } from "lucide-react";
+import { BarChart, Home, FileText, BarChart3, Users, Shield, MessageSquare, ClipboardList, ChartBar } from "lucide-react";
 
 export function AppSidebar() {
   const location = useLocation();
@@ -55,6 +55,14 @@ export function AppSidebar() {
                   <Link to="/notes-to-actions" className={`flex items-center gap-2 ${currentPath === "/notes-to-actions" ? "text-repgpt-400" : ""}`}>
                     <ClipboardList className="h-4 w-4" />
                     <span>Notes to Actions</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/outlet-actions-insights" className={`flex items-center gap-2 ${currentPath === "/outlet-actions-insights" ? "text-repgpt-400" : ""}`}>
+                    <ChartBar className="h-4 w-4" />
+                    <span>Actions Insights</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
