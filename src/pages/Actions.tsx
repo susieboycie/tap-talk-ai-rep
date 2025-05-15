@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { BarChart, Circle, Clock, CheckCircle, XCircle, ListFilter, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PieChart, Pie, Cell, BarChart as ReBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { format, parseISO, isToday, isThisWeek, isThisMonth, subDays } from "date-fns";
+import { format, parseISO, isToday, isThisWeek, isThisMonth, subDays, startOfDay, endOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, addDays } from "date-fns";
 import { ActionsTable } from "@/components/dashboard/actions-table";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
@@ -34,6 +34,7 @@ interface TimeRange {
   label: string;
   value: string;
   filter: (date: Date) => boolean;
+  getDateRange: () => { start: Date, end: Date };
 }
 
 type ActionFilter = 'all' | 'completed' | 'pending';
@@ -48,12 +49,54 @@ const Actions = () => {
   const [recentActionsByDay, setRecentActionsByDay] = useState<any[]>([]);
   const [actionFilter, setActionFilter] = useState<ActionFilter>("all");
   
+  const today = new Date();
+  
   const timeRanges: TimeRange[] = [
-    { label: "All Time", value: "all", filter: () => true },
-    { label: "Today", value: "today", filter: (date) => isToday(date) },
-    { label: "This Week", value: "week", filter: (date) => isThisWeek(date) },
-    { label: "This Month", value: "month", filter: (date) => isThisMonth(date) },
-    { label: "Last 30 Days", value: "30days", filter: (date) => new Date() > date && date > subDays(new Date(), 30) }
+    { 
+      label: "All Time", 
+      value: "all", 
+      filter: () => true,
+      getDateRange: () => ({ 
+        start: new Date(0), // Beginning of time
+        end: today 
+      })
+    },
+    { 
+      label: "Today", 
+      value: "today", 
+      filter: (date) => isToday(date),
+      getDateRange: () => ({ 
+        start: startOfDay(today),
+        end: endOfDay(today)
+      })
+    },
+    { 
+      label: "This Week", 
+      value: "week", 
+      filter: (date) => isThisWeek(date),
+      getDateRange: () => ({ 
+        start: startOfWeek(today),
+        end: endOfWeek(today)
+      })
+    },
+    { 
+      label: "This Month", 
+      value: "month", 
+      filter: (date) => isThisMonth(date),
+      getDateRange: () => ({ 
+        start: startOfMonth(today),
+        end: endOfMonth(today)
+      })
+    },
+    { 
+      label: "Last 30 Days", 
+      value: "30days", 
+      filter: (date) => new Date() > date && date > subDays(new Date(), 30),
+      getDateRange: () => ({ 
+        start: subDays(today, 30),
+        end: today
+      })
+    }
   ];
 
   // Fetch actions data
@@ -134,24 +177,42 @@ const Actions = () => {
     });
   };
 
-  // Generate daily action data for charts
+  // Generate daily action data for charts based on selected time range
   const generateDailyActionData = (actionData: Action[]) => {
+    // Get the selected time range configuration
+    const selectedRange = timeRanges.find(range => range.value === timeRange) || timeRanges[0];
+    
+    // Get the date range for the selected time period
+    const { start, end } = selectedRange.getDateRange();
+    
     // Filter actions by the selected time range
     const filteredActions = filterActionsByTimeRange(actionData, timeRange);
     
-    const today = new Date();
+    // Create an array of days in the date range
+    const daysInRange = eachDayOfInterval({ start, end });
+    
+    // Initialize data for each day
     const days: {[key: string]: {date: string, completed: number, pending: number}} = {};
     
-    // Initialize last 7 days
-    for (let i = 6; i >= 0; i--) {
-      const date = subDays(today, i);
-      const dateString = format(date, 'yyyy-MM-dd');
+    // For "all time" with too many days, we'll sample a reasonable number of days
+    const maxSampleDays = 30;
+    let daysToUse = daysInRange;
+    
+    if (timeRange === 'all' && daysInRange.length > maxSampleDays) {
+      // For "all time", show the last 30 days instead of all days
+      daysToUse = Array.from({ length: maxSampleDays }).map((_, i) => 
+        subDays(today, maxSampleDays - 1 - i));
+    }
+    
+    // Initialize each day in the range with zero counts
+    daysToUse.forEach(day => {
+      const dateString = format(day, 'yyyy-MM-dd');
       days[dateString] = {
-        date: format(date, 'MMM dd'),
+        date: format(day, 'MMM dd'),
         completed: 0,
         pending: 0
       };
-    }
+    });
     
     // Fill with actual data
     filteredActions.forEach(action => {
@@ -287,6 +348,22 @@ const Actions = () => {
     { name: 'Pending', value: stats.pending }
   ];
 
+  // Get the title for the time range chart
+  const getTimeRangeChartTitle = () => {
+    switch (timeRange) {
+      case 'today':
+        return 'Actions Today';
+      case 'week':
+        return 'Actions This Week';
+      case 'month':
+        return 'Actions This Month';
+      case '30days':
+        return 'Actions Over Last 30 Days';
+      default:
+        return 'Actions Over Time';
+    }
+  };
+
   return (
     <DashboardShell>
       <div className="flex items-center justify-between mb-6">
@@ -418,10 +495,10 @@ const Actions = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-white">
               <BarChart className="h-5 w-5" />
-              Actions Over Time (Last 7 Days)
+              {getTimeRangeChartTitle()}
             </CardTitle>
             <CardDescription className="text-gray-400">
-              Daily breakdown of actions created
+              Breakdown of actions by day
             </CardDescription>
           </CardHeader>
           <CardContent>
