@@ -40,7 +40,7 @@ interface TimeRange {
   filter: (date: Date) => boolean;
 }
 
-const OutletActionsInsights = () => {
+const Actions = () => {
   const { selectedOutlet, setSelectedOutlet } = useOutlet();
   const [actions, setActions] = useState<Action[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -203,7 +203,7 @@ const OutletActionsInsights = () => {
     <DashboardShell>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-white mb-2">Outlet Actions Insights</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-white mb-2">Actions</h1>
           <p className="text-gray-400">
             Visual analytics for outlet actions progress and trends
           </p>
@@ -438,4 +438,4 @@ const OutletActionsInsights = () => {
   );
 };
 
-export default OutletActionsInsights;
+export default Actions;

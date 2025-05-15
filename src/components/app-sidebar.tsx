@@ -60,9 +60,9 @@ export function AppSidebar() {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/outlet-actions-insights" className={`flex items-center gap-2 ${currentPath === "/outlet-actions-insights" ? "text-repgpt-400" : ""}`}>
+                  <Link to="/actions" className={`flex items-center gap-2 ${currentPath === "/actions" ? "text-repgpt-400" : ""}`}>
                     <ChartBar className="h-4 w-4" />
-                    <span>Actions Insights</span>
+                    <span>Actions</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
