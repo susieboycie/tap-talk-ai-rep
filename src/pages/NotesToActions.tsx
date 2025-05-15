@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +9,7 @@ import { useOutlet } from "@/contexts/outlet-context";
 import { useAuth } from "@/contexts/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ActionsTable } from "@/components/dashboard/actions-table";
 
 interface Action {
@@ -97,7 +96,7 @@ const NotesToActions = () => {
     fetchActions();
   }, [selectedOutlet]);
 
-  // Separate notes into actionable items
+  // Process notes into actionable items
   const processNotes = async () => {
     if (!notes.trim()) {
       toast({
@@ -259,7 +258,7 @@ const NotesToActions = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 gap-6 mb-6">
         <Card className="bg-repgpt-700 border-repgpt-600">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-white">
@@ -275,7 +274,7 @@ const NotesToActions = () => {
               value={notes} 
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Enter your notes here..."
-              className="h-[300px] bg-repgpt-800 border-repgpt-600 text-white"
+              className="h-[200px] bg-repgpt-800 border-repgpt-600 text-white"
             />
           </CardContent>
           <CardFooter>
@@ -289,72 +288,9 @@ const NotesToActions = () => {
             </Button>
           </CardFooter>
         </Card>
-
-        <Card className="bg-repgpt-700 border-repgpt-600">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-white">
-              <Clipboard className="h-5 w-5" />
-              Action Items
-            </CardTitle>
-            <CardDescription className="text-gray-400">
-              {selectedOutlet 
-                ? `Showing actions for ${selectedOutlet}` 
-                : "Select an outlet to view actions"}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4 max-h-[300px] overflow-y-auto">
-              {isLoading ? (
-                <p className="text-center text-gray-400 py-10">Loading actions...</p>
-              ) : actions.length === 0 ? (
-                <p className="text-center text-gray-400 py-10">No action items found. Convert your notes to get started.</p>
-              ) : (
-                actions.map((action) => (
-                  <div 
-                    key={action.id} 
-                    className="flex items-start gap-2 p-3 bg-repgpt-800 rounded-md border border-repgpt-600"
-                  >
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className={`rounded-full p-1 ${action.completed ? 'bg-green-900/20 text-green-500' : 'bg-gray-800 text-gray-400'}`}
-                      onClick={() => toggleActionCompletion(action.id)}
-                    >
-                      <Check className="h-4 w-4" />
-                    </Button>
-                    <div className="flex-1">
-                      <p className={`text-sm ${action.completed ? 'line-through text-gray-400' : 'text-white'}`}>
-                        {action.text}
-                      </p>
-                      {action.outlet_name && (
-                        <div className="flex items-center mt-1 text-xs text-gray-500">
-                          <Building className="h-3 w-3 mr-1" />
-                          {action.outlet_name}
-                        </div>
-                      )}
-                    </div>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="text-gray-400 hover:text-white"
-                      onClick={() => deleteAction(action.id)}
-                    >
-                      ×
-                    </Button>
-                  </div>
-                ))
-              )}
-            </div>
-          </CardContent>
-          <CardFooter>
-            <p className="text-sm text-gray-400">
-              {actions.filter(a => a.completed).length} of {actions.length} actions completed
-            </p>
-          </CardFooter>
-        </Card>
       </div>
       
-      {/* All Actions Table */}
+      {/* All Actions Section */}
       <Card className="bg-repgpt-700 border-repgpt-600">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
