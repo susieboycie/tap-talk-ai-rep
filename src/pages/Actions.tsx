@@ -1,14 +1,17 @@
+
 import { useEffect, useState } from "react";
 import { DashboardShell } from "@/components/ui/dashboard-shell";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useOutlet } from "@/contexts/outlet-context";
 import { OutletSelector } from "@/components/dashboard/outlet-selector";
 import { supabase } from "@/integrations/supabase/client";
-import { BarChart, Circle, Clock, CheckCircle, XCircle, ListFilter } from "lucide-react";
+import { BarChart, Circle, Clock, CheckCircle, XCircle, ListFilter, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PieChart, Pie, Cell, BarChart as ReBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { format, parseISO, isToday, isThisWeek, isThisMonth, subDays } from "date-fns";
+import { ActionsTable } from "@/components/dashboard/actions-table";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "@/hooks/use-toast";
 
 // Types
 interface Action {
@@ -27,27 +30,23 @@ interface ActionStats {
   completionRate: number;
 }
 
-interface OutletSummary {
-  outlet_name: string;
-  action_count: number;
-  completed_count: number;
-  completion_rate: number;
-}
-
 interface TimeRange {
   label: string;
   value: string;
   filter: (date: Date) => boolean;
 }
 
+type ActionFilter = 'all' | 'completed' | 'pending';
+
 const Actions = () => {
   const { selectedOutlet, setSelectedOutlet } = useOutlet();
   const [actions, setActions] = useState<Action[]>([]);
+  const [displayedActions, setDisplayedActions] = useState<Action[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [stats, setStats] = useState<ActionStats>({ total: 0, completed: 0, pending: 0, completionRate: 0 });
-  const [outletSummaries, setOutletSummaries] = useState<OutletSummary[]>([]);
   const [timeRange, setTimeRange] = useState<string>("all");
   const [recentActionsByDay, setRecentActionsByDay] = useState<any[]>([]);
+  const [actionFilter, setActionFilter] = useState<ActionFilter>("all");
   
   const timeRanges: TimeRange[] = [
     { label: "All Time", value: "all", filter: () => true },
@@ -87,6 +86,7 @@ const Actions = () => {
           setActions(formattedActions);
           calculateStats(formattedActions);
           generateDailyActionData(formattedActions);
+          applyFilters(formattedActions, actionFilter);
         }
       } catch (error) {
         console.error("Error:", error);
@@ -98,6 +98,20 @@ const Actions = () => {
     fetchActions();
   }, [selectedOutlet]);
 
+  // Apply filters to the actions
+  const applyFilters = (actionData: Action[], filter: ActionFilter) => {
+    const filteredByTime = filterActionsByTimeRange(actionData);
+    let result = filteredByTime;
+    
+    if (filter === 'completed') {
+      result = filteredByTime.filter(action => action.completed);
+    } else if (filter === 'pending') {
+      result = filteredByTime.filter(action => !action.completed);
+    }
+    
+    setDisplayedActions(result);
+  };
+
   // Calculate statistics based on filtered actions
   const calculateStats = (actionData: Action[]) => {
     const filteredActions = filterActionsByTimeRange(actionData);
@@ -107,36 +121,6 @@ const Actions = () => {
     const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
     
     setStats({ total, completed, pending, completionRate });
-
-    // Generate outlet summaries
-    const outlets: { [key: string]: OutletSummary } = {};
-    filteredActions.forEach(action => {
-      if (!outlets[action.outlet_name]) {
-        outlets[action.outlet_name] = {
-          outlet_name: action.outlet_name,
-          action_count: 0,
-          completed_count: 0,
-          completion_rate: 0
-        };
-      }
-      
-      outlets[action.outlet_name].action_count += 1;
-      if (action.completed) {
-        outlets[action.outlet_name].completed_count += 1;
-      }
-    });
-    
-    // Calculate completion rates
-    const summaries = Object.values(outlets).map(outlet => {
-      outlet.completion_rate = outlet.action_count > 0 
-        ? Math.round((outlet.completed_count / outlet.action_count) * 100) 
-        : 0;
-      return outlet;
-    });
-    
-    // Sort by action count (descending)
-    summaries.sort((a, b) => b.action_count - a.action_count);
-    setOutletSummaries(summaries);
   };
 
   // Filter actions by selected time range
@@ -188,6 +172,107 @@ const Actions = () => {
     setTimeRange(value);
     calculateStats(actions);
     generateDailyActionData(actions);
+    applyFilters(actions, actionFilter);
+  };
+
+  // Handle action filter change
+  const handleActionFilterChange = (filter: ActionFilter) => {
+    setActionFilter(filter);
+    applyFilters(actions, filter);
+  };
+
+  // Toggle action completion status
+  const handleToggleComplete = async (id: string) => {
+    try {
+      // Find the action and toggle its state
+      const action = actions.find(a => a.id === id);
+      if (!action) return;
+
+      const newStatus = !action.completed;
+      
+      // Update in Supabase
+      const { error } = await supabase
+        .from('outlet_actions')
+        .update({ 
+          completed: newStatus,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', id);
+
+      if (error) {
+        console.error("Error updating action:", error);
+        toast({
+          title: "Error",
+          description: "Failed to update action status",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Update local state
+      const updatedActions = actions.map(a => 
+        a.id === id ? { ...a, completed: newStatus, updated_at: new Date().toISOString() } : a
+      );
+      
+      setActions(updatedActions);
+      calculateStats(updatedActions);
+      generateDailyActionData(updatedActions);
+      applyFilters(updatedActions, actionFilter);
+
+      toast({
+        title: "Success",
+        description: `Action marked as ${newStatus ? 'completed' : 'pending'}`,
+        variant: "default"
+      });
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Delete an action
+  const handleDeleteAction = async (id: string) => {
+    try {
+      // Delete from Supabase
+      const { error } = await supabase
+        .from('outlet_actions')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        console.error("Error deleting action:", error);
+        toast({
+          title: "Error",
+          description: "Failed to delete action",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Update local state
+      const updatedActions = actions.filter(a => a.id !== id);
+      setActions(updatedActions);
+      calculateStats(updatedActions);
+      generateDailyActionData(updatedActions);
+      applyFilters(updatedActions, actionFilter);
+
+      toast({
+        title: "Success",
+        description: "Action deleted successfully",
+        variant: "default"
+      });
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive"
+      });
+    }
   };
 
   // Colors for charts
@@ -371,66 +456,54 @@ const Actions = () => {
         </Card>
       </div>
 
-      {/* Outlet performance table */}
+      {/* Actions list with filters */}
       <Card className="bg-gray-800/50 border-gray-700">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-white">
-            <BarChart className="h-5 w-5" />
-            Outlet Action Performance
-          </CardTitle>
-          <CardDescription className="text-gray-400">
-            Completion metrics by outlet
-          </CardDescription>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <CardTitle className="flex items-center gap-2 text-white">
+                <BarChart className="h-5 w-5" />
+                Action Items
+              </CardTitle>
+              <CardDescription className="text-gray-400">
+                List of all actions with status information
+              </CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4 text-gray-400" />
+              <span className="text-sm text-gray-400 mr-2">Status:</span>
+              <div className="flex gap-2">
+                <Badge 
+                  className={`cursor-pointer ${actionFilter === 'all' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-700 hover:bg-gray-600'}`}
+                  onClick={() => handleActionFilterChange('all')}
+                >
+                  All
+                </Badge>
+                <Badge 
+                  className={`cursor-pointer ${actionFilter === 'completed' ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-700 hover:bg-gray-600'}`}
+                  onClick={() => handleActionFilterChange('completed')}
+                >
+                  Completed
+                </Badge>
+                <Badge 
+                  className={`cursor-pointer ${actionFilter === 'pending' ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-700 hover:bg-gray-600'}`}
+                  onClick={() => handleActionFilterChange('pending')}
+                >
+                  Pending
+                </Badge>
+              </div>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           {loading ? (
-            <p className="text-center text-gray-400 py-10">Loading outlet data...</p>
-          ) : outletSummaries.length === 0 ? (
-            <p className="text-center text-gray-400 py-10">No outlet data available</p>
+            <p className="text-center text-gray-400 py-10">Loading actions...</p>
           ) : (
-            <div className="rounded overflow-hidden">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-gray-700 text-left">
-                    <th className="px-4 py-2 text-white">Outlet Name</th>
-                    <th className="px-4 py-2 text-white text-center">Total Actions</th>
-                    <th className="px-4 py-2 text-white text-center">Completed</th>
-                    <th className="px-4 py-2 text-white text-center">Completion Rate</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {outletSummaries.map((outlet, index) => (
-                    <tr 
-                      key={index} 
-                      className={`text-white ${index % 2 === 0 ? 'bg-gray-800' : 'bg-gray-750'}`}
-                    >
-                      <td className="px-4 py-3">
-                        <Button 
-                          variant="link" 
-                          className="p-0 font-normal text-white hover:text-blue-400"
-                          onClick={() => setSelectedOutlet(outlet.outlet_name)}
-                        >
-                          {outlet.outlet_name}
-                        </Button>
-                      </td>
-                      <td className="px-4 py-3 text-center">{outlet.action_count}</td>
-                      <td className="px-4 py-3 text-center">{outlet.completed_count}</td>
-                      <td className="px-4 py-3 text-center">
-                        <span 
-                          className={`px-2 py-1 rounded text-xs ${
-                            outlet.completion_rate >= 75 ? 'bg-green-900/30 text-green-400' : 
-                            outlet.completion_rate >= 50 ? 'bg-yellow-900/30 text-yellow-400' : 
-                            'bg-red-900/30 text-red-400'
-                          }`}
-                        >
-                          {outlet.completion_rate}%
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <ActionsTable 
+              actions={displayedActions} 
+              onToggleComplete={handleToggleComplete}
+              onDelete={handleDeleteAction}
+            />
           )}
         </CardContent>
       </Card>
