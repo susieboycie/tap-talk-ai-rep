@@ -86,7 +86,7 @@ const Actions = () => {
           setActions(formattedActions);
           calculateStats(formattedActions);
           generateDailyActionData(formattedActions);
-          applyFilters(formattedActions, actionFilter);
+          applyFilters(formattedActions, actionFilter, timeRange);
         }
       } catch (error) {
         console.error("Error:", error);
@@ -99,8 +99,8 @@ const Actions = () => {
   }, [selectedOutlet]);
 
   // Apply filters to the actions
-  const applyFilters = (actionData: Action[], filter: ActionFilter) => {
-    const filteredByTime = filterActionsByTimeRange(actionData);
+  const applyFilters = (actionData: Action[], filter: ActionFilter, selectedTimeRange: string) => {
+    const filteredByTime = filterActionsByTimeRange(actionData, selectedTimeRange);
     let result = filteredByTime;
     
     if (filter === 'completed') {
@@ -114,7 +114,7 @@ const Actions = () => {
 
   // Calculate statistics based on filtered actions
   const calculateStats = (actionData: Action[]) => {
-    const filteredActions = filterActionsByTimeRange(actionData);
+    const filteredActions = filterActionsByTimeRange(actionData, timeRange);
     const total = filteredActions.length;
     const completed = filteredActions.filter(action => action.completed).length;
     const pending = total - completed;
@@ -124,9 +124,9 @@ const Actions = () => {
   };
 
   // Filter actions by selected time range
-  const filterActionsByTimeRange = (actionData: Action[]) => {
-    const selectedRange = timeRanges.find(range => range.value === timeRange);
-    if (!selectedRange || timeRange === 'all') return actionData;
+  const filterActionsByTimeRange = (actionData: Action[], selectedTimeRange: string) => {
+    const selectedRange = timeRanges.find(range => range.value === selectedTimeRange);
+    if (!selectedRange || selectedTimeRange === 'all') return actionData;
     
     return actionData.filter(action => {
       const actionDate = parseISO(action.created_at);
@@ -136,6 +136,9 @@ const Actions = () => {
 
   // Generate daily action data for charts
   const generateDailyActionData = (actionData: Action[]) => {
+    // Filter actions by the selected time range
+    const filteredActions = filterActionsByTimeRange(actionData, timeRange);
+    
     const today = new Date();
     const days: {[key: string]: {date: string, completed: number, pending: number}} = {};
     
@@ -151,7 +154,7 @@ const Actions = () => {
     }
     
     // Fill with actual data
-    actionData.forEach(action => {
+    filteredActions.forEach(action => {
       const actionDate = format(parseISO(action.created_at), 'yyyy-MM-dd');
       if (days[actionDate]) {
         if (action.completed) {
@@ -172,13 +175,13 @@ const Actions = () => {
     setTimeRange(value);
     calculateStats(actions);
     generateDailyActionData(actions);
-    applyFilters(actions, actionFilter);
+    applyFilters(actions, actionFilter, value);
   };
 
   // Handle action filter change
   const handleActionFilterChange = (filter: ActionFilter) => {
     setActionFilter(filter);
-    applyFilters(actions, filter);
+    applyFilters(actions, filter, timeRange);
   };
 
   // Toggle action completion status
@@ -217,7 +220,7 @@ const Actions = () => {
       setActions(updatedActions);
       calculateStats(updatedActions);
       generateDailyActionData(updatedActions);
-      applyFilters(updatedActions, actionFilter);
+      applyFilters(updatedActions, actionFilter, timeRange);
 
       toast({
         title: "Success",
@@ -258,7 +261,7 @@ const Actions = () => {
       setActions(updatedActions);
       calculateStats(updatedActions);
       generateDailyActionData(updatedActions);
-      applyFilters(updatedActions, actionFilter);
+      applyFilters(updatedActions, actionFilter, timeRange);
 
       toast({
         title: "Success",
